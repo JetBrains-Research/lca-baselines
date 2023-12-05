@@ -4,7 +4,7 @@ import numpy as np
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageParam, ChatCompletion
 
-from bug_localization.baselines.baseline import ScoreBaseline
+from baselines.baseline_models import ScoreBaseline
 
 
 class OpenAIBaseline(ScoreBaseline):
@@ -12,7 +12,6 @@ class OpenAIBaseline(ScoreBaseline):
     def __init__(self,
                  api_key: str,
                  model: str = "gpt-3.5-turbo",
-                 max_tokens=16000
                  ):
         self.client = OpenAI(api_key=api_key)
         self.model = model
@@ -46,9 +45,11 @@ class OpenAIBaseline(ScoreBaseline):
     def _parse_scores(self, outputs: list[Optional[ChatCompletion]]) -> list[int]:
         pass
 
-    def score(self, issue_text: str, file_contents: Dict[str, str]) -> np.ndarray[int]:
+    def score(self, issue_text: str, file_paths: list[str], file_contents: Dict[str, str]) -> np.ndarray[int]:
         outputs = []
-        for file_path, file_content in file_contents:
+        for file_path in file_paths:
+            assert file_path in file_contents
+            file_content = file_contents[file_path]
             messages = self._build_messages(issue_text, file_path, file_content)
             try:
                 outputs = self.client.chat.completions.create(
