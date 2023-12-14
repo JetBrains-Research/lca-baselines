@@ -3,16 +3,16 @@ from argparse import ArgumentParser
 
 from omegaconf import DictConfig, OmegaConf
 
-from baselines.baseline_models import ScoreBaseline, EmbedBaseline
-from baselines.baseline_tokenizers import BaseTokenizer
+from baselines.model.baseline_models import ScoreBaseline, EmbedBaseline
+from baselines.model.baseline_tokenizers import BaseTokenizer
 from baselines.models.codet5_baseline import CodeT5Baseline
 from baselines.models.openai_baseline import OpenAIBaseline
 from baselines.models.tf_idf_baseline import TfIdfBaseline
 from baselines.tokenizers.bpe_tokenizer import BPETokenizer
 from baselines.tokenizers.codet5_tokenizer import CodeT5Tokenizer
 from baselines.tokenizers.nltk_tokenizer import NltkTokenizer
-from run_embed_baseline import run_embed_baseline
-from run_score_baseline import run_score_baseline
+from baselines.embed_baseline import launch_embed_baseline
+from baselines.score_baseline import launch_score_baseline
 
 
 def init_score_baseline(config: DictConfig) -> ScoreBaseline:
@@ -86,10 +86,10 @@ def run_baseline(baseline_config_path: str, bug_localization_data_path: str):
 
     if baseline_config.baseline_type == 'embed':
         baseline = init_embed_baseline(baseline_config, pretrained_path)
-        run_embed_baseline(baseline, run_path)
+        launch_embed_baseline(baseline, run_path)
     else:
         baseline = init_score_baseline(baseline_config)
-        run_score_baseline(baseline, run_path)
+        launch_score_baseline(baseline, run_path)
 
 
 if __name__ == '__main__':

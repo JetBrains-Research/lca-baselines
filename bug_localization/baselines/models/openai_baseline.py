@@ -4,7 +4,7 @@ import numpy as np
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageParam, ChatCompletion
 
-from baselines.baseline_models import ScoreBaseline
+from baselines.model.baseline_models import ScoreBaseline
 
 
 class OpenAIBaseline(ScoreBaseline):

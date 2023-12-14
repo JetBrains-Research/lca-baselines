@@ -6,7 +6,7 @@ from tokenizers.models import BPE
 from tokenizers.pre_tokenizers import Whitespace
 from tokenizers.trainers import BpeTrainer
 
-from baselines.baseline_tokenizers import BaseTokenizer
+from baselines.model.baseline_tokenizers import BaseTokenizer
 
 
 class BPETokenizer(BaseTokenizer):

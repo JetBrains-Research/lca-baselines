@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from baselines.baseline_tokenizers import BaseTokenizer
+from baselines.model.baseline_tokenizers import BaseTokenizer
 
 
 class EmbedBaseline:

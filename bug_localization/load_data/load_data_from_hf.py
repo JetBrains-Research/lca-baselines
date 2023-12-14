@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 import datasets
 from huggingface_hub import hf_hub_download
 
-from load_data.hf_utils import FEATURES, HUGGINGFACE_REPO
+from load_data.hf_utils import HUGGINGFACE_REPO, FEATURES
 
 
 def load_repos(data_path: str, cache_path: str):
@@ -79,5 +79,5 @@ if __name__ == '__main__':
 
     args = argparser.parse_args()
 
-    load_repos(args.data_path, args.hf_cache_path)
+    # load_repos(args.data_path, args.hf_cache_path)
     load_bug_localization_data(args.data_path, args.hf_cache_path)
