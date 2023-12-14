@@ -23,12 +23,12 @@ class OpenAIBackboneConfig(BackboneConfig):
     Attributes:
         model_name: Name for LLM profile to use in OpenAI API.
         prompt: Name for one of the supported prompt configurations.
-        token_path: Path to file with an OpenAI API key.
+        api_key: OpenAI API key (optional, by default, OPENAI_API_KEY env variable is used).
         parameters: Arbitrary keyword parameters that can be passed to corresponding Completion or ChatCompletion endpoint.
     """
 
     _target_: str = f"{BASELINES_CLASSES_ROOT_PKG}.backbones.OpenAIBackbone"
-    token_path: str = "data/token.txt"
+    api_key: Optional[str] = None
     parameters: Dict[str, Any] = field(default_factory=lambda: {})
 
 

@@ -26,5 +26,5 @@ class HFDataSourceConfig(DataSourceConfig):
     _target_: str = f"{BASELINES_CLASSES_ROOT_PKG}.data_sources.HFDataSource"
     cache_dir: Optional[str] = None
     hub_name: str = MISSING
-    configs: List[str] | str = MISSING
+    configs: List[str] = MISSING
     split: str = "test"

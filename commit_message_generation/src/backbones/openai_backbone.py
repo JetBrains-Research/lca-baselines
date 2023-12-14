@@ -23,10 +23,13 @@ class OpenAIBackbone(CMGBackbone):
         self._prompt = prompt
         self._parameters = parameters
 
-    def generate_msg(self, preprocessed_commit_mods: str, **kwargs) -> str:
+    def generate_msg(self, preprocessed_commit_mods: str, **kwargs) -> Dict[str, Optional[str]]:
         prompt = self._prompt.chat(preprocessed_commit_mods)
-        return self._client.chat.completions.create(messages=prompt, model=self._model_name, **self._parameters)["choices"][0][  # type: ignore[index, arg-type]
-            "message"
-        ][
-            "content"
-        ]
+        response = self._client.chat.completions.create(messages=prompt, model=self._model_name, **self._parameters)  # type: ignore[arg-type]
+        assert response.choices[0].message.content, "Empty content in OpenAI API response."
+        return {
+            "prediction": response.choices[0].message.content,
+            "created": str(response.created),
+            "model": response.model,
+            "system_fingerprint": response.system_fingerprint,
+        }

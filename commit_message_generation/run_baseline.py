@@ -37,11 +37,13 @@ def get_predictions(baseline: CMGBaseline, cfg: BaselineConfig, predictions_path
     # get predictions for all input examples
     open(predictions_path, "w").close()
     for line in tqdm(reader, "Generating messages"):
-        prediction = baseline.generate_msg(commit_mods=line["mods"])
+        baseline_output = baseline.generate_msg(commit_mods=line["mods"])
+        assert "prediction" in baseline_output, "Baseline output should contain a prediction."
+        cur_example = {"reference": line["message"], "hash": line["hash"], "repo": line["repo"]}
+        cur_example.update(baseline_output)
+
         with jsonlines.open(predictions_path, "a") as writer:
-            writer.write(
-                {"prediction": prediction, "reference": line["message"], "hash": line["hash"], "repo": line["repo"]}
-            )
+            writer.write(cur_example)
     return predictions_path
 
 

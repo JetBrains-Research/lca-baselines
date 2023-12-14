@@ -68,7 +68,7 @@ class HuggingFaceBackbone(CMGBackbone):
         self._prompt = prompt
 
     @torch.inference_mode()
-    def generate_msg(self, preprocessed_commit_mods: str, **kwargs) -> str:
+    def generate_msg(self, preprocessed_commit_mods: str, **kwargs) -> Dict[str, Optional[str]]:
         if self._prompt:
             preprocessed_commit_mods = self._prompt.hf(
                 preprocessed_commit_mods,
@@ -86,4 +86,4 @@ class HuggingFaceBackbone(CMGBackbone):
             predictions = predictions[:, encoding.input_ids.shape[1] :]
 
         decoded_predictions = self._tokenizer.batch_decode(predictions, skip_special_tokens=True)[0]
-        return decoded_predictions
+        return {"prediction": decoded_predictions}

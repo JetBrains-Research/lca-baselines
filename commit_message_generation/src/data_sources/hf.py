@@ -11,7 +11,7 @@ class HFDataSource(BaseDataSource):
     def __init__(
         self,
         hub_name: str,
-        configs: Optional[List[str] | str] = None,
+        configs: Optional[List[str]] = None,
         split: Optional[str] = None,
         cache_dir: Optional[str] = None,
     ):
@@ -19,7 +19,7 @@ class HFDataSource(BaseDataSource):
         self._cache_dir = cache_dir
 
         if configs:
-            self._configs = configs if isinstance(configs, list) else [configs]
+            self._configs = configs
         else:
             self._configs = get_dataset_config_names(self._hub_name)
         self._split = split
