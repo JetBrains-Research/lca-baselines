@@ -90,3 +90,10 @@ and we provide the exact commands for each of them as well as `.yaml` configs ex
     poetry run python run_baseline.py +data_src=hf data_src.hub_name=JetBrains-Research/lca-cmg data_src.configs=[commitchronicle-py-long] +preprocessor=simple preprocessor.include_path=true +backbone=hf backbone.model_name=codellama/CodeLlama-7b-Instruct-hf backbone.is_encoder_decoder=false backbone.device=cuda backbone.model_kwargs.load_in_4bit=true ++backbone.model_kwargs.attn_implementation=flash_attention_2 +backbone/prompt=detailed backbone.generation.max_new_tokens=512 backbone.seed=2687987020
     ```
   * Note: This model was launched with 4-bit quantization and with [FlashAttention2](https://github.com/Dao-AILab/flash-attention) enabled, which is controlled by arguments under `backbone.model_kwargs` key. FlashAttention2 is not included in the requirements for this repository, please, install it separately, following [official guidelines](https://github.com/Dao-AILab/flash-attention?tab=readme-ov-file#installation-and-features).
+* [Mistral-7b (instruct, v0.2)](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
+  * Config: [`mistral_7b.yaml`](configs/examples/mistral_7b.yaml)
+  * Command:
+    ```
+    poetry run python run_baseline.py +data_src=hf data_src.hub_name=JetBrains-Research/lca-cmg data_src.configs=[commitchronicle-py-long] +preprocessor=simple preprocessor.include_path=true +backbone=hf backbone.model_name=mistralai/Mistral-7B-Instruct-v0.2 backbone.is_encoder_decoder=false backbone.device=cuda backbone.model_kwargs.load_in_4bit=true ++backbone.model_kwargs.attn_implementation=flash_attention_2 +backbone/prompt=detailed backbone.generation.max_new_tokens=512 backbone.seed=2687987020
+    ```
+  * Note: This model was launched with 4-bit quantization and with [FlashAttention2](https://github.com/Dao-AILab/flash-attention) enabled, which is controlled by arguments under `backbone.model_kwargs` key. FlashAttention2 is not included in the requirements for this repository, please, install it separately, following [official guidelines](https://github.com/Dao-AILab/flash-attention?tab=readme-ov-file#installation-and-features).
