@@ -1,0 +1,24 @@
+backbone:
+  _target_: src.backbones.OpenAIBackbone
+  prompt:
+    _target_: src.prompts.DetailedCMGPrompt
+  model_name: gpt-3.5-turbo-16k
+  api_key: null
+  parameters:
+    temperature: 0.8
+    seed: 2687987020
+preprocessor:
+  _target_: src.preprocessors.SimpleCMGPreprocessor
+  include_path: true
+logger:
+  use_wandb: true
+  name: commitchronicle_py_long-gpt_3.5_16k-detailed
+  project: lca_cmg
+  local_artifact: false
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: JetBrains-Research/lca-cmg
+  configs:
+  - commitchronicle-py-long
+  split: test

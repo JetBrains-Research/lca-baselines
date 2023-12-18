@@ -27,6 +27,7 @@ rouge-score = "^0.1.2"
 bitsandbytes = "^0.41.2"
 accelerate = "^0.23.0"
 optimum = "^1.14.1"
+scipy = "^1.11.4"
 
 [tool.poetry.group.dev.dependencies]
 black = {extras = ["jupyter"], version = "^23.7.0"}
