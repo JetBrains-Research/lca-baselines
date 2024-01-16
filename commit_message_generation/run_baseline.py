@@ -19,10 +19,8 @@ def init_baseline(cfg: BaselineConfig) -> CMGBaseline:
     backbone: CMGBackbone = hydra.utils.instantiate(cfg.backbone)
 
     # init preprocessor
-    preprocessor = CMGPreprocessor(
-        preprocessor=hydra.utils.instantiate(
-            cfg.preprocessor, model_name=cfg.backbone.model_name, model_provider=backbone.name
-        )
+    preprocessor = hydra.utils.instantiate(
+        cfg.preprocessor, model_name=cfg.backbone.model_name, model_provider=backbone.name
     )
 
     return CMGBaseline(backbone=backbone, preprocessor=preprocessor)

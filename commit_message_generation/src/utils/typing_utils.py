@@ -22,15 +22,10 @@ class CommitFile(TypedDict):
     new_contents: str
 
 
-class CommitMods(TypedDict):
-    diff: Optional[List[CommitDiff]]
-    file_src: Optional[CommitFile]
-
-
 class UnifiedCommitExample(TypedDict):
     hash: str
     repo: str
     date: str
     license: str
     message: str
-    mods: CommitMods
+    mods: List[CommitDiff]

@@ -13,6 +13,6 @@ class TruncationCMGPreprocessor(SimpleCMGPreprocessor):
         self._tokenization_utils = TokenizationUtils(model_name=model_name, model_provider=model_provider)
         super().__init__(model_name=model_name, model_provider=model_provider, include_path=include_path)
 
-    def __call__(self, commit_diff: List[CommitDiff], **kwargs) -> str:
-        processed_diff = super().__call__(commit_diff)
+    def __call__(self, commit_mods: List[CommitDiff], **kwargs) -> str:
+        processed_diff = super().__call__(commit_mods)
         return self._tokenization_utils.truncate(processed_diff, max_num_tokens=self._max_num_tokens)

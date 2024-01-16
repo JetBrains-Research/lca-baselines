@@ -2,18 +2,18 @@ from typing import List
 
 from src.utils import CommitDiff
 
-from .base_preprocessor import CMGDiffPreprocessor
+from .base_preprocessor import CMGPreprocessor
 
 
-class SimpleCMGPreprocessor(CMGDiffPreprocessor):
+class SimpleCMGPreprocessor(CMGPreprocessor):
     """Concatenates all file diffs into a single diff."""
 
     def __init__(self, model_name: str, model_provider: str, include_path: bool = True, *args, **kwargs):
         self._include_path = include_path
 
-    def __call__(self, commit_diff: List[CommitDiff], **kwargs) -> str:
+    def __call__(self, commit_mods: List[CommitDiff], **kwargs) -> str:
         diff = []
-        for mod in commit_diff:
+        for mod in commit_mods:
             if mod["change_type"] == "UNKNOWN":
                 continue
             elif mod["change_type"] == "ADD":
