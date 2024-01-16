@@ -19,22 +19,18 @@ jobs:
         with:
           version: 1.4.2
 
-      - name: Go to CMG folder
-        run: |
-          cd commit_message_generation
-
       - name: Install dependencies
         run: |
-          poetry install --no-interaction
+          cd commit_message_generation && poetry install --no-interaction
 
       - name: Lint with Black
         run: |
-          poetry run black -l 120 . --check
+          cd commit_message_generation && poetry run black . --check
 
       - name: Check import styling with isort
         run: |
-          poetry run isort --profile black . --check
+          cd commit_message_generation && poetry run isort . --check
 
       - name: Check types with mypy
         run: |
-          poetry run mypy .
+          cd commit_message_generation && poetry run mypy .
