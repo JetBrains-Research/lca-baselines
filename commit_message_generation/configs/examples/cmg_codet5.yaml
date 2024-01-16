@@ -21,13 +21,13 @@ preprocessor:
   include_path: true
 logger:
   use_wandb: true
-  name: commitchronicle_py_long_cmg_codet5
+  name: cmg_codet5
   project: lca_cmg
   local_artifact: false
 data_src:
   _target_: src.data_sources.HFDataSource
   cache_dir: null
-  hub_name: JetBrains-Research/lca-cmg
+  hub_name: JetBrains-Research/lca-commit-message-generation
   configs:
   - commitchronicle-py-long
   split: test
