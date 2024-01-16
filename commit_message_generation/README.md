@@ -65,17 +65,23 @@ and we provide the exact commands for each of them as well as `.yaml` configs ex
 
 ## OpenAI models
 
-* GPT-3.5 Turbo
+* GPT-3.5 Turbo (16k)
   * Config: [`gpt_3.5_16k.yaml`](configs/examples/gpt_3.5_16k.yaml)
   * Command:
     ```
     poetry run python run_baseline.py +data_src=hf data_src.hub_name=JetBrains-Research/lca-commit-message-generation data_src.configs="[commitchronicle-py-long]" +preprocessor=simple preprocessor.include_path=true +backbone=openai +backbone/prompt=detailed backbone.model_name=gpt-3.5-turbo-16k ++backbone.parameters.temperature=0.8 ++backbone.parameters.seed=2687987020 logger.name=gpt_3.5_16k-detailed
     ```
 * GPT-4
-  * Config: [`gpt_4.yaml`](configs/examples/gpt_4.yaml)
+  * Config: [`gpt_4_8k.yaml`](configs/examples/gpt_4_8k.yaml)
   * Command:
     ```
-    poetry run python run_baseline.py +data_src=hf data_src.hub_name=JetBrains-Research/lca-commit-message-generation data_src.configs="[commitchronicle-py-long]" +preprocessor=truncation preprocessor.include_path=true preprocessor.max_num_tokens=8000 +backbone=openai +backbone/prompt=detailed backbone.model_name=gpt-4 ++backbone.parameters.temperature=0.8 ++backbone.parameters.seed=2687987020 logger.name=gpt_4-detailed
+    poetry run python run_baseline.py +data_src=hf data_src.hub_name=JetBrains-Research/lca-commit-message-generation data_src.configs="[commitchronicle-py-long]" +preprocessor=truncation preprocessor.include_path=true preprocessor.max_num_tokens=8000 +backbone=openai +backbone/prompt=detailed backbone.model_name=gpt-4 ++backbone.parameters.temperature=0.8 ++backbone.parameters.seed=2687987020 logger.name=gpt_4-8k-detailed
+    ```
+* GPT-4 Turbo
+  * Config: [`gpt-4-1106-preview.yaml`](configs/examples/gpt-4-1106-preview.yaml)
+  * Command:
+    ```
+    poetry run python run_baseline.py +data_src=hf data_src.hub_name=JetBrains-Research/lca-commit-message-generation data_src.configs="[commitchronicle-py-long]" +preprocessor=simple preprocessor.include_path=true +backbone=openai +backbone/prompt=detailed backbone.model_name=gpt-4-1106-preview ++backbone.parameters.temperature=0.8 ++backbone.parameters.seed=2687987020 logger.name=gpt-4-1106-preview-detailed
     ```
 ## 🤗 Models from HuggingFace Hub
 
