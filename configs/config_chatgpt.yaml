@@ -1,0 +1,7 @@
+hf_api_key: "pattern"
+hf_tokenizer_checkpoint: "bigcode/starcoder"
+openai_api_key: "pattern"
+model_name: "gpt-4-0613"
+logs_dir: "./logs"
+save_dir: "./predictions-chatgpt4-1k"
+max_context_toks: 1000
