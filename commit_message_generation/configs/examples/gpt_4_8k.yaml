@@ -1,0 +1,25 @@
+backbone:
+  _target_: src.backbones.OpenAIBackbone
+  prompt:
+    _target_: src.prompts.DetailedCMGPrompt
+  model_name: gpt-4
+  api_key: null
+  parameters:
+    temperature: 0.8
+    seed: 2687987020
+preprocessor:
+  _target_: src.preprocessors.TruncationCMGPreprocessor
+  max_num_tokens: 8000
+  include_path: true
+logger:
+  use_wandb: true
+  name: gpt_4-detailed
+  project: lca_cmg
+  local_artifact: false
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: JetBrains-Research/lca-commit-message-generation
+  configs:
+  - commitchronicle-py-long
+  split: test

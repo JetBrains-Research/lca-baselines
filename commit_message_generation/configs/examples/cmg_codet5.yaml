@@ -1,0 +1,33 @@
+backbone:
+  _target_: src.backbones.HuggingFaceBackbone
+  prompt: null
+  model_name: JetBrains-Research/cmg-codet5-without-history
+  is_encoder_decoder: true
+  model_kwargs:
+    torch_dtype: auto
+    device_map: auto
+    load_in_8bit: false
+    load_in_4bit: false
+  generation:
+    do_sample: true
+    temperature: 0.8
+    max_length: null
+    max_new_tokens: null
+  device: cuda
+  seed: 2687987020
+  use_bettertransformer: false
+preprocessor:
+  _target_: src.preprocessors.SimpleCMGPreprocessor
+  include_path: true
+logger:
+  use_wandb: true
+  name: cmg_codet5
+  project: lca_cmg
+  local_artifact: false
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: JetBrains-Research/lca-commit-message-generation
+  configs:
+  - commitchronicle-py-long
+  split: test

@@ -1,0 +1,35 @@
+backbone:
+  _target_: src.backbones.HuggingFaceBackbone
+  prompt:
+    _target_: src.prompts.DetailedCMGPrompt
+  model_name: codellama/CodeLlama-7b-Instruct-hf
+  is_encoder_decoder: false
+  model_kwargs:
+    torch_dtype: auto
+    device_map: auto
+    load_in_8bit: false
+    load_in_4bit: true
+    attn_implementation: flash_attention_2
+  generation:
+    do_sample: true
+    temperature: 0.8
+    max_length: null
+    max_new_tokens: 512
+  device: cuda
+  seed: 2687987020
+  use_bettertransformer: false
+preprocessor:
+  _target_: src.preprocessors.SimpleCMGPreprocessor
+  include_path: true
+logger:
+  use_wandb: true
+  name: codellama7b_detailed
+  project: lca_cmg
+  local_artifact: false
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: JetBrains-Research/lca-commit-message-generation
+  configs:
+  - commitchronicle-py-long
+  split: test
