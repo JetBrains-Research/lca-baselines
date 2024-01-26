@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "lca-ci-fixing-benchmark"
+version = "0.1.0"
+description = "CI Fixing benchmark: given logs of a failed GitHub Actions workflow and the corresponding repository shapshot, fix the repository contents in order to make the workflow pass."
+authors = ["Timur Galimzyanov <timur.galimzyanov@jetbrains.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "lca_ci_fixing_benchmark"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+omegaconf = "^2.3.0"
+datasets = "^2.16.1"
+gitpython = "^3.1.41"
+ruamel-yaml = "^0.18.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
