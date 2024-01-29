@@ -26,7 +26,7 @@ class CIFixBenchmark:
             "token": token_gh,
             "model": model_name,
         }
-        # TODO parents=True (??)
+
         os.makedirs(self.config.out_folder, exist_ok=True)
         os.makedirs(self.config.repos_folder, exist_ok=True)
         self.dataset_id = f"JetBrains-Research/lca-ci-fixing"
@@ -40,9 +40,8 @@ class CIFixBenchmark:
         self.model_name = model_name
 
     def get_dataset(
-        self, hf_token=None, num_dp=None, force_download=False, dataset_folder=None
+        self, num_dp=None, force_download=False, dataset_folder=None
     ):
-        # TODO remove hf_token when dataset becomes public
 
         if dataset_folder is not None:
             self.dataset = load_dataset(path=dataset_folder)["train"]
@@ -53,17 +52,15 @@ class CIFixBenchmark:
             download_mode = None
         self.dataset = load_dataset(
             self.dataset_id,
-            token=hf_token,
             cache_dir=self.cache_dir,
             download_mode=download_mode,
-            split="test",
+            split="test"
         )
         if num_dp is not None:
             self.dataset = self.dataset.select(range(num_dp))
 
         return self.dataset
 
-    # TODO remove test_dataset argument after debug
     def run_dataset(self, fix_repo_function, test_dataset=None):
         if test_dataset is None:
             test_dataset = self.dataset
@@ -81,7 +78,6 @@ class CIFixBenchmark:
                 writer.write("\n")
         return self.jobs_ids
 
-    # TODO remove jobs_ids argument after debug
     def eval_jobs(self, jobs_ids=None, job_ids_file=None, result_filename=None):
         if result_filename is None:
             result_filename = f"jobs_results_{self.model_name}.jsonl"
@@ -146,7 +142,6 @@ class CIFixBenchmark:
             jobs_results = self.jobs_ids
 
         results_df = pd.DataFrame(jobs_results)
-        # %%
         total_counts = results_df["conclusion"].value_counts()
         total_ratio = total_counts / len(results_df)
         difficulty_counts = (
@@ -169,7 +164,6 @@ class CIFixBenchmark:
     def eval_dataset(
         self,
         fix_repo_function,
-        hf_token=None,
         num_dp=None,
         force_download=False,
         result_filename=None,
@@ -177,7 +171,6 @@ class CIFixBenchmark:
     ):
         print("---------------- Downloading data -------------------")
         self.get_dataset(
-            hf_token,
             num_dp=num_dp,
             force_download=force_download,
             dataset_folder=dataset_folder,

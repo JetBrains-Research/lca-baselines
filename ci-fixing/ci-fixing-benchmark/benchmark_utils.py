@@ -2,8 +2,6 @@ import json
 import os
 import shutil
 
-from omegaconf import OmegaConf
-
 
 def read_jsonl(file_path):
     data = []
@@ -18,26 +16,6 @@ def save_jsonl(file_path, data):
         for entry in data:
             json.dump(entry, f)
             f.write("\n")
-
-
-def get_token_gh(config_path):
-    config_private = OmegaConf.load(config_path)
-    with open(config_private.token_gh_path) as f:
-        token_gh = f.read()
-    return token_gh
-
-
-def get_token_hf(config_path):
-    config_private = OmegaConf.load(config_path)
-    token_hf = get_token(config_private.token_hf_path)
-    return token_hf
-
-
-def get_token(token_path):
-    with open(token_path) as f:
-        token = f.read()
-
-    return token
 
 
 def filter_out_res(data_folder, out_folder):

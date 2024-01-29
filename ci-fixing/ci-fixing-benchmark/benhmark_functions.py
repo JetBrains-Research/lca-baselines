@@ -95,7 +95,7 @@ def get_repo(datapoint, repos_folder, test_username, benchmark_owner, credential
     token = credentials["token"]
     model_name = credentials["model"]
     repo_name, repo_owner = datapoint["repo_name"], datapoint["repo_owner"]
-    # TODO add original branch name to new_branch_name
+    # TODO add original branch name to new_branch_name?
     new_branch_name = f"{test_username}__{model_name}__id_{id}"
     commit_hash = datapoint["sha_fail"]
     repo_path = os.path.join(repos_folder, f"{repo_owner}__{repo_name}")
@@ -123,7 +123,6 @@ def get_repo(datapoint, repos_folder, test_username, benchmark_owner, credential
         # repo.delete_head("test_user", force=True)
         repo.create_head(new_branch_name, force=True)
     # TODO note that you should ban usage of the .git folder.
-    # TODO discuss. May be store repos in the DPs
     # You need flag "-B" to checkout to the current state. Otherwise, the old brach state would be used
     repo.git.checkout("-B", new_branch_name)
     repo.name, repo.owner = repo_name, repo_owner
