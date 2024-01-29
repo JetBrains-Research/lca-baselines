@@ -1,6 +1,6 @@
 ## Config
 
-To initialize the benchmark, you need to pass a path to a config file with the following fields (see example in benchmark.yaml):
+To initialize the benchmark, you need to pass a path to a config file with the following fields (see example in **benchmark.yaml**):
 
 **repos_folder**: here the cloned repos would be stored  
 **out_folder**: here the result files would be stored  
@@ -12,7 +12,7 @@ To initialize the benchmark, you need to pass a path to a config file with the f
 ## Benchmark usage
 
 To use the benchmark you need to pass a function that fixes the repo according 
-the repo state and logs and metadata of the failed workflows (fix_repo_function).
+the repo state on a local machine, logs and metadata of the failed workflows (**fix_repo_function**).
 
 It should have the following (all optional) arguments:
 (datapoint, repo_path, repo, out_folder)
@@ -42,14 +42,14 @@ Further, we may duplicate the request part on our side.
 
 Method's outputs:
 
-1. jobs_ids.jsonl - identificators of the jobs that were sent to the GitHub. It is used for the further evaluation
-2. jobs_results.jsonl - results of each job.
-3. jobs_awaiting.jsonl - list of awaiting jobs (normally should be empty)
-3. jobs_invalid.jsonl - list of invalid jobs (normally should be empty)
+1. **jobs_ids.jsonl** - identificators of the jobs that were sent to the GitHub. It is used for the further evaluation
+2. **jobs_results.jsonl** - results of each job.
+3. **jobs_awaiting.jsonl** - list of awaiting jobs (normally should be empty)
+3. **jobs_invalid.jsonl** - list of invalid jobs (normally should be empty)
 
-Examples can be found in the examples folder /mnt/data/shared-data/lca/CI-fix-benchmark/benchmark/out
+Examples of these files can be found in the /examples folder
 
 You can also evaluate your results using method **CIFixBenchmark.eval_jobs(result_filename=result_filename)**
-passing jobs_ids.jsonl file.
+passing **jobs_ids.jsonl** file.
 
 You can download the dataset using **CIFixBenchmark.get_dataset()** method (example at the end of the file)
