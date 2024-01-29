@@ -10,8 +10,8 @@ private
 #TODO add contact info
 """
 Here the tokens are read.
-First, ask me (placeholder for contact info) to add you to the benchmark-owner organization,
-then you nedd your personal GH token to use benchmark.
+First, ask us (placeholder for contact info) to add you to the benchmark-owner organization,
+then you need your personal GH token to use the benchmark.
 """
 
 token_gh = os.environ.get("TOKEN_GH")
@@ -36,14 +36,14 @@ config_path = "benchmark.yaml"
 CIBenchPython = CIFixBenchmark(model_name, config_path, token_gh)
 
 # pass your fixing function
-# for debugging, please, limit yourself to small amount of datapoints (argument num_dp)
+# For debugging, please, limit yourself to a small amount of datapoints (argument num_dp)
 fix_repo_function = fix_none  # fix_apply_diff  #
 # CIBenchPython.eval_dataset(fix_repo_function, num_dp=5)
 
-# Download dataset if you want to play with it
+# Download the dataset if you want to play with it
 test_dataset = CIBenchPython.get_dataset(force_download=False, num_dp=5)
 
-# You can load datased from local folder with json files, passing path to an argument dataset_folder
+# You can load datased from the local folder with json files, passing the path to an argument dataset_folder
 # test_dataset = CIBenchPython.get_dataset(force_download=False, dataset_folder=dataset_folder)
 
 # Evaluate jobs
