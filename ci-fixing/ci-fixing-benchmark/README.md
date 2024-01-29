@@ -1,6 +1,8 @@
-To initialize benchmark, you need to pass a path to a config file with following fields:
+Configs
 
-**repos_folder****: here the cloned repos would be stored  
+To initialize the benchmark, you need to pass a path to a config file with the following fields (see example in benchmark.yaml):
+
+**repos_folder**: here the cloned repos would be stored  
 **out_folder**: here the result files would be stored  
 **data_cache_dir**: here the cached dataset would be stored  
 **username**: your GitHub username  
@@ -10,7 +12,7 @@ To initialize benchmark, you need to pass a path to a config file with following
 To use the benchmark you need to pass a function that fixes the repo according 
 the repo state and logs and metadata of the failed workflows (fix_repo_function).
 
-It should have following (all optional) arguments:
+It should have the following (all optional) arguments:
 (datapoint, repo_path, repo, out_folder)
 
 **datapoint**:  dp from the dataset (its structure would be given below)  
@@ -29,9 +31,9 @@ method CIFixBenchmark.eval_dataset(fix_repo_function) evaluates dataset:
 1. Downloads dataset (from https://huggingface.co/datasets/JetBrains-Research/lca-ci-fixing)
 2. Sends the datapoints on GitHub to run workflows
 3. Requests results from GitHub
-4. Analyzes results and prints them.
+4. Analyzes results and print them.
 
-Further, maybe we will duplicate request part at our side.
+Further, maybe we will duplicate the request part on our side.
 
 Method's outputs:
 
@@ -40,9 +42,9 @@ Method's outputs:
 3. jobs_awaiting.jsonl - list of awaiting jobs (normally should be empty)
 3. jobs_invalid.jsonl - list of invalid jobs (normally should be empty)
 
-Examples can be found in examples folder /mnt/data/shared-data/lca/CI-fix-benchmark/benchmark/out
+Examples can be found in the examples folder /mnt/data/shared-data/lca/CI-fix-benchmark/benchmark/out
 
 You can also just evaluate your results using method CIFixBenchmark.eval_jobs(result_filename=result_filename)
 passing jobs_ids.jsonl file.
 
-You can download dataset using CIFixBenchmark.get_dataset() method (example in the end of the file)
+You can download the dataset using CIFixBenchmark.get_dataset() method (example at the end of the file)
