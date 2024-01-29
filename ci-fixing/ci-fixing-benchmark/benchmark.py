@@ -1,13 +1,14 @@
-from omegaconf import OmegaConf
+import json
 import os
+import time
+
 import pandas as pd
 from datasets import load_dataset
-import time
-import json
+from omegaconf import OmegaConf
 from tqdm import tqdm
 
-from benhmark_functions import process_datapoint, get_results
 from benchmark_utils import read_jsonl, save_jsonl
+from benhmark_functions import get_results, process_datapoint
 
 
 def filter_files(directory, files):
@@ -20,19 +21,27 @@ class CIFixBenchmark:
         benchmark_owner = "LCA-CI-fix-benchmark"
         self.config = OmegaConf.load(config_path)
         language = self.config.language
-        self.credentials = {"username": self.config.username, "token": token_gh, "model": model_name}
+        self.credentials = {
+            "username": self.config.username,
+            "token": token_gh,
+            "model": model_name,
+        }
         # TODO parents=True (??)
         os.makedirs(self.config.out_folder, exist_ok=True)
         os.makedirs(self.config.repos_folder, exist_ok=True)
         self.dataset_id = f"JetBrains-Research/lca-ci-fixing"
-        OmegaConf.update(self.config, "benchmark_owner", benchmark_owner, force_add=True)
+        OmegaConf.update(
+            self.config, "benchmark_owner", benchmark_owner, force_add=True
+        )
         if hasattr(self.config, "data_cache_dir"):
             self.cache_dir = self.config.data_cache_dir
         else:
             self.cache_dir = None
         self.model_name = model_name
 
-    def get_dataset(self, hf_token=None, num_dp=None, force_download=False, dataset_folder=None):
+    def get_dataset(
+        self, hf_token=None, num_dp=None, force_download=False, dataset_folder=None
+    ):
         # TODO remove hf_token when dataset becomes public
 
         if dataset_folder is not None:
@@ -43,7 +52,11 @@ class CIFixBenchmark:
         else:
             download_mode = None
         self.dataset = load_dataset(
-            self.dataset_id, token=hf_token, cache_dir=self.cache_dir, download_mode=download_mode, split="test"
+            self.dataset_id,
+            token=hf_token,
+            cache_dir=self.cache_dir,
+            download_mode=download_mode,
+            split="test",
         )
         if num_dp is not None:
             self.dataset = self.dataset.select(range(num_dp))
@@ -55,10 +68,14 @@ class CIFixBenchmark:
         if test_dataset is None:
             test_dataset = self.dataset
         self.jobs_ids = []
-        jobs_ids_file_path = os.path.join(self.config.out_folder, f"jobs_ids_{self.model_name}.jsonl")
+        jobs_ids_file_path = os.path.join(
+            self.config.out_folder, f"jobs_ids_{self.model_name}.jsonl"
+        )
         with open(jobs_ids_file_path, "w") as writer:
             for datapoint in tqdm(test_dataset):
-                job_identificator = process_datapoint(datapoint, fix_repo_function, self.config, self.credentials)
+                job_identificator = process_datapoint(
+                    datapoint, fix_repo_function, self.config, self.credentials
+                )
                 self.jobs_ids.append(job_identificator)
                 json.dump(job_identificator, writer)
                 writer.write("\n")
@@ -70,8 +87,12 @@ class CIFixBenchmark:
             result_filename = f"jobs_results_{self.model_name}.jsonl"
         # Maybe we need to make some pause
         jobs_results_file_path = os.path.join(self.config.out_folder, result_filename)
-        jobs_awaiting_file_path = os.path.join(self.config.out_folder, f"jobs_awaiting_{self.model_name}.jsonl")
-        jobs_invalid_file_path = os.path.join(self.config.out_folder, f"jobs_invalid_{self.model_name}.jsonl")
+        jobs_awaiting_file_path = os.path.join(
+            self.config.out_folder, f"jobs_awaiting_{self.model_name}.jsonl"
+        )
+        jobs_invalid_file_path = os.path.join(
+            self.config.out_folder, f"jobs_invalid_{self.model_name}.jsonl"
+        )
         result_file = open(jobs_results_file_path, "w")
         if job_ids_file is not None:
             jobs_ids = read_jsonl(job_ids_file)
@@ -102,7 +123,9 @@ class CIFixBenchmark:
                 result_file.close()
                 save_jsonl(jobs_awaiting_file_path, jobs_ids_await)
                 save_jsonl(jobs_invalid_file_path, jobs_ids_invalid)
-                print(f"Waiting 300 s to next request of evaluation. {len(jobs_ids_await)} jobs in waiting list.")
+                print(
+                    f"Waiting 300 s to next request of evaluation. {len(jobs_ids_await)} jobs in waiting list."
+                )
                 time.sleep(300)
                 result_file = open(jobs_results_file_path, "a")
 
@@ -126,7 +149,12 @@ class CIFixBenchmark:
         # %%
         total_counts = results_df["conclusion"].value_counts()
         total_ratio = total_counts / len(results_df)
-        difficulty_counts = results_df.groupby("difficulty")["conclusion"].value_counts().unstack().fillna(0)
+        difficulty_counts = (
+            results_df.groupby("difficulty")["conclusion"]
+            .value_counts()
+            .unstack()
+            .fillna(0)
+        )
         difficulty_ratios = difficulty_counts.div(difficulty_counts.sum(axis=1), axis=0)
 
         print("Overall results")
@@ -148,7 +176,12 @@ class CIFixBenchmark:
         dataset_folder=None,
     ):
         print("---------------- Downloading data -------------------")
-        self.get_dataset(hf_token, num_dp=num_dp, force_download=force_download, dataset_folder=dataset_folder)
+        self.get_dataset(
+            hf_token,
+            num_dp=num_dp,
+            force_download=force_download,
+            dataset_folder=dataset_folder,
+        )
         print(f"Got {len(self.dataset)} datapoints")
         print("---------------- Running datapoints -------------------")
         self.run_dataset(fix_repo_function)
@@ -158,9 +191,13 @@ class CIFixBenchmark:
 
     def run_datapoint(self, datapoint, fix_repo_function):
         # This method is for debugging reasons
-        jobs_ids_file_path = os.path.join(self.config.out_folder, f"jobs_ids_{self.model_name}.jsonl")
+        jobs_ids_file_path = os.path.join(
+            self.config.out_folder, f"jobs_ids_{self.model_name}.jsonl"
+        )
         with open(jobs_ids_file_path, "w") as writer:
-            job_identificator = process_datapoint(datapoint, fix_repo_function, self.config, self.credentials)
+            job_identificator = process_datapoint(
+                datapoint, fix_repo_function, self.config, self.credentials
+            )
             json.dump(job_identificator, writer)
             writer.write("\n")
         return job_identificator

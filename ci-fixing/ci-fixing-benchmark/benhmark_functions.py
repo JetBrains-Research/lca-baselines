@@ -1,8 +1,9 @@
-import git
 import os
+
+import git
 import requests
-from ruamel.yaml import YAML
 from git import GitCommandError
+from ruamel.yaml import YAML
 
 
 def edit_workflow_push(workflow_file):
@@ -45,7 +46,9 @@ def rename_precommit_files(repo_path):
         file_path = os.path.join(workflow_dir, filename)
         if os.path.isfile(file_path):
             if "pre-commit" in filename.lower():
-                os.rename(file_path, file_path.lower().replace("pre-commit", "precommit"))
+                os.rename(
+                    file_path, file_path.lower().replace("pre-commit", "precommit")
+                )
 
 
 def push_repo(repo, credentials, benchmark_owner, user_branch_name):
@@ -63,7 +66,9 @@ def push_repo(repo, credentials, benchmark_owner, user_branch_name):
         repo.delete_remote("origin")
     except:
         pass
-    origin_url = f"https://{username}:{token}@github.com/{benchmark_owner}/{repo.name}.git"
+    origin_url = (
+        f"https://{username}:{token}@github.com/{benchmark_owner}/{repo.name}.git"
+    )
     origin = repo.create_remote("origin", url=origin_url)
     repo.git.push("--force", "--set-upstream", origin, repo.head.ref)
     # Tried this, but it did not work - returned an error
@@ -95,7 +100,9 @@ def get_repo(datapoint, repos_folder, test_username, benchmark_owner, credential
     commit_hash = datapoint["sha_fail"]
     repo_path = os.path.join(repos_folder, f"{repo_owner}__{repo_name}")
     repo_url = f"https://github.com/{benchmark_owner}/{repo_name}.git"
-    origin_url = f"https://{username}:{token}@github.com/{benchmark_owner}/{repo_name}.git"
+    origin_url = (
+        f"https://{username}:{token}@github.com/{benchmark_owner}/{repo_name}.git"
+    )
     if (not os.path.exists(repo_path)) or (not os.listdir(repo_path)):
         repo = git.Repo.clone_from(repo_url, repo_path, depth=1)  # branch=commit_hash
     else:
@@ -191,7 +198,11 @@ def process_datapoint(datapoint, fix_repo_function, config, credentials):
 
     # TODO think, what to do if test_username (which converts to a branch) is already present
     repo, user_branch_name = get_repo(
-        datapoint, config.repos_folder, config.test_username, config.benchmark_owner, credentials
+        datapoint,
+        config.repos_folder,
+        config.test_username,
+        config.benchmark_owner,
+        credentials,
     )
     # Prepares workflow file Moves target workflow file to the .github/workflows
     copy_and_edit_workflow_file(datapoint, repo)

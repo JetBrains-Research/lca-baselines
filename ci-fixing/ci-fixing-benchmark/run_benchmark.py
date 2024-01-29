@@ -1,29 +1,26 @@
 import os
+
 from omegaconf import OmegaConf
 
-from benhmark_functions import fix_none, fix_apply_diff
 from benchmark import CIFixBenchmark
 from benchmark_utils import get_token
+from benhmark_functions import fix_apply_diff, fix_none
 
 """
 private
 """
-
+#TODO add contact info
 """
 Here the tokens are read.
-I registered new GitHub user and added it to the organization. For now only this user can use benchmark.
-Therefore I placed the GH token to a shared folder on the server and username in the benchmark.yaml (timur-for-test)
-Current token path - /mnt/data/shared-data/lca/CI-fix-benchmark/gh_timur-for-test.txt
-Better option - ask me to add you to the organization and use your personal token.
-Before that DO NOT pass your token. 
-As our dataset is private, you should pass your HuggingFace token either from file or from ENV variable.
+First, ask me (placeholder for contact info) to add you to the benchmark-owner organization,
+then you nedd your personal GH token to use benchmark.
 """
 
-# TODO move token ENV variable to config
-config_private_path = "send_datapoint.yaml"
-config_private = OmegaConf.load(config_private_path)
 token_gh = os.environ.get("TOKEN_GH")
 token_hf = os.environ.get("TOKEN_HF")
+config_private_path = "tokens_paths.yaml"
+if os.path.exists(config_private_path):
+    config_private = OmegaConf.load(config_private_path)
 
 if token_hf is None:
     print("Reading HuggingFace token from file")
