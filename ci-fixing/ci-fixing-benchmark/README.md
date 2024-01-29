@@ -39,6 +39,7 @@ method `CIFixBenchmark.eval_dataset(fix_repo_function)` evaluates dataset:
 4. Analyzes results and print them.
 
 Further, we may duplicate the request part on our side.
+For debugging, please, limit yourself to a small amount of datapoints (argument `num_dp=num_dp`)
 
 ## Outputs
 
@@ -51,7 +52,7 @@ Method's outputs:
 
 Examples of these files can be found in the `/examples` folder
 
-You can also evaluate your results using method `CIFixBenchmark.eval_jobs(result_filename=result_filename)`
+You can also evaluate your results using the method `CIFixBenchmark.eval_jobs(result_filename=result_filename)`
 passing `jobs_ids.jsonl` file.
 
-You can download the dataset using `CIFixBenchmark.get_dataset()` method (example at the end of the file)
+You can download the dataset using the `CIFixBenchmark.get_dataset()` method (example at the end of the file)
