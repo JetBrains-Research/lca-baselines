@@ -20,9 +20,11 @@ class CIFixBenchmark:
         # languages = ["Python", "Kotlin", "Rust", "C++", "Java"]
         benchmark_owner = "LCA-CI-fix-benchmark"
         self.config = OmegaConf.load(config_path)
+        if not "test_username" in self.config:
+            self.config.test_username = self.config.username_gh
         language = self.config.language
         self.credentials = {
-            "username": self.config.username,
+            "username": self.config.username_gh,
             "token": token_gh,
             "model": model_name,
         }
