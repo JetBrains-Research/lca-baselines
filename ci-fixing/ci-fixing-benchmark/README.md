@@ -1,11 +1,11 @@
 To initialize benchmark, you need to pass a path to a config file with following fields:
 
-repos_folder: here the cloned repos would be stored 
-out_folder: here the result files would be stored
-data_cache_dir: here the cached dataset would be stored
-username: your GitHub username
-test_username: Username that would be displayed in the benchmark
-language: # dataset language (now only Python is available)
+**repos_folder****: here the cloned repos would be stored  
+**out_folder**: here the result files would be stored  
+**data_cache_dir**: here the cached dataset would be stored  
+**username**: your GitHub username  
+**test_username**: Username that would be displayed in the benchmark  
+**language**: # dataset language (now only Python is available)  
 
 To use the benchmark you need to pass a function that fixes the repo according 
 the repo state and logs and metadata of the failed workflows (fix_repo_function).
@@ -13,15 +13,15 @@ the repo state and logs and metadata of the failed workflows (fix_repo_function)
 It should have following (all optional) arguments:
 (datapoint, repo_path, repo, out_folder)
 
-datapoint:  dp from the dataset (its structure would be given below)
-repo_path:  path to the repo in the user's machine
-repo:       git.Repo object from GitPython library
-out_folder: folder for the benchmark results output
+**datapoint**:  dp from the dataset (its structure would be given below)  
+**repo_path**:  path to the repo in the user's machine  
+**repo**:       git.Repo object from GitPython library  
+**out_folder**: folder for the benchmark results output  
 
 For now, I implemented only two functions:
 
-fix_none -       does nothing
-fix_apply_diff - applies the diff that fixed issue in the original repo
+**fix_none** -       does nothing  
+**fix_apply_diff** - applies the diff that fixed issue in the original repo  
 
 
 method CIFixBenchmark.eval_dataset(fix_repo_function) evaluates dataset:
