@@ -3,9 +3,7 @@ from typing import Dict, Any
 import os
 
 from code_completion.data_classes.datapoint_base import DatapointBase
-
-# TODO: Fix that
-from lca.example_generation.context.parsed_file import ParsedFile
+from code_completion.parser.parsed_file import ParsedFile
 
 COMPOSERS = {
     'none': None,
