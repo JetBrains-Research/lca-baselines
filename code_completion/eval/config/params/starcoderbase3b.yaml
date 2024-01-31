@@ -1,0 +1,13 @@
+preprocess_params:
+  model: "huggingface"
+  composers: "none"
+  tokenizer: "bigcode/starcoderbase-3b"
+
+inference_params :
+    model: "starcoderbase-3b"
+    seq_max_len: 8000
+    input_data_path: ""
+    context_max: -1
+
+eval_params:
+    device: cuda
