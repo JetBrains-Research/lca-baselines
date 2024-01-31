@@ -8,8 +8,8 @@ import argparse
 from pathlib import Path
 import sys
 
-from lca.code_generation.data_classes.datapoint_commit_dataset import DatapointCommitDataset
-from model_hub.model_registry import MODEL_REGISTRY
+# from lca.code_generation.data_classes.datapoint_commit_dataset import DatapointCommitDataset
+from code_completion.model_hub.model_registry import MODEL_REGISTRY
 
 
 def get_model(args):
@@ -69,7 +69,7 @@ def model_inference(
 
         # np.save(os.path.join(curr_dir, 'context_logits.npy'), logits[0].detach().cpu().numpy()[:context_len])
         np.save(os.path.join(curr_dir, 'completion_logits.npy'),
-                logits[0].detach().cpu().to(torch.float32).numpy()[context_len:])
+                logits[0].detach().cpu().to(torch.float32).numpy().astype(np.float16)[context_len:])
         np.save(os.path.join(curr_dir, 'context_tokens.npy'), input_ids[0].detach().cpu().numpy()[:context_len])
         np.save(os.path.join(curr_dir, 'completion_tokens.npy'), input_ids[0].detach().cpu().numpy()[context_len:])
 

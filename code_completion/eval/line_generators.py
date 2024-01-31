@@ -119,37 +119,6 @@ class LineGeneratorBase:
         with jsonlines.open(self.results_path, 'a') as writer:
             writer.write(results)
 
-# class RandomLineGenerator(LineGeneratorBase):
-#
-#     def choose_lines(self, datapoint) -> Dict[str, list[int]]:
-#         datapoint['completion_lines'] = self._get_completion_lines(datapoint)
-#         number_of_lines = len(datapoint['completion_lines'])
-#         result = list()
-#         while_count = 0
-#         # result = [10 + ((i+1)*(number_of_lines-15)) // 5 for i in range(5)]
-#         while len(result) < 20 and len(result) < 0.1 * number_of_lines and while_count<100:
-#             line_num = random.randint(0, number_of_lines-1)
-#             if line_num not in result and line_num > 10:
-#                 line = datapoint['completion_lines'][line_num]
-#                 line = line.strip()
-#                 if self._line_condition_(line):
-#                     result.append(line_num)
-#             while_count += 1
-#         return {'random': sorted(result)}
-#
-#     def _line_condition_(self, line):
-#         if 5 < len(line) < 100:  # line length condition
-#             if not self._contains_comment(line):  # filter lines with comments
-#                 if 'print' not in line and 'import' not in line:  # filter printing and importing
-#                     return True
-#
-#         return False
-#
-#
-#     @staticmethod
-#     def _contains_comment(line):
-#         return '#' in line
-
 
 class SpecificLineGenerator(LineGeneratorBase):
     @staticmethod
@@ -162,113 +131,6 @@ class SpecificLineGenerator(LineGeneratorBase):
         local_sample_size = min(len(non_informative_lines), sample_size)
         return local_random.sample(non_informative_lines, local_sample_size)
 
-    #TODO: Rethink all the functionality below, since it was performed during data collection
-    #
-    # def choose_lines(self, datapoint) -> Dict[str, list[int]]:
-    #     # datapoint['completion_lines'] = self._get_completion_lines(datapoint)
-    #     number_of_lines = len(datapoint['completion_lines'])
-    #     apis = self._collect_inproject_api(datapoint)
-    #     apis['common_api'] = self._collect_common_api()
-    #
-    #     classified_lines = self._classify_lines(datapoint['completion_lines'], apis)
-    #     non_informative_lines = self._get_noninformative_lines(datapoint['completion_lines'])
-    #
-    #     classified_lines = {k: list(set(v) - set(non_informative_lines)) for k, v in classified_lines.items()}
-    #     classified_lines['non_informative'] = non_informative_lines
-    #     blocked_lines = non_informative_lines + [idx for sc_lines in classified_lines.values() for idx in sc_lines]
-    #     random_lines = self._select_lines_randomly(datapoint['completion'], blocked_lines)
-    #     classified_lines['random'] = random_lines
-    #     # print(classified_lines)
-    #     return classified_lines
-    #
-    #
-    # @staticmethod
-    # def _select_lines_randomly(code: str, blocked_lines: list[int], num: int = 5):
-    #     lines = code.split('\n')
-    #     clean_code = ParsedFile(code=code).clean_comments()
-    #     clean_lines = list(set(clean_code.split('\n')))
-    #     clean_to_original = dict()
-    #     for idx, clean_line in enumerate(clean_lines):
-    #         mapping_lines = [or_idx for or_idx, or_line in enumerate(lines) if or_line == clean_line]
-    #         if len(mapping_lines) > 0:
-    #             clean_to_original[idx] = mapping_lines
-    #
-    #     count = 0
-    #     random_lines = list()
-    #     while len(random_lines) <= num and count < num * 100:
-    #         clean_line_choice = random.choice(list(range(len(clean_lines))))
-    #         if clean_line_choice in clean_to_original:
-    #             original_line_choice = random.choice(clean_to_original[clean_line_choice])
-    #             if original_line_choice not in random_lines and original_line_choice not in blocked_lines:
-    #                 random_lines.append(original_line_choice)
-    #         count += 1
-    #     return random_lines
-    #
-    # @staticmethod
-    # def _collect_inproject_api(datapoint):
-    #     code_file = datapoint['completion']
-    #     code_project = datapoint['context']
-    #     pf_file = ParsedFile(code=code_file)
-    #     pf_project = ParsedFile(code=code_project)
-    #     infile_api = pf_file.function_names | pf_file.class_names
-    #     inproject_api = pf_project.function_names | pf_project.class_names - infile_api
-    #     return {'infile_api': [el.decode(pf_file.encoding) for el in infile_api],
-    #             'inproject_api': [el.decode(pf_project.encoding) for el in inproject_api]}
-    #
-    # @staticmethod
-    # def _collect_common_api():
-    #     return COMMON_APIS
-    #
-    # @staticmethod
-    # def _get_line_condition(line, apis):
-    #     common_api = set(apis['common_api'])
-    #     infile_api = set(apis['infile_api']) - common_api
-    #     inproject_api = set(apis['inproject_api']) - infile_api
-    #     inproject_api = inproject_api - common_api
-    #     condition = {
-    #         'infile': any([el in line for el in infile_api]),
-    #         'inproject': any([el in line for el in inproject_api]),
-    #         'common': any([el in line for el in common_api]),
-    #     }
-    #     return condition
-    #
-    # @staticmethod
-    # def _classify_line(line_condition):
-    #     if line_condition['infile'] and not line_condition['inproject']:
-    #         return 'infile'
-    #     elif line_condition['inproject']:
-    #         return 'inproject'
-    #     elif line_condition['common']:
-    #         return 'common'
-    #     else:
-    #         return None
-    #
-    # def _classify_lines(self, completion_lines, apis):
-    #     conditions = list()
-    #     for line in completion_lines:
-    #         conditions.append(self._get_line_condition(line, apis))
-    #     result = {
-    #         'infile': list(), 'inproject': list(), 'common': list()
-    #     }
-    #     for num_line, c in enumerate(conditions):
-    #         c_class = self._classify_line(c)
-    #         if c_class:
-    #             result[c_class].append(num_line)
-    #     return result
-    #
-    # @staticmethod
-    # def _get_noninformative_lines(completion_lines, warmup_len=10):
-    #     ni_lines = list(range(warmup_len))
-    #     for num_line, line in enumerate(completion_lines):
-    #         if len(line) <= 5 or len(line) >= 150:
-    #             ni_lines.append(num_line)
-    #         elif 'print' in line or 'import' in line:
-    #             ni_lines.append(num_line)
-    #         elif line.strip().startswith('def ') or line.strip().startswith('class '):
-    #             ni_lines.append(num_line)
-    #
-    #     return list(set(ni_lines))
-
 
 class LineGeneratorHF(SpecificLineGenerator):
     def __init__(self, model, device, max_seq_len, results_path, tokenizer_path):
@@ -279,11 +141,7 @@ class LineGeneratorHF(SpecificLineGenerator):
 
     @torch.inference_mode()
     def generate_line(self, datapoint: DatapointBase, use_zero_context: bool = False) -> dict[str, int]:
-        # dict_of_lines = self.choose_lines(datapoint)
         dict_of_lines = self.load_lines(datapoint)
-        # non_informative_lines = dict_of_lines.pop('non_informative', None)
-        # if non_informative_lines is not None:
-        #     dict_of_lines['non_informative'] = self.sample_noninformative(non_informative_lines)
         gen_config = self._get_generation_config()
         for sc_name, list_of_lines in dict_of_lines.items():
             # print('='*25, sc_name, '='*25)
@@ -299,19 +157,12 @@ class LineGeneratorHF(SpecificLineGenerator):
                 if input_ids.size(-1) < 1:
                     new_size = torch.Size(list(input_ids.size())[:-1] + [1])
                     input_ids = torch.full(new_size, self._tokenizer.bos_token_id)
-                # print(input_ids.shape)
                 input_ids = input_ids.to(self.device)
                 out = self.model.generate(input_ids, **gen_config)
                 out = out[..., input_ids.size(-1):]
-                # print(out.size())
                 prediction = self.decode(out)
-                # prediction_line = prediction
                 prediction = prediction.strip("\n")
                 prediction_line = prediction.split("\n")[0]
-                # print(context)
-                # print('Prediction: ', prediction)  #prediction_line)
-                # print('GT:', gt_line)
-                # print('===---'*30)
                 self.save_results({'original_prediction': prediction, 'prediction_line': prediction_line, 'ground_truth': gt_line, 'line_class': sc_name, 'zero_context': use_zero_context})
                 self.generation_results[sc_name].append_result(prediction=prediction_line, gt=gt_line)
 
