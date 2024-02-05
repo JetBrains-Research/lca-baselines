@@ -5,12 +5,12 @@ import json
 
 from omegaconf import OmegaConf
 
-from code_completion.eval.composers import COMPOSERS
+from eval.composers import COMPOSERS
 
 PREPROCESSORS = {
-    'fl_python': {'module': 'lca.code_generation.eval.preprocessors', 'name': 'FLPythonPreprocessor'},
-    'starcoder': {'module': 'lca.code_generation.eval.preprocessors', 'name': 'StarcoderPreprocessor'},
-    'huggingface': {'module': 'lca.code_generation.eval.preprocessors', 'name': 'HFPreprocessor'},
+    'fl_python': {'module': 'eval.preprocessors', 'name': 'FLPythonPreprocessor'},
+    'starcoder': {'module': 'eval.preprocessors', 'name': 'StarcoderPreprocessor'},
+    'huggingface': {'module': 'eval.preprocessors', 'name': 'HFPreprocessor'},
 }
 
 

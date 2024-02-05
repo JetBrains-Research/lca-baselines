@@ -9,8 +9,8 @@ from joblib import Parallel, delayed
 from tqdm.auto import tqdm
 import multiprocessing
 
-from code_completion.data_classes.datapoint_base import DatapointBase
-from code_completion.data_classes.datapoint_commit_dataset import DatapointCommitDataset
+from data_classes.datapoint_base import DatapointBase
+from data_classes.datapoint_commit_dataset import DatapointCommitDataset
 
 
 @dataclass

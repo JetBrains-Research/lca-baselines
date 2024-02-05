@@ -5,18 +5,18 @@ import hydra
 import torch.cuda
 from omegaconf import DictConfig
 
-from code_completion.eval.line_generators import evaluate_generation
-from code_completion.eval.preprocess import preprocess
-from code_completion.model_hub.model_inference import inference
-from code_completion.eval.eval import evaluate
+from eval.line_generators import evaluate_generation
+from eval.preprocess import preprocess
+from model_hub.model_inference import inference
+from eval.eval import evaluate
 from dataclasses import dataclass, asdict
 from pathlib import Path
 import shutil
 import os
-from code_completion.eval.composers import COMPOSERS
+from eval.composers import COMPOSERS
 import wandb
 
-from code_completion.model_hub.model_registry import MODEL_REGISTRY
+from model_hub.model_registry import MODEL_REGISTRY
 
 
 @dataclass

@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 import argparse
 import os
-from code_completion.eval.utils import save_results, load_model_results
+from eval.utils import save_results, load_model_results
 
 
 @torch.no_grad()

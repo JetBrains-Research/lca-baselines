@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 
 # from lca.code_generation.data_classes.datapoint_commit_dataset import DatapointCommitDataset
-from code_completion.model_hub.model_registry import MODEL_REGISTRY
+from model_hub.model_registry import MODEL_REGISTRY
 
 
 def get_model(args):

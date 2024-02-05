@@ -14,9 +14,9 @@ import random
 import os
 import logging
 
-from code_completion.data_classes.datapoint_base import DatapointBase
-from code_completion.data_classes.datapoint_commit_dataset import DatapointCommitDataset
-from code_completion.model_hub.model_inference import get_input_data, get_model
+from data_classes.datapoint_base import DatapointBase
+from data_classes.datapoint_commit_dataset import DatapointCommitDataset
+from model_hub.model_inference import get_input_data, get_model
 
 
 @dataclass

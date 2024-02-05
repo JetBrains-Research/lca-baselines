@@ -1,7 +1,7 @@
 import os
 from itertools import chain
 
-from code_completion.parser.parsed_file import ParsedFile
+from code_completion.tree_sitter_parser.parsed_file import ParsedFile
 
 
 class ParsedProject:

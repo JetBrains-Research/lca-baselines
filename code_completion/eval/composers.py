@@ -2,19 +2,19 @@ import json
 from typing import Dict, Any
 import os
 
-from code_completion.data_classes.datapoint_base import DatapointBase
-from code_completion.parser.parsed_file import ParsedFile
+from data_classes.datapoint_base import DatapointBase
+from tree_sitter_parser.parsed_file import ParsedFile
 
 COMPOSERS = {
     'none': None,
-    'naive': {'module': 'lca.code_generation.eval.composers', 'name': 'DummyComposer'},
+    'naive': {'module': 'eval.composers', 'name': 'DummyComposer'},
     # 'alphabetical': {'module': 'lca.code_generation.eval.composers', 'name': 'AlphabeticalComposer'},
-    'path_distance': {'module': 'lca.code_generation.eval.composers', 'name': 'PathDistanceComposer'},
-    'file_length': {'module': 'lca.code_generation.eval.composers', 'name': 'FileLengthComposer'},
-    'half_memory': {'module': 'lca.code_generation.eval.composers', 'name': 'HalfMemoryComposer'},
-    'function_class_mask_half': {'module': 'lca.code_generation.eval.composers', 'name': 'FuncClassComposer'},
-    'function_class_mask_one': {'module': 'lca.code_generation.eval.composers', 'name': 'FuncClassComposerOne'},
-    'imports_first': {'module': 'lca.code_generation.eval.composers', 'name': 'ImportsFirstComposer'},
+    'path_distance': {'module': 'eval.composers', 'name': 'PathDistanceComposer'},
+    'file_length': {'module': 'eval.composers', 'name': 'FileLengthComposer'},
+    'half_memory': {'module': 'eval.composers', 'name': 'HalfMemoryComposer'},
+    'function_class_mask_half': {'module': 'eval.composers', 'name': 'FuncClassComposer'},
+    'function_class_mask_one': {'module': 'eval.composers', 'name': 'FuncClassComposerOne'},
+    'imports_first': {'module': 'eval.composers', 'name': 'ImportsFirstComposer'},
 }
 
 

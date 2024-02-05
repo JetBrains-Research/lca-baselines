@@ -1,4 +1,4 @@
-from lca.code_generation.data_classes.datapoint_base import DatapointBase
+from data_classes.datapoint_base import DatapointBase
 
 
 class DatapointCommitDataset(DatapointBase):
