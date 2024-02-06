@@ -1,0 +1,13 @@
+data_path: /Users/Maria.Tigina/PycharmProjects/lca-baselines/data/lca-bug-localization
+test_data_ids: [
+  # py
+  2328, 2759, 2760, 2763, 2762, 1929, 1932, 2409, 1890, 1885, 1889, 1888,
+  1887, 1886, 2076, 2075, 2067, 2060, 2062, 2064, 2065, 2074, 2066, 972,
+  971, 2294, 2287, 2295, 2289, 2476,
+  # java
+  107,
+  # kotlin
+  108,
+  # mixed
+  2761
+]

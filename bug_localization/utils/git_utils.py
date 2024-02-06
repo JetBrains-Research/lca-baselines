@@ -126,7 +126,7 @@ def get_repo_content_on_commit(repo_path: str, commit_sha: str) -> Dict[str, str
     :return: for all files in repo on`commit_sha` stage map from file path (relative from repo root) to it's content
     """
     repo = git.Repo(repo_path)
-    repo.git.checkout(commit_sha)
+    repo.git.checkout(commit_sha, f=True)
     commit = repo.commit(commit_sha)
 
     file_contents = {}
@@ -139,14 +139,7 @@ def get_repo_content_on_commit(repo_path: str, commit_sha: str) -> Dict[str, str
                     file_contents[file_path] = str(content)
                 except Exception as e:
                     file_contents[file_path] = ""
-                    print(f"Can not read file with ext {file_path}. Replace with empty string...", e)
+                    # print(f"Can not read file with ext {file_path}. Replace with empty string...", e)
 
     repo.git.checkout('HEAD', '.')
     return file_contents
-
-
-async def fetch_repo(repo_path: str):
-    repo = git.Repo(repo_path)
-    repo.remotes.origin.fetch()
-    repo.git.checkout('HEAD', '.')
-    repo.git.clean('-fd')
