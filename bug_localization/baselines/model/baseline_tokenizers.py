@@ -9,7 +9,7 @@ class BaseTokenizer:
     def name():
         pass
 
-    def fit(self, texts: list[str]):
+    def fit(self, texts: np.ndarray[str]):
         pass
 
     def tokenize(self, text: str) -> np.ndarray[str]:

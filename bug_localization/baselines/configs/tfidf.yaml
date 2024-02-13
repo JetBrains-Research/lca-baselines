@@ -9,8 +9,8 @@ model:
 #    min_frequency: 2
 #    pretrained_path: /bpe
 
-    name: codet5
-    checkpoint: Salesforce/codet5-large
-    min_frequency: 2
+#    name: codet5
+#    checkpoint: Salesforce/codet5-large
+#    min_frequency: 2
 
-#    name: nltk
+    name: nltk

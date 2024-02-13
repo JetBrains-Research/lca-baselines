@@ -5,7 +5,7 @@ import numpy as np
 from omegaconf import DictConfig
 
 from hf_data.hf_utils import update_hf_data
-from utils.git_utils import get_repo_content_on_commit, get_changed_files_between_commits
+from utils.git_utils import get_changed_files_between_commits, get_repo_content_on_commit
 
 
 def add_object_stats(dp, objects, object_name, prefix):
@@ -49,7 +49,7 @@ def add_statistics_to_dp(dp, data_path: str, category: str):
     add_symbols_stats(dp, changed_files_content, 'changed')
 
 
-@hydra.main(config_path="./../configs", config_name="data_config", version_base=None)
+@hydra.main(config_path="./../configs", config_name="data", version_base=None)
 def add_statistics_to_data(config: DictConfig):
     update_hf_data(
         lambda df, category, split:

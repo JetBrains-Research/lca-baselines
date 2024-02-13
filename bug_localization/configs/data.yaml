@@ -1,4 +1,5 @@
 data_path: /Users/Maria.Tigina/PycharmProjects/lca-baselines/data/lca-bug-localization
+repos_path: /Users/Maria.Tigina/PycharmProjects/lca-baselines/data/lca-bug-localization/repos
 test_data_ids: [
   # py
   2328, 2759, 2760, 2763, 2762, 1929, 1932, 2409, 1890, 1885, 1889, 1888,

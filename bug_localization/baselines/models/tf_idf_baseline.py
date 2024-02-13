@@ -1,25 +1,22 @@
-from typing import List
-
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from baselines.model.baseline_models import EmbedBaseline
 from baselines.model.baseline_tokenizers import BaseTokenizer
+from baselines.model.embed_baseline_model import EmbedBaseline
 
 
 class TfIdfBaseline(EmbedBaseline):
 
-    def __init__(self, pretrained_path: str, tokenizer: BaseTokenizer):
-        super().__init__(pretrained_path, tokenizer)
+    def __init__(self, repos_path: str, pretrained_path: str, tokenizer: BaseTokenizer):
+        super().__init__(repos_path, pretrained_path, tokenizer)
 
     @staticmethod
     def name():
         return 'tfidf'
 
-    def embed(self, file_contents: List[str]) -> np.ndarray:
-        self.tokenizer.fit(file_contents)
+    def embed(self, file_content: np.ndarray[str]) -> np.ndarray[np.ndarray[float]]:
+        self.tokenizer.fit(file_content)
         model = TfidfVectorizer(tokenizer=self.tokenizer.tokenize)
-        vect_file_contents = model.fit_transform(file_contents)
+        vect_file_contents = model.fit_transform(file_content)
 
-        print(len(vect_file_contents.toarray()[0]))
         return vect_file_contents.toarray()

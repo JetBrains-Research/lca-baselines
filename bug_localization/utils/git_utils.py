@@ -1,21 +1,32 @@
 import os
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 
 import git
 
 
-def get_changed_files_between_commits(repo_path: str, first_commit_sha: str, second_commit_sha: str) -> List[str]:
+def get_changed_files_between_commits(repo_path: str, first_commit_sha: str, second_commit_sha: str,
+                                      extensions: Optional[list[str]] = None) -> List[str]:
     """
     Get changed files between `first_commit` and `second_commit`
     :param repo_path: path to directory where repo is cloned
     :param first_commit_sha: sha of first commit
     :param second_commit_sha: sha of second commit
+    :param extensions: list of file extensions to get
     :return: list of changed files
     """
 
     pull_request_diff = get_diff_between_commits(repo_path, first_commit_sha, second_commit_sha)
-    return parse_changed_files_from_diff(pull_request_diff)
+    changed_files = parse_changed_files_from_diff(pull_request_diff)
+    if not extensions:
+        return changed_files
+
+    changed_files_with_extensions = []
+    for changed_file in changed_files:
+        if any(changed_file.endswith(ext) for ext in extensions):
+            changed_files_with_extensions.append(changed_file)
+
+    return changed_files_with_extensions
 
 
 def get_changed_files_in_commit(repo_path: str, commit_sha: str) -> List[str]:
@@ -118,7 +129,8 @@ def parse_changed_files_and_lines_from_diff(diff_str: str) -> Dict[str, List[Tup
     return changed_files
 
 
-def get_repo_content_on_commit(repo_path: str, commit_sha: str) -> Dict[str, str]:
+def get_repo_content_on_commit(repo_path: str, commit_sha: str,
+                               extensions: Optional[list[str]] = None) -> Dict[str, str]:
     """
     Get repo content on specific commit
     :param repo_path: path to directory where repo is cloned
@@ -133,6 +145,8 @@ def get_repo_content_on_commit(repo_path: str, commit_sha: str) -> Dict[str, str
     for blob in commit.tree.traverse():
         if blob.type == "blob":
             file_path = str(blob.path)
+            if extensions is not None and not any(file_path.endswith(ext) for ext in extensions):
+                continue
             with open(os.path.join(repo_path, file_path), "r") as file:
                 try:
                     content = file.read()

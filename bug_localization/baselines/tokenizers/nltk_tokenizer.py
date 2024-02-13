@@ -1,6 +1,7 @@
 import string
 import re
 
+import nltk
 import numpy as np
 from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 from nltk.corpus import stopwords
@@ -9,6 +10,11 @@ from baselines.model.baseline_tokenizers import BaseTokenizer
 
 
 class NltkTokenizer(BaseTokenizer):
+
+    def __init__(self):
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        nltk.download('wordnet')
 
     @staticmethod
     def name():

@@ -4,14 +4,14 @@ from argparse import ArgumentParser
 
 import datasets
 import hydra
+from datasets import Dataset
 from huggingface_hub import hf_hub_download
 from omegaconf import DictConfig
 
 from hf_data.hf_utils import HUGGINGFACE_REPO, FEATURES, CATEGORIES, SPLITS
 
 
-@hydra.main(config_path="./../configs", config_name="data_config", version_base=None)
-def load_repos(config: DictConfig):
+def load_repos(data_path: str):
     huggingface_token = os.environ['HUGGINGFACE_TOKEN']
 
     # Load json file with repos paths
@@ -30,7 +30,7 @@ def load_repos(config: DictConfig):
     for i, repo_tar_path in enumerate(repos):
         print(f"Loading {i}/{len(repos)} {repo_tar_path}")
 
-        if os.path.exists(os.path.join(config.data_path, repo_tar_path[:-7])):
+        if os.path.exists(os.path.join(data_path, repo_tar_path[:-7])):
             print(f"Repo {repo_tar_path} is already loaded...")
             continue
 
@@ -39,34 +39,37 @@ def load_repos(config: DictConfig):
             filename=repo_tar_path,
             token=huggingface_token,
             repo_type='dataset',
-            local_dir=config.data_path,
+            local_dir=data_path,
         )
         # TODO: rewrite with tarfile
         result = subprocess.run(
-            ["tar", "-xzf", local_repo_tars, "-C", os.path.join(config.data_path, 'repos')])
+            ["tar", "-xzf", local_repo_tars, "-C", os.path.join(data_path, 'repos')])
         os.remove(local_repo_tars)
 
 
-@hydra.main(config_path="./../configs", config_name="data_config", version_base=None)
-def load_bug_localization_data(config: DictConfig):
-    huggingface_token = os.environ['HUGGINGFACE_TOKEN']
+def load_data(category: str, split: str) -> Dataset:
+    return datasets.load_dataset(
+        HUGGINGFACE_REPO, category,
+        split=split,
+        ignore_verifications=True,
+    )
 
-    # Load jsonl file with bug localization dataset data
-    for config in CATEGORIES:
+
+def load_full_data(data_path: str):
+    for category in CATEGORIES:
         for split in SPLITS:
-            df = datasets.load_dataset(
-                HUGGINGFACE_REPO, config,
-                token=huggingface_token,
-                split=split,
-                ignore_verifications=True,
-            )
-            csv_path = os.path.join(config.data_path, 'data', config, split)
+            df = load_data(category, split)
+            csv_path = os.path.join(data_path, 'data', category, split)
             os.makedirs(csv_path, exist_ok=True)
             df.to_csv(os.path.join(csv_path, "data.csv"))
 
 
+@hydra.main(config_path="./../configs", config_name="data_config", version_base=None)
+def load_dataset(config: DictConfig) -> None:
+    load_repos(config.data_path)
+    load_full_data(config.data_path)
+
+
 if __name__ == '__main__':
     argparser = ArgumentParser()
-
-    load_repos()
-    load_bug_localization_data()
+    load_dataset()

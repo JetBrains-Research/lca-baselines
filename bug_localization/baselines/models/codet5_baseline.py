@@ -1,7 +1,7 @@
 import numpy as np
 from transformers import AutoTokenizer, AutoModel
 
-from baselines.model.baseline_models import EmbedBaseline
+from baselines.model.embed_baseline_model import EmbedBaseline
 
 
 class CodeT5Baseline(EmbedBaseline):

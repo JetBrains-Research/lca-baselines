@@ -1,45 +1,31 @@
 import os
-from typing import Optional
 
 import numpy as np
+from datasets import Dataset
 
-from baselines.model.baseline_tokenizers import BaseTokenizer
+from baselines.metrics.metrics import Metrics
+from utils.git_utils import get_repo_content_on_commit, get_changed_files_between_commits
 
 
-class EmbedBaseline:
+class Baseline:
 
-    def __init__(self,
-                 pretrained_path: str,
-                 tokenizer: Optional[BaseTokenizer]):
-        self.pretrained_path = pretrained_path
-        self.tokenizer = tokenizer
+    def __init__(self, repos_path: str):
+        self.repos_path = repos_path
 
-    @staticmethod
-    def name() -> str:
+    def run(self, dataset: Dataset, category: str, split: str) -> Metrics:
         pass
 
-    def embed(self, file_contents: np.ndarray[str]) -> np.ndarray[float]:
-        pass
+    def get_repo_content(self, datapoint: dict, category: str) -> dict[str, str]:
+        extensions = category if category != "mixed" else None
+        repo_path = os.path.join(self.repos_path, f"{datapoint['repo_owner']}__{datapoint['repo_name']}")
+        repo_content = get_repo_content_on_commit(repo_path, datapoint['base_sha'], extensions)
 
-    def get_embeddings_path(self) -> str:
-        return os.path.join(self.pretrained_path, self.name(), 'embeddings.npy')
+        return repo_content
 
-    def dump_embeddings(self, embeddings: np.ndarray[float]):
-        np.save(self.get_embeddings_path(), embeddings)
+    def get_changed_files(self, datapoint: dict, category: str) -> np.ndarray[str]:
+        extensions = category if category != "mixed" else None
+        repo_path = os.path.join(self.repos_path, f"{datapoint['repo_owner']}__{datapoint['repo_name']}")
+        changed_files = get_changed_files_between_commits(repo_path, datapoint['base_sha'], datapoint['head_sha'],
+                                                          extensions)
 
-    def load_embeddings(self) -> Optional[np.ndarray[float]]:
-        embeddings_path = self.get_embeddings_path()
-        if os.path.exists(embeddings_path):
-            return np.load(embeddings_path)
-
-        return None
-
-
-class ScoreBaseline:
-
-    @staticmethod
-    def name() -> str:
-        pass
-
-    def score(self, issue_text: str, file_paths: np.ndarray[str], file_contents: dict[str, str]) -> np.ndarray[int]:
-        pass
+        return np.asarray(changed_files, dtype=str)

@@ -1,9 +1,8 @@
 import os
-from argparse import ArgumentParser
 
 from omegaconf import DictConfig, OmegaConf
 
-from baselines.model.baseline_models import ScoreBaseline, EmbedBaseline
+from baselines.model.baseline_models import Baseline
 from baselines.model.baseline_tokenizers import BaseTokenizer
 from baselines.models.codet5_baseline import CodeT5Baseline
 from baselines.models.openai_baseline import OpenAIBaseline
@@ -11,22 +10,11 @@ from baselines.models.tf_idf_baseline import TfIdfBaseline
 from baselines.tokenizers.bpe_tokenizer import BPETokenizer
 from baselines.tokenizers.codet5_tokenizer import CodeT5Tokenizer
 from baselines.tokenizers.nltk_tokenizer import NltkTokenizer
-from baselines.embed_baseline import launch_embed_baseline
-from baselines.score_baseline import launch_score_baseline
+from hf_data.load_data import load_data
+from utils.file_utils import create_dir, create_run_directory, save_config
 
 
-def init_score_baseline(config: DictConfig) -> ScoreBaseline:
-    if config.model.baseline_name == OpenAIBaseline.name():
-        return OpenAIBaseline(
-            api_key=os.environ['OPENAI_API_KEY'],
-            model=config.model.model
-        )
-    else:
-        # Add your scoring baseline initialization here
-        raise Exception(f"Baseline {config.baseline_name} is not supported")
-
-
-def init_embed_tokenizer(config: DictConfig) -> BaseTokenizer:
+def init_tokenizer(config: DictConfig) -> BaseTokenizer:
     if config.model.tokenizer.name == NltkTokenizer.name():
         return NltkTokenizer()
     if config.model.tokenizer.name == CodeT5Tokenizer.name():
@@ -44,15 +32,21 @@ def init_embed_tokenizer(config: DictConfig) -> BaseTokenizer:
         raise Exception(f"Tokenizer {config.model.tokenizer.name} is not supported")
 
 
-def init_embed_baseline(config: DictConfig, pretrained_path: str) -> EmbedBaseline:
+def init_model(config: DictConfig) -> Baseline:
+    if config.model.name == OpenAIBaseline.name():
+        return OpenAIBaseline(
+            api_key=os.environ['OPENAI_API_KEY'],
+            model=config.model.model
+        )
     if config.model.name == TfIdfBaseline.name():
         return TfIdfBaseline(
-            pretrained_path=pretrained_path,
-            tokenizer=init_embed_tokenizer(config),
+            repos_path=config.repos_path,
+            pretrained_path=config.pretrained_path,
+            tokenizer=init_tokenizer(config),
         )
     if config.model.name == CodeT5Baseline.name():
         return CodeT5Baseline(
-            pretrained_path=pretrained_path,
+            pretrained_path=config.pretrained_path,
             device=config.model.device,
             checkpoint=config.model.checkpoint,
         )
@@ -61,59 +55,23 @@ def init_embed_baseline(config: DictConfig, pretrained_path: str) -> EmbedBaseli
         raise Exception(f"Baseline {config.baseline_name} is not supported")
 
 
-def get_run_directory(baseline_results_path: str) -> str:
-    run_index = 0
-    while os.path.exists(os.path.join(baseline_results_path, f'run_{run_index}')):
-        run_index += 1
+def run_baseline() -> None:
+    local_config = OmegaConf.load("./configs/local.yaml")
+    baseline_config = OmegaConf.load(f"./baselines/configs/{local_config.baseline_name}.yaml")
+    config = OmegaConf.merge(local_config, baseline_config)
 
-    run_path = os.path.join(baseline_results_path, f'run_{run_index}')
-    os.makedirs(run_path, exist_ok=True)
+    run_path, run_index = create_run_directory(os.path.join(config.data_path, 'runs'))
+    save_config(config, run_path)
 
-    return run_path
+    for category in config.categories:
+        for split in config.splits:
+            df = load_data(category, split)
+            config['results_path'] = create_dir(os.path.join(run_path, category, split))
+            config['pretrained_path'] = create_dir(os.path.join(config.data_path, 'pretrained', category, split))
+            model = init_model(config)
 
-
-def run_baseline(baseline_config_path: str, bug_localization_data_path: str):
-    baseline_config = OmegaConf.load(baseline_config_path)
-    results_path = os.path.join(bug_localization_data_path, 'results')
-    if not os.path.exists(results_path):
-        os.makedirs(results_path, exist_ok=True)
-
-    run_path = get_run_directory(results_path)
-
-    pretrained_path = os.path.join(bug_localization_data_path, 'pretrained')
-    if not os.path.exists(pretrained_path):
-        os.makedirs(pretrained_path, exist_ok=True)
-
-    if baseline_config.baseline_type == 'embed':
-        baseline = init_embed_baseline(baseline_config, pretrained_path)
-        launch_embed_baseline(baseline, run_path)
-    else:
-        baseline = init_score_baseline(baseline_config)
-        launch_score_baseline(baseline, run_path)
+            model.run(df, category, split)
 
 
 if __name__ == '__main__':
-    argparser = ArgumentParser()
-
-    argparser.add_argument(
-        "--baseline-config-path",
-        type=str,
-        help="Path to yaml file with baseline model configuration.",
-        default="./baselines/configs/tfidf_config.yaml"
-    )
-
-    argparser.add_argument(
-        "--bug-localization-data-path",
-        type=str,
-        help="Path to directory where repos are stored.",
-        default="./../data/lca-bug-localization"
-    )
-
-    argparser.add_argument(
-        "--bug-localization-data-path",
-        type=str,
-        help="Path to directory where repos are stored.",
-        default="./../data/lca-bug-localization"
-    )
-
-    args = argparser.parse_args()
+    run_baseline()
