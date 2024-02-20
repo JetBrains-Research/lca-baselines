@@ -2,7 +2,7 @@ issues_path: /mnt/data/shared-data/lca/issues_prs_updated_dedup
 pulls_path: /mnt/data/shared-data/lca/pulls_updated_dedup
 repos_path: /mnt/data/shared-data/lca/repos_updated
 repos_list_path: /mnt/data/shared-data/lca/updated_repos_list.json
-issues_links_path: /mnt/data/shared-data/lca/issues_links
+issues_links_path: /mnt/data/shared-data/lca/issues_links_updated
 issues_links_filtered_path: /mnt/data/shared-data/lca/issues_links_filtered
 issues_prs_path: /mnt/data/shared-data/lca/issues_prs_updated_dedup
 comments_path: /mnt/data/shared-data/lca/comments_updated_dedup

@@ -3,20 +3,38 @@ import json
 import os
 from typing import Optional
 
+PERMISSIVE_LICENSES = ["MIT License",
+                       "Apache License 2.0",
+                       "BSD 3-Clause New or Revised License",
+                       "BSD 2-Clause Simplified License"]
 
-def get_repos(repos_path: str) -> list[dict]:
+EXCLUDE_REPOS = ["moj-analytical-services/splink"]
+
+
+def get_repos(repos_path: str,
+              licences: Optional[list[str]] = PERMISSIVE_LICENSES,
+              exclude_repos: Optional[list[str]] = EXCLUDE_REPOS) -> list[dict]:
     """
     Parse list of repos (owner, name) from given file (support both old format with .txt and new with .jsonl)
     :param repos_path: path to file with repos list
+    :param licences: permissive licences that repos should have
+    :param exclude_repos: repos that should be filtered out
     :return: a list of repos
     """
     _, extension = os.path.splitext(repos_path)
+
     if extension == ".txt":
-        return get_repos_from_txt_file(repos_path)
+        repos = get_repos_from_txt_file(repos_path)
     elif extension == ".json":
-        return get_repos_from_json_file(repos_path)
+        repos = get_repos_from_json_file(repos_path)
     else:
         raise Exception("Unsupported repo file format")
+
+    if licences:
+        repos = [repo for repo in repos if repo['license'] in licences]
+    if exclude_repos:
+        repos = [repo for repo in repos if f"{repo['owner']}/{repo['name']}" not in exclude_repos]
+    return repos
 
 
 def get_repos_from_txt_file(repos_path: str) -> list[dict]:
@@ -37,6 +55,8 @@ def get_repos_from_txt_file(repos_path: str) -> list[dict]:
                 "owner": owner,
                 "name": name,
                 "language": None,
+                "languages": None,
+                "license": None,
                 "stars": None,
             })
     return repos
@@ -63,10 +83,12 @@ def get_repos_from_json_file(repos_path: str) -> list[dict]:
             "owner": owner,
             "name": name,
             "language": repo_info["mainLanguage"],
+            "languages": repo_info["languages"],
+            "license": repo_info['license'],
             "stars": stars
         })
 
-        return repos
+    return repos
 
 
 def get_jsonl_data(data_path: str, repo_owner: str, repo_name: str) -> Optional[list[dict]]:
