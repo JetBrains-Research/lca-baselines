@@ -12,7 +12,7 @@ class Baseline:
     def __init__(self, repos_path: str):
         self.repos_path = repos_path
 
-    def run(self, dataset: Dataset, category: str, split: str) -> Metrics:
+    def run(self, dataset: Dataset, category: str, split: str) -> list[Metrics]:
         pass
 
     def get_repo_content(self, datapoint: dict, category: str) -> dict[str, str]:

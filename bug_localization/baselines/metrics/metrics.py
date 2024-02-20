@@ -12,3 +12,6 @@ class Metrics(object):
 
     def to_str(self) -> str:
         return json.dumps(self.metrics)
+
+    def to_dict(self) -> dict:
+        return dict(self.metrics)

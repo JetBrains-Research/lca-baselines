@@ -1,5 +1,6 @@
 import os
 
+import pandas as pd
 from omegaconf import DictConfig, OmegaConf
 
 from baselines.model.baseline_models import Baseline
@@ -70,7 +71,9 @@ def run_baseline() -> None:
             config['pretrained_path'] = create_dir(os.path.join(config.data_path, 'pretrained', category, split))
             model = init_model(config)
 
-            model.run(df, category, split)
+            metrics_list = model.run(df, category, split)
+            pd.DataFrame([metrics.to_dict() for metrics in metrics_list]).to_csv(
+                os.path.join(config['results_path'], 'metrics.csv'), index=False)
 
 
 if __name__ == '__main__':

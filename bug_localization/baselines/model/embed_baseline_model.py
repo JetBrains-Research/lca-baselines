@@ -41,7 +41,8 @@ class EmbedBaseline(Baseline):
                 np.asarray(file_contents, dtype=str),
                 np.asarray(changed_files, dtype=str))
 
-    def run(self, dataset: Dataset, category: str, split: str) -> Metrics:
+    def run(self, dataset: Dataset, category: str, split: str) -> list[Metrics]:
+        metrics_list = []
         for datapoint in dataset:
             file_names, file_contents, changed_files = self.prepare_data(datapoint, category)
             vect_file_contents = self.embed(file_contents)
@@ -56,11 +57,14 @@ class EmbedBaseline(Baseline):
                     'y_pred': y_pred.tolist(),
                     'y_true': y_true.tolist(),
                     'file_names': file_names[1:].tolist(),
+                    'changed_files': int(np.sum(y_true))
                 }
             )
+            metrics_list.append(metrics)
 
             print(metrics.to_str())
-        return metrics
+
+        return metrics_list
 
     def get_embeddings_path(self) -> str:
         return os.path.join(self.pretrained_path, self.name(), 'embeddings.npy')
