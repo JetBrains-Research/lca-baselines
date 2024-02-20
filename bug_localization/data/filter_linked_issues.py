@@ -37,33 +37,38 @@ def filter_linked_issues(
     issues_by_id = {url_to_id(issue['html_url']): issue for issue in issues if issue['html_url'] not in pulls_by_id}
 
     # Pull to issue relation without duplications
-    issues_to_linked_pulls: Dict[int, Set[dict]] = defaultdict(set)
-    pulls_to_linked_issues: Dict[int, Set[dict]] = defaultdict(set)
+    issue_to_linked_issues: Dict[int, Set[int]] = defaultdict(set)
+    link_by_ids: Dict[int, Dict[int, dict]] = defaultdict(lambda: defaultdict(dict))
 
     for parsed_issue_link in parsed_issues_links:
         issue_id = url_to_id(parsed_issue_link['issue_html_url'])
         linked_issue_id = url_to_id(parsed_issue_link['linked_issue_html_url'])
-        if issue_id in pulls_by_id and linked_issue_id in issues_by_id:
-            pulls_to_linked_issues[issue_id].add(parsed_issue_link)
-        elif issue_id in issues_by_id and linked_issue_id in pulls_by_id:
-            issues_to_linked_pulls[issue_id].add(parsed_issue_link)
+        if ((issue_id in pulls_by_id and linked_issue_id in issues_by_id) or
+                (issue_id in issues_by_id and linked_issue_id in pulls_by_id)):
+            issue_to_linked_issues[issue_id].add(linked_issue_id)
+            link_by_ids[issue_id][linked_issue_id] = parsed_issue_link
         else:
-            print(f'Not enough information or not issue <-> pull request link. Skipping {parsed_issue_link}')
+            print(f'Not enough information or not issue <-> pull request link. '
+                  f'Skipping {parsed_issue_link["issue_html_url"]} <-> {parsed_issue_link["linked_issue_html_url"]}')
 
-    filtered_parsed_issue_links: set[dict] = set()
+    filtered_parsed_issue_links: list[dict] = []
 
-    for pull_id, parsed_issue_links in pulls_to_linked_issues.items():
+    for parsed_issue_link in parsed_issues_links:
+        pull_id = url_to_id(parsed_issue_link['issue_html_url'])
+        linked_issue_id = url_to_id(parsed_issue_link['linked_issue_html_url'])
+
+        if pull_id not in pulls_by_id or pull_id not in issue_to_linked_issues:
+            continue
+
         pull_request = pulls_by_id[pull_id]
-
         # If more than one issue -- skip as pull request not atomic
-        if len(parsed_issue_links) != 1:
+        if len(issue_to_linked_issues[pull_id]) != 1:
             print(f"Skipping pull request {pull_request['html_url']} "
                   f"as it connected to more then one issue...")
             continue
 
-        parsed_issue_link = parsed_issue_links.pop()
-        linked_issue_id = url_to_id(parsed_issue_link['linked_issue_html_url'])
-        if len(issues_to_linked_pulls[linked_issue_id]) != 1:
+        if (pull_id not in issue_to_linked_issues[linked_issue_id] or
+                len(issue_to_linked_issues[linked_issue_id]) > 1):
             print(f"Skipping pull request {pull_request['html_url']} "
                   f"as linked issue connected to more then one pull request...")
             continue
@@ -81,13 +86,14 @@ def filter_linked_issues(
             continue
 
         # Check diff between base and head commit can be extracted
-        changed_files = get_changed_files_between_commits(repo_path, pull_request['base_sha'], pull_request['head_sha'])
+        changed_files = get_changed_files_between_commits(repo_path, pull_request['base']['sha'],
+                                                          pull_request['head']['sha'])
         if changed_files is None:
             print(f"Skipping pull request {pull_request['html_url']}. Can not get changed files...")
             continue
 
         # Check repo content on pull base commit can be extracted
-        repo_content = get_repo_content_on_commit(repo_path, pull_request['base_sha'])
+        repo_content = get_repo_content_on_commit(repo_path, pull_request['base']['sha'])
         if repo_content is None:
             print(f"Skipping pull request {pull_request['html_url']}. Сan not get repo content...")
             continue
@@ -98,8 +104,9 @@ def filter_linked_issues(
             print(f"Skipping pull request {pull_request['html_url']}. No py|kt|java files in diff...")
             continue
 
-        filtered_parsed_issue_links.add(parsed_issue_link)
+        filtered_parsed_issue_links.append(parsed_issue_link)
 
+    print(f"Left issues links: {len(filtered_parsed_issue_links)}")
     return list(filtered_parsed_issue_links)
 
 
@@ -128,7 +135,7 @@ def prepare_data(repo_owner: str, repo_name: str, config: DictConfig):
     )
 
 
-@hydra.main(config_path="../../../lca/configs", config_name="server", version_base=None)
+@hydra.main(config_path="./../configs", config_name="local_data", version_base=None)
 def main(config: DictConfig):
     os.makedirs(config.issues_links_filtered_path, exist_ok=True)
     process_repos_data(prepare_data, config)
