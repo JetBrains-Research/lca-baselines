@@ -11,7 +11,7 @@ from baselines.models.tf_idf_baseline import TfIdfBaseline
 from baselines.tokenizers.bpe_tokenizer import BPETokenizer
 from baselines.tokenizers.codet5_tokenizer import CodeT5Tokenizer
 from baselines.tokenizers.nltk_tokenizer import NltkTokenizer
-from hf_data.load_data import load_data
+from data.load_data import load_data
 from utils.file_utils import create_dir, create_run_directory, save_config
 
 

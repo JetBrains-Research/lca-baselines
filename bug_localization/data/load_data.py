@@ -8,7 +8,7 @@ from datasets import Dataset
 from huggingface_hub import hf_hub_download
 from omegaconf import DictConfig
 
-from hf_data.hf_utils import HUGGINGFACE_REPO, FEATURES, CATEGORIES, SPLITS
+from data.hf_utils import HUGGINGFACE_REPO, FEATURES, CATEGORIES, SPLITS
 
 
 def load_repos(data_path: str):

@@ -3,8 +3,8 @@ import os
 import hydra
 from omegaconf import DictConfig
 
-from hf_data.hf_utils import update_hf_data
-from file_utlis.git_utils import get_changed_files_between_commits, get_repo_content_on_commit
+from data.hf_utils import update_hf_data
+from utils.git_utils import get_repo_content_on_commit, get_changed_files_between_commits
 
 
 def filter_can_extract_change(dp, data_path: str):
