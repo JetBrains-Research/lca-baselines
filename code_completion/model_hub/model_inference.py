@@ -46,10 +46,17 @@ def model_inference(
     input_lens = list()
 
     for num_dp, datapoint in enumerate(tqdm(input_data)):
-        input_ids = torch.tensor(datapoint['model_input'][-seq_max_len:]).unsqueeze(0).to(device)
-
         completion_len = len(datapoint['model_input']) - datapoint['context_len']  # initial len of `completion`
-        datapoint['context_len'] = max(min(seq_max_len, len(datapoint['model_input'])) - completion_len, 0)
+        if completion_len > seq_max_len / 4:
+            last_idx = datapoint['context_len'] + seq_max_len // 4
+            input_ids_cropped = datapoint['model_input'][:last_idx]
+            completion_len = len(input_ids_cropped) - datapoint['context_len']
+        else:
+            input_ids_cropped = datapoint['model_input'].copy()
+        input_ids_cropped = input_ids_cropped[-seq_max_len:]
+        input_ids = torch.tensor(input_ids_cropped).unsqueeze(0).to(device)
+
+        datapoint['context_len'] = max(len(input_ids_cropped) - completion_len, 0)
         context_len = datapoint['context_len']
         if context_len > context_max:
             thr = context_len - context_max

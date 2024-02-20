@@ -133,6 +133,10 @@ class EvalPipeline:
                 continue
             results = self.run_composer(composer, results)
 
+        inference_out_dir_path = Path(self.inference_args.out_dir)
+        if inference_out_dir_path.exists():
+            shutil.rmtree(inference_out_dir_path)
+
         with open(os.path.join(self.out_dir, 'completion_results.json'), 'w') as f:
             json.dump(results, f, indent=4)
         print(f">>Completion Results are in {os.path.join(self.out_dir, 'completion_results.json')}")
