@@ -1,6 +1,6 @@
 # Directory content description
 
-## [Parse Linked Issues](parse_linked_issues.py)
+### [parse_linked_issues.py](parse_linked_issues.py)
 
 Gets all issues and pull requests comments contents and parse all issues links from them
 in format jsonl `{repo_owner}__{repo_name}.jsonl` with list of jsons in format

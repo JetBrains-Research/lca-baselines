@@ -49,12 +49,12 @@ def parse_linked_issues_from_comments(
     issues_links = []
     comments = get_jsonl_data(comments_path, repo_owner, repo_name)
     if comments is None:
-        # print(f"Comments are missed for repo {repo_owner}/{repo_name}. Skipping...")
+        print(f"Comments are missed for repo {repo_owner}/{repo_name}. Skipping...")
         return []
 
     for comment in comments:
         if comment['body'] is None:
-            # print(f"Comment {comment['html_url']} body is None. Skipping...")
+            print(f"Comment {comment['html_url']} body is None. Skipping...")
             continue
         parsed_issue_links = parse_linked_issues_from_comment(comment['body'])
         comment_html_url = comment['html_url']
@@ -81,12 +81,12 @@ def get_linked_issues_from_comments(
 
     repo_linked_issues_path = os.path.join(config.issues_links_path, f"{repo_owner}__{repo_name}.jsonl")
     if os.path.exists(repo_linked_issues_path):
-        # print(f"Linked issues for repo {repo_owner}/{repo_name} already parsed. Skipping...")
+        print(f"Linked issues for repo {repo_owner}/{repo_name} already parsed. Skipping...")
         return None
 
     repo_comments_path = str(os.path.join(config.comments_path, f"{repo_owner}__{repo_name}.jsonl"))
     if not os.path.exists(repo_comments_path):
-        # print(f"Comments path for repo {repo_owner}/{repo_name} does not exist. Skipping...")
+        print(f"Comments path for repo {repo_owner}/{repo_name} does not exist. Skipping...")
         return None
 
     issues_links = parse_linked_issues_from_comments(repo_owner, repo_name, config.comments_path)
