@@ -39,51 +39,61 @@ def filter_linked_issues(
 
     # Pull to issue relation without duplications
     issue_to_linked_issues: Dict[int, Set[int]] = defaultdict(set)
-    link_by_ids: Dict[int, Dict[int, dict]] = defaultdict(lambda: defaultdict(dict))
 
     for parsed_issue_link in parsed_issues_links:
         issue_id = url_to_id(parsed_issue_link['issue_html_url'])
         linked_issue_id = url_to_id(parsed_issue_link['linked_issue_html_url'])
-        if ((issue_id in pulls_by_id and linked_issue_id in issues_by_id) or
-                (issue_id in issues_by_id and linked_issue_id in pulls_by_id)):
+        if (issue_id in pulls_by_id and linked_issue_id in issues_by_id) or (
+                issue_id in issues_by_id and linked_issue_id in pulls_by_id):
+            print(f"Link {issue_id} <-> {linked_issue_id}")
             issue_to_linked_issues[issue_id].add(linked_issue_id)
-            link_by_ids[issue_id][linked_issue_id] = parsed_issue_link
-        else:
-            print(f'Not enough information or not an issue <-> pull request link. '
-                  f'Skipping {parsed_issue_link["issue_html_url"]} <-> {parsed_issue_link["linked_issue_html_url"]}')
 
     filtered_parsed_issue_links: list[dict] = []
 
     for parsed_issue_link in parsed_issues_links:
-        pull_id = url_to_id(parsed_issue_link['issue_html_url'])
+        issue_id = url_to_id(parsed_issue_link['issue_html_url'])
         linked_issue_id = url_to_id(parsed_issue_link['linked_issue_html_url'])
 
-        if pull_id not in pulls_by_id or pull_id not in issue_to_linked_issues:
+        if issue_id not in issue_to_linked_issues or linked_issue_id not in issue_to_linked_issues[issue_id]:
+            print(f'Not enough information or not an issue <-> pull request link. '
+                  f'Skipping {parsed_issue_link["issue_html_url"]} <-> {parsed_issue_link["linked_issue_html_url"]}')
             continue
+
+        if issue_id in pulls_by_id:
+            pull_id, linked_issue_id = issue_id, linked_issue_id
+        else:
+            pull_id, linked_issue_id = linked_issue_id, issue_id
 
         pull_request = pulls_by_id[pull_id]
-        # If more than one issue -- skip as pull request not atomic
-        if len(issue_to_linked_issues[pull_id]) != 1:
-            print(f"Skipping pull request {pull_request['html_url']} "
-                  f"as it connected to more then one issue...")
+
+        # If more than one issue -- skip as pull request as it probably contains changes from several issues
+        if (len(issue_to_linked_issues.get(pull_id, set())) > 1 or
+                (len(issue_to_linked_issues.get(pull_id, set())) == 1 and
+                 linked_issue_id not in issue_to_linked_issues[pull_id])):
+            print(f"Pull request connected to more then one issue. "
+                  f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
-        if (pull_id not in issue_to_linked_issues[linked_issue_id] or
-                len(issue_to_linked_issues[linked_issue_id]) > 1):
-            print(f"Skipping pull request {pull_request['html_url']} "
-                  f"as linked issue connected to more then one pull request...")
+        # If more than one pull request -- skip as issue as it probably fixed in several prs
+        if (len(issue_to_linked_issues.get(linked_issue_id, set())) > 1 or
+                (len(issue_to_linked_issues.get(linked_issue_id, set())) == 1 and
+                 pull_id not in issue_to_linked_issues[linked_issue_id])):
+            print(f"Linked issue connected to more then one pull request. "
+                  f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
         linked_issue = issues_by_id[linked_issue_id]
 
         # Check issue is a bug
         if not has_bug_label(linked_issue):
-            print(f"Skipping pull request {pull_request['html_url']}. Issue is not a bug...")
+            print(f"Issue is not a bug. "
+                  f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
         # Check issue text has no images
         if has_image_in_text(linked_issue):
-            print(f"Skipping pull request {pull_request['html_url']}. Issue has images which we can not process...")
+            print(f"Issue has images which we can not process. "
+                  f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
         # Check diff between base and head commit can be extracted
@@ -91,25 +101,29 @@ def filter_linked_issues(
             changed_files = get_changed_files_between_commits(repo_path, pull_request['base']['sha'],
                                                               pull_request['head']['sha'])
         except Exception as e:
-            print(f"Skipping pull request {pull_request['html_url']}. "
-                  f"Can not get changed files due to exception {e}...")
+            print(f"Can not get changed files. "
+                  f"Skipping pull request {pull_request['html_url']} due to exception {e}...")
             continue
 
         # Keep only diff with python, java, kotlin files
         changed_files_exts = get_file_exts(changed_files)
         if not any(key in [".py", ".java", ".kt"] for key in changed_files_exts.keys()):
-            print(f"Skipping pull request {pull_request['html_url']}. No py|kt|java files in diff...")
+            print(f"No py|kt|java files in diff. Skipping pull request {pull_request['html_url']} ...")
             continue
 
         # Check repo content on pull base commit can be extracted
         try:
             repo_content = get_repo_content_on_commit(repo_path, pull_request['base']['sha'])
         except Exception as e:
-            print(f"Skipping pull request {pull_request['html_url']}. "
-                  f"Сan not get repo content due to exception {e}...")
+            print(f"Сan not get repo content. Skipping pull request {pull_request['html_url']} due to exception {e}...")
             continue
 
-        filtered_parsed_issue_links.append(parsed_issue_link)
+        filtered_parsed_issue_links.append({
+            "comment_html_url": parsed_issue_link['comment_html_url'],
+            "issue_html_url": pull_request['html_url'],
+            "linked_issue_html_url": linked_issue['html_url'],
+            "link_type": parsed_issue_link['link_type'],
+        })
 
     print(f"Left issues links: {len(filtered_parsed_issue_links)}")
     return list(filtered_parsed_issue_links)

@@ -42,9 +42,9 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
     records = []
     if issues_links is not None:
         for issues_link in issues_links:
-            pull = pulls_by_urls[issues_link['issue_html_url']]
-            issue = issues_by_urls[issues_link['linked_issue_html_url']]
             try:
+                pull = pulls_by_urls[issues_link['issue_html_url']]
+                issue = issues_by_urls[issues_link['linked_issue_html_url']]
                 diff = get_diff_between_commits(repo_path, pull['base']['sha'], pull['head']['sha'])
                 diff.encode('utf-8')
                 changed_files = parse_changed_files_from_diff(diff)
