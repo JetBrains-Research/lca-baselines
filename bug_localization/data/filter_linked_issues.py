@@ -34,7 +34,8 @@ def filter_linked_issues(
         parsed_issues_links: List[dict], pulls: List[dict], issues: List[dict], repo_path: str
 ) -> List[dict]:
     pulls_by_id = {url_to_id(pull['html_url']): pull for pull in pulls}
-    issues_by_id = {url_to_id(issue['html_url']): issue for issue in issues if issue['html_url'] not in pulls_by_id}
+    issues_by_id = {url_to_id(issue['html_url']): issue for issue in issues if
+                    url_to_id(issue['html_url']) not in pulls_by_id}
 
     # Pull to issue relation without duplications
     issue_to_linked_issues: Dict[int, Set[int]] = defaultdict(set)
@@ -48,7 +49,7 @@ def filter_linked_issues(
             issue_to_linked_issues[issue_id].add(linked_issue_id)
             link_by_ids[issue_id][linked_issue_id] = parsed_issue_link
         else:
-            print(f'Not enough information or not issue <-> pull request link. '
+            print(f'Not enough information or not an issue <-> pull request link. '
                   f'Skipping {parsed_issue_link["issue_html_url"]} <-> {parsed_issue_link["linked_issue_html_url"]}')
 
     filtered_parsed_issue_links: list[dict] = []
@@ -86,22 +87,26 @@ def filter_linked_issues(
             continue
 
         # Check diff between base and head commit can be extracted
-        changed_files = get_changed_files_between_commits(repo_path, pull_request['base']['sha'],
-                                                          pull_request['head']['sha'])
-        if changed_files is None:
-            print(f"Skipping pull request {pull_request['html_url']}. Can not get changed files...")
+        try:
+            changed_files = get_changed_files_between_commits(repo_path, pull_request['base']['sha'],
+                                                              pull_request['head']['sha'])
+        except Exception as e:
+            print(f"Skipping pull request {pull_request['html_url']}. "
+                  f"Can not get changed files due to exception {e}...")
             continue
 
-        # Check repo content on pull base commit can be extracted
-        repo_content = get_repo_content_on_commit(repo_path, pull_request['base']['sha'])
-        if repo_content is None:
-            print(f"Skipping pull request {pull_request['html_url']}. Сan not get repo content...")
-            continue
-
-        # Filter only python kotlin, java, python files
+        # Keep only diff with python, java, kotlin files
         changed_files_exts = get_file_exts(changed_files)
         if not any(key in [".py", ".java", ".kt"] for key in changed_files_exts.keys()):
             print(f"Skipping pull request {pull_request['html_url']}. No py|kt|java files in diff...")
+            continue
+
+        # Check repo content on pull base commit can be extracted
+        try:
+            repo_content = get_repo_content_on_commit(repo_path, pull_request['base']['sha'])
+        except Exception as e:
+            print(f"Skipping pull request {pull_request['html_url']}. "
+                  f"Сan not get repo content due to exception {e}...")
             continue
 
         filtered_parsed_issue_links.append(parsed_issue_link)
@@ -110,7 +115,9 @@ def filter_linked_issues(
     return list(filtered_parsed_issue_links)
 
 
-def prepare_data(repo_owner: str, repo_name: str, config: DictConfig):
+def prepare_data(repo: dict, config: DictConfig):
+    repo_owner = repo['owner']
+    repo_name = repo['name']
     print(f"Processing repo {repo_owner}/{repo_name}...")
 
     if os.path.exists(os.path.join(config.issues_links_filtered_path, f"{repo_owner}__{repo_name}.jsonl")):

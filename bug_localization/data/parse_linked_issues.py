@@ -21,11 +21,11 @@ def parse_linked_issues_from_comment(comment_text: str) -> List[Tuple[int, str]]
         # https://github.com/jlord/sheetsee.js/issues/26
         "issue_link": r"https:\/\/github\.com\/[^\/\s]+\/[^\/\s]+\/issues\/(?P<issue_number>\d+)",
         # #26
-        "hash": r"\s#(?P<issue_number>\d+)",
+        "hash": r"(?:^|\s)#(?P<issue_number>\d+)(?:\s|$)",
         # GH-26
-        "slash": r"GH\-(?P<issue_number>\d+)",
+        "slash": r"(?:^|\s)GH\-(?P<issue_number>\d+)(?:\s|$)",
         # jlord/sheetsee.js#26
-        "file": r"[^\/\s]+\/[^\/\s]+#(?P<issue_number>\d+)",
+        "file": r"(?:^|\s)[^\/\s]+\/[^\/\s]+#(?P<issue_number>\d+)(?:\s|$)",
     }
 
     linked_issues = []
@@ -73,10 +73,11 @@ def parse_linked_issues_from_comments(
 
 
 def get_linked_issues_from_comments(
-        repo_owner: str,
-        repo_name: str,
+        repo: dict,
         config: DictConfig
 ) -> Optional[Exception]:
+    repo_owner = repo['owner']
+    repo_name = repo['name']
     print(f"Processing repo {repo_owner}/{repo_name}...")
 
     repo_linked_issues_path = os.path.join(config.issues_links_path, f"{repo_owner}__{repo_name}.jsonl")

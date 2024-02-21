@@ -57,7 +57,7 @@ def get_changed_files_and_lines_between_commits(repo_path: str, first_commit_sha
 
 def get_diff_between_commits(repo_path: str, first_commit_sha: str, second_commit_sha: str) -> str:
     """
-    Get git diff between `first_commit` and `second_commit`
+    Get git diff between `first_commit` and `second_commit` https://matthew-brett.github.io/pydagogue/git_diff_dots.html
     :param repo_path: path to directory where repo is cloned
     :param first_commit_sha: sha of first commit
     :param second_commit_sha: sha of second commit
@@ -153,7 +153,7 @@ def get_repo_content_on_commit(repo_path: str, commit_sha: str,
                     file_contents[file_path] = str(content)
                 except Exception as e:
                     file_contents[file_path] = ""
-                    # print(f"Can not read file with ext {file_path}. Replace with empty string...", e)
+                    print(f"Can not read file with ext {file_path}. Replace with empty string...", e)
 
     repo.git.checkout('HEAD', '.')
     return file_contents

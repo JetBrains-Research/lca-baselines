@@ -7,7 +7,7 @@ from utils.jsonl_utils import get_repos
 
 
 def process_repos_data(
-        process_repo: Callable[[str, str, DictConfig], Any],
+        process_repo: Callable[[dict, DictConfig], Any],
         config: DictConfig,
         processes: Optional[int] = None,
 ) -> None:
@@ -17,7 +17,7 @@ def process_repos_data(
     :param config: config with run parameters
     :param processes: number of processes to run analysis
     """
-    params = [(repo['owner'], repo['name'], config) for repo in get_repos(config.repos_list_path)]
+    params = [(repo, config) for repo in get_repos(config.repos_list_path)]
     cpus = multiprocessing.cpu_count() if processes is None else processes
     assert cpus > 0
 

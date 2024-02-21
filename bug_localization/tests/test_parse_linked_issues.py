@@ -12,6 +12,7 @@ from utils.jsonl_utils import save_jsonl_data
         ("Bug in #262 fixed", [(262, "hash")]),
         ("Bug in GH-264 and GH-265 fixed. Also #262 fixed.", [(262, "hash"), (264, "slash"), (265, "slash")]),
         ("Bug in jlord/sheetsee.js#263 fixed", [(263, "file")]),
+        ("Bug in #262 https://s3.amazonaws.com/logs.zephyrproject.org/jira/GH-1661/make_error.log", [(262, "hash")]),
     ],
 )
 def test_parse_linked_issues_from_comment(comment_body: str, linked_issues: list[str]):
