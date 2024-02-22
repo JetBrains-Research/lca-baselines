@@ -66,6 +66,7 @@ def upload_bug_localization_repos(config: DictConfig):
                 split=split,
             )
             repos[category] = list(set(zip(df['repo_owner'], df['repo_name'])))
+            print(f"Find {len(repos[category])} repos in category {category}")
 
             archive_path = str(os.path.join(config.repos_archive_path, category))
             os.makedirs(archive_path, exist_ok=True)
@@ -83,8 +84,8 @@ def upload_bug_localization_repos(config: DictConfig):
     repos_paths = {}
     path_json_path = os.path.join(config.repos_archive_path, 'repos_paths.json')
     for category in CATEGORIES:
-        repos_paths[category] = [f'./repos/{category}/{repo_name}__{repo_owner}.tar.gz'
-                                 for repo_name, repo_owner in repos[category]]
+        repos_paths[category] = [f'./repos/{category}/{repo_owner}__{repo_name}.tar.gz'
+                                 for repo_owner, repo_name in repos[category]]
 
     with open(path_json_path, 'w') as f:
         json.dump(repos_paths, f)
