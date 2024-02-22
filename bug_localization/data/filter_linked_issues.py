@@ -49,6 +49,7 @@ def filter_linked_issues(
             issue_to_linked_issues[issue_id].add(linked_issue_id)
 
     filtered_parsed_issue_links: list[dict] = []
+    filtered_parsed_issue_links_unique: set[tuple[int, int]] = set()
 
     for parsed_issue_link in parsed_issues_links:
         issue_id = url_to_id(parsed_issue_link['issue_html_url'])
@@ -66,7 +67,7 @@ def filter_linked_issues(
 
         pull_request = pulls_by_id[pull_id]
 
-        # If more than one issue -- skip as pull request as it probably contains changes from several issues
+        # If more than one issue to pull request -- skip as it probably contains changes from several issues
         if (len(issue_to_linked_issues.get(pull_id, set())) > 1 or
                 (len(issue_to_linked_issues.get(pull_id, set())) == 1 and
                  linked_issue_id not in issue_to_linked_issues[pull_id])):
@@ -74,7 +75,7 @@ def filter_linked_issues(
                   f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
-        # If more than one pull request -- skip as issue as it probably fixed in several prs
+        # If more than one pull request to one issue -- skip as it probably fixed in several pull requests
         if (len(issue_to_linked_issues.get(linked_issue_id, set())) > 1 or
                 (len(issue_to_linked_issues.get(linked_issue_id, set())) == 1 and
                  pull_id not in issue_to_linked_issues[linked_issue_id])):
@@ -118,12 +119,14 @@ def filter_linked_issues(
             print(f"Сan not get repo content. Skipping pull request {pull_request['html_url']} due to exception {e}...")
             continue
 
-        filtered_parsed_issue_links.append({
-            "comment_html_url": parsed_issue_link['comment_html_url'],
-            "issue_html_url": pull_request['html_url'],
-            "linked_issue_html_url": linked_issue['html_url'],
-            "link_type": parsed_issue_link['link_type'],
-        })
+        if (pull_id, linked_issue_id) not in filtered_parsed_issue_links_unique:
+            filtered_parsed_issue_links_unique.add((pull_id, linked_issue_id))
+            filtered_parsed_issue_links.append({
+                "comment_html_url": parsed_issue_link['comment_html_url'],
+                "issue_html_url": pull_request['html_url'],
+                "linked_issue_html_url": linked_issue['html_url'],
+                "link_type": parsed_issue_link['link_type'],
+            })
 
     print(f"Left issues links: {len(filtered_parsed_issue_links)}")
     return list(filtered_parsed_issue_links)

@@ -21,11 +21,11 @@ def parse_linked_issues_from_comment(comment_text: str) -> List[Tuple[int, str]]
         # https://github.com/jlord/sheetsee.js/issues/26
         "issue_link": r"https:\/\/github\.com\/[^\/\s]+\/[^\/\s]+\/issues\/(?P<issue_number>\d+)",
         # #26
-        "hash": r"(?:^|\s)#(?P<issue_number>\d+)(?:\s|$)",
+        "hash": r"#(?P<issue_number>\d+)",
         # GH-26
-        "slash": r"(?:^|\s)GH\-(?P<issue_number>\d+)(?:\s|$)",
+        "slash": r"GH\-(?P<issue_number>\d+)",
         # jlord/sheetsee.js#26
-        "file": r"(?:^|\s)[^\/\s]+\/[^\/\s]+#(?P<issue_number>\d+)(?:\s|$)",
+        "file": r"[^\/\s]+\/[^\/\s]+#(?P<issue_number>\d+)",
     }
 
     linked_issues = []
@@ -36,6 +36,8 @@ def parse_linked_issues_from_comment(comment_text: str) -> List[Tuple[int, str]]
             print(f"Can not parse issue links from text:\n{comment_text}", e)
             continue
         for issue_id in issue_ids:
+            if not issue_id.isdigit():
+                continue
             linked_issues.append((int(issue_id), p_type))
 
     return linked_issues
@@ -44,13 +46,22 @@ def parse_linked_issues_from_comment(comment_text: str) -> List[Tuple[int, str]]
 def parse_linked_issues_from_comments(
         repo_owner: str,
         repo_name: str,
-        comments_path: str,
+        issues_comments_path: str,
+        pull_requests_comments_path: str,
 ) -> list[dict]:
     issues_links = []
-    comments = get_jsonl_data(comments_path, repo_owner, repo_name)
-    if comments is None:
-        print(f"Comments are missed for repo {repo_owner}/{repo_name}. Skipping...")
-        return []
+    comments = []
+    issues_comments = get_jsonl_data(issues_comments_path, repo_owner, repo_name)
+    if issues_comments is None:
+        print(f"Issues comments are missed for repo {repo_owner}/{repo_name}")
+    else:
+        comments += issues_comments
+
+    pull_requests_comments = get_jsonl_data(pull_requests_comments_path, repo_owner, repo_name)
+    if pull_requests_comments is None:
+        print(f"Pull requests comments are missed for repo {repo_owner}/{repo_name}")
+    else:
+        comments += pull_requests_comments
 
     for comment in comments:
         if comment['body'] is None:
@@ -61,10 +72,13 @@ def parse_linked_issues_from_comments(
         for issue_id, link_type in parsed_issue_links:
             issues_links.append(
                 {
+                    # https://github.com/umple/umple/issues/733#issuecomment-185940279
                     "comment_html_url": comment_html_url,
-                    "issue_html_url": comment_html_url.split("#issuecomment-")[0],
+                    # https://github.com/umple/umple/issues/733
+                    "issue_html_url": comment_html_url.split("#")[0],
                     # Issue as same rule for issues and pull linking, will de defined in processing stage
                     "linked_issue_html_url": f"https://github.com/{repo_owner}/{repo_name}/issues/{issue_id}",
+                    # issue_link|hash|slash|file
                     "link_type": link_type,
                 }
             )
@@ -85,12 +99,9 @@ def get_linked_issues_from_comments(
         print(f"Linked issues for repo {repo_owner}/{repo_name} already parsed. Skipping...")
         return None
 
-    repo_comments_path = str(os.path.join(config.comments_path, f"{repo_owner}__{repo_name}.jsonl"))
-    if not os.path.exists(repo_comments_path):
-        print(f"Comments path for repo {repo_owner}/{repo_name} does not exist. Skipping...")
-        return None
-
-    issues_links = parse_linked_issues_from_comments(repo_owner, repo_name, config.comments_path)
+    issues_links = parse_linked_issues_from_comments(repo_owner, repo_name,
+                                                     config.issues_comments_path,
+                                                     config.pull_requests_comments_path)
     print(f"Collected {len(issues_links)} issue links")
     save_jsonl_data(repo_owner, repo_name, issues_links, config.issues_links_path)
 

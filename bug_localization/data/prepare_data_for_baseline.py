@@ -84,6 +84,24 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
     return records
 
 
+def split_by_language(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    code_changed_files = ['py_changed_files_count', 'kt_changed_files_count', 'java_changed_files_count']
+    df_by_language = {}
+
+    print(f"Total samples: {df.shape[0]}")
+
+    for lang_count_column in code_changed_files:
+        df_lang = df[df[lang_count_column] == df['changed_files_count']]
+        lang = lang_count_column.split('_')[0]
+        print(f"There is {df_lang.shape[0]} {lang} samples in dataset")
+        df_by_language[lang] = df_lang
+
+    df_lang = df[~(df[code_changed_files].eq(df['changed_files_count'], axis=0)).any(axis=1)]
+    print(f"There is {df_lang.shape[0]} mixed code or text samples in dataset")
+    df_by_language['mixed'] = df_lang
+    return df_by_language
+
+
 @hydra.main(config_path="./../configs", config_name="local_data", version_base=None)
 def main(config: DictConfig):
     cpus = multiprocessing.cpu_count()
@@ -96,7 +114,12 @@ def main(config: DictConfig):
             results += r
 
     df = pd.DataFrame.from_records(results)
-    df.to_csv("bug_localization_data.csv", index=False)
+    df.sort_values('stars', ascending=False)
+    df['id'] = df.index
+    df_by_language = split_by_language(df)
+    for lang, df_lang in df_by_language.items():
+        df_lang.to_csv(f"bug_localization_data_{lang}.csv", index=False)
+        df_lang.to_json(f"bug_localization_data_{lang}.jsonl", orient="records", lines=True)
 
 
 if __name__ == "__main__":

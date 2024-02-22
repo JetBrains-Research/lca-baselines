@@ -5,6 +5,6 @@ repos_list_path: /mnt/data/shared-data/lca/updated_repos_list.json
 issues_links_path: /mnt/data/shared-data/lca/issues_links_updated
 issues_links_filtered_path: /mnt/data/shared-data/lca/issues_links_filtered_updated
 issues_prs_path: /mnt/data/shared-data/lca/issues_prs_updated_dedup
-comments_path: /mnt/data/shared-data/lca/comments_updated_dedup
-pulls_comments_path: /mnt/data/shared-data/lca/comments_updated_dedup
+issues_comments_path: /mnt/data/shared-data/lca/comments_updated_dedup
+pull_requests_comments_path: /mnt/data/shared-data/lca/pulls_comments_updated
 bug_localization_data_path: /mnt/data/shared-data/lca/bug_localization_data.csv
