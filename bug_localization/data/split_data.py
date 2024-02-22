@@ -2,7 +2,7 @@ import datasets
 import hydra
 from omegaconf import DictConfig
 
-from data.hf_utils import update_hf_data_splits
+from utils.hf_utils import update_hf_data_splits
 
 
 def split_data(df: datasets.Dataset, split: str, test_data_ids: list[int]):

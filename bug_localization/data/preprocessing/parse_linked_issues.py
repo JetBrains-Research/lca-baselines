@@ -108,7 +108,7 @@ def get_linked_issues_from_comments(
     return None
 
 
-@hydra.main(config_path="./../configs", config_name="local_data", version_base=None)
+@hydra.main(config_path="../../configs", config_name="local_data", version_base=None)
 def main(config: DictConfig):
     os.makedirs(config.issues_links_path, exist_ok=True)
 

@@ -3,7 +3,7 @@ import os
 import hydra
 from omegaconf import DictConfig
 
-from data.hf_utils import update_hf_data
+from utils.hf_utils import update_hf_data
 from utils.git_utils import get_repo_content_on_commit, get_changed_files_between_commits
 
 

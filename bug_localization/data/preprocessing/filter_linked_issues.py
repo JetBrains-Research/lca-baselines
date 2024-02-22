@@ -16,14 +16,26 @@ def url_to_id(url: str) -> int:
     return int(url.split('/')[-1])
 
 
+def has_utf8_description(issue: dict):
+    try:
+        decoded = issue['body'].decode('UTF-8')
+    except UnicodeDecodeError:
+        return False
+    else:
+        return True
+
+
 def has_bug_label(issue: dict) -> bool:
     return any(["bug" in label['name'].lower() for label in issue['labels']])
 
 
-def has_image_in_text(issue: dict) -> bool:
+def has_media_in_text(issue: dict) -> bool:
     try:
-        images = re.findall(r"!\[.*?\]\((.*?\.(jpg|png|gif|jpeg|svg|bmp|tiff|webp|heic|psd|raw))\)", issue['body'],
-                            re.I)
+        images = re.findall(
+            r"!\[.*?\]\((.*?\.(jpg|png|gif|jpeg|svg|bmp|tiff|webp|heic|psd|raw|mp3|mp4|mov|wmv|avi|mkv))\)",
+            issue['body'],
+            re.I
+        )
         return len(images) > 0
     except Exception as e:
         print("Can not parse images from text", e)
@@ -91,10 +103,15 @@ def filter_linked_issues(
                   f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
-        # Check issue text has no images
-        if has_image_in_text(linked_issue):
-            print(f"Issue has images which we can not process. "
-                  f"Skipping pull request {pull_request['html_url']} ...")
+        if not has_utf8_description(linked_issue):
+            print(f"Issue has not utf-8 description which we can not process. "
+                  f"Skipping issue {linked_issue['html_url']} ...")
+            continue
+
+        # Check issue text has no media content (images, video, audio)
+        if has_media_in_text(linked_issue):
+            print(f"Issue has media file which we can not process. "
+                  f"Skipping issue {linked_issue['html_url']} ...")
             continue
 
         # Check diff between base and head commit can be extracted
@@ -109,14 +126,16 @@ def filter_linked_issues(
         # Keep only diff with python, java, kotlin files
         changed_files_exts = get_file_exts(changed_files)
         if not any(key in [".py", ".java", ".kt"] for key in changed_files_exts.keys()):
-            print(f"No py|kt|java files in diff. Skipping pull request {pull_request['html_url']} ...")
+            print(f"No py|kt|java files in diff. "
+                  f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
         # Check repo content on pull base commit can be extracted
         try:
             repo_content = get_repo_content_on_commit(repo_path, pull_request['base']['sha'])
         except Exception as e:
-            print(f"Сan not get repo content. Skipping pull request {pull_request['html_url']} due to exception {e}...")
+            print(f"Сan not get repo content. "
+                  f"Skipping pull request {pull_request['html_url']} due to exception {e}...")
             continue
 
         if (pull_id, linked_issue_id) not in filtered_parsed_issue_links_unique:
@@ -159,7 +178,7 @@ def prepare_data(repo: dict, config: DictConfig):
     )
 
 
-@hydra.main(config_path="./../configs", config_name="local_data", version_base=None)
+@hydra.main(config_path="../../configs", config_name="local_data", version_base=None)
 def main(config: DictConfig):
     os.makedirs(config.issues_links_filtered_path, exist_ok=True)
     process_repos_data(prepare_data, config)

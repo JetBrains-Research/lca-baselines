@@ -1,6 +1,6 @@
 import pytest
 
-from data.parse_linked_issues import parse_linked_issues_from_comment, parse_linked_issues_from_comments
+from data.preprocessing.parse_linked_issues import parse_linked_issues_from_comment, parse_linked_issues_from_comments
 from tests import TEST_ROOT_PATH
 from utils.jsonl_utils import save_jsonl_data
 
@@ -86,7 +86,8 @@ def test_parse_linked_issues_from_comment(comment_body: str, linked_issues: list
 )
 def test_parse_linked_issues_from_comments(repo: dict, linked_issues: list[dict]):
     parsed_linked_issues = parse_linked_issues_from_comments(
-        repo['owner'], repo['name'], TEST_ROOT_PATH / "resources" / "comments"
+        repo['owner'], repo['name'], TEST_ROOT_PATH / "resources" / "comments",
+                                     TEST_ROOT_PATH / "resources" / "comments",
     )
 
     save_jsonl_data(
