@@ -117,9 +117,13 @@ def main(config: DictConfig):
     df.sort_values('stars', ascending=False)
     df['id'] = df.index
     df_by_language = split_by_language(df)
+
+    os.makedirs(config.bug_localization_data_path, exist_ok=True)
     for lang, df_lang in df_by_language.items():
-        df_lang.to_csv(f"bug_localization_data_{lang}.csv", index=False)
-        df_lang.to_json(f"bug_localization_data_{lang}.jsonl", orient="records", lines=True)
+        df_lang.to_csv(os.path.join(config.bug_localization_data_path, f"bug_localization_data_{lang}.csv"),
+                       index=False)
+        df_lang.to_json(os.path.join(config.bug_localization_data_path, f"bug_localization_data_{lang}.jsonl"),
+                        orient="records", lines=True)
 
 
 if __name__ == "__main__":

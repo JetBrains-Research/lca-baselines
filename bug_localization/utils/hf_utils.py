@@ -35,7 +35,10 @@ FEATURES = {
             "py_changed_files_count": datasets.Value("int64"),
             "code_changed_files_count": datasets.Value("int64"),
             "pull_create_at": datasets.Value("string"),
-            "stars": datasets.Value("int64")
+            "stars": datasets.Value("int64"),
+            "language": datasets.Value("string"),
+            "languages": datasets.Value("string"),
+            "license": datasets.Value("string"),
         }
     )
 }

@@ -2,9 +2,10 @@ issues_path: /mnt/data/shared-data/lca/issues_prs_updated_dedup
 pulls_path: /mnt/data/shared-data/lca/pulls_updated_dedup
 repos_path: /mnt/data/shared-data/lca/repos_updated
 repos_list_path: /mnt/data/shared-data/lca/updated_repos_list.json
+repos_archive_path: /mnt/data/shared-data/lca/repos_archive_updated
 issues_links_path: /mnt/data/shared-data/lca/issues_links_updated
 issues_links_filtered_path: /mnt/data/shared-data/lca/issues_links_filtered_updated
 issues_prs_path: /mnt/data/shared-data/lca/issues_prs_updated_dedup
 issues_comments_path: /mnt/data/shared-data/lca/comments_updated_dedup
 pull_requests_comments_path: /mnt/data/shared-data/lca/pulls_comments_updated
-bug_localization_data_path: /mnt/data/shared-data/lca/bug_localization_data.csv
+bug_localization_data_path: /mnt/data/shared-data/lca/bug_localization_data
