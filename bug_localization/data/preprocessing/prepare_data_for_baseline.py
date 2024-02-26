@@ -65,18 +65,18 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
                     "head_sha": pull['head']['sha'],
                     "diff_url": f"https://github.com/{repo_owner}/{repo_name}/compare/{pull['base']['sha']}...{pull['head']['sha']}",
                     "diff": diff,
-                    "changed_files": changed_files,
+                    "changed_files": str(changed_files),
                     "changed_files_count": len(changed_files),
                     "java_changed_files_count": files_exts.get('.java', 0),
                     "py_changed_files_count": files_exts.get('.py', 0),
                     "kt_changed_files_count": files_exts.get('.kt', 0),
                     "code_changed_files_count": sum(
                         [v for k, v in files_exts.items() if k in ['.java', '.py', '.kt']]),
-                    "changed_files_exts": files_exts,
+                    "changed_files_exts": str(files_exts),
                     "pull_create_at": pull['created_at'],
                     "stars": repo['stars'],
                     "language": repo['language'],
-                    "languages": repo['languages'],
+                    "languages": str(repo['languages']),
                     "license": repo['license'],
                 }
             )

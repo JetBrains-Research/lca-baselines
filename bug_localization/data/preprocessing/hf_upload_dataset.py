@@ -6,6 +6,7 @@ import shutil
 import datasets
 import huggingface_hub
 import hydra
+from datasets import DatasetDict, Dataset
 from huggingface_hub import HfApi
 from omegaconf import DictConfig
 
@@ -17,19 +18,13 @@ def upload_bug_localization_data(config: DictConfig):
     huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
 
     for category in CATEGORIES:
-        for split in SPLITS:
-            df = datasets.load_dataset(
-                'json',
-                data_files=os.path.join(config.bug_localization_data_path, f'bug_localization_data_{split}.jsonl'),
-                features=FEATURES['bug_localization_data'],
-                split=split,
-            )
-            df.push_to_hub(
-                HUGGINGFACE_REPO,
-                category,
-                private=True,
-                split=split
-            )
+        df = Dataset.from_json(
+            os.path.join(config.bug_localization_data_path, f'bug_localization_data_{category}.jsonl'),
+            features=FEATURES['bug_localization_data'],
+        )
+        dataset_dict = DatasetDict({'dev': df})
+        dataset_dict.push_to_hub(HUGGINGFACE_REPO,
+                                 category, )
 
 
 def archive_repo(repo_owner: str, repo_name: str, repos_path: str, archives_path: str):
@@ -100,4 +95,4 @@ def upload_bug_localization_repos(config: DictConfig):
 
 if __name__ == '__main__':
     upload_bug_localization_data()
-    upload_bug_localization_repos()
+    # upload_bug_localization_repos()
