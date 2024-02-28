@@ -16,7 +16,7 @@ def split_data(df: datasets.Dataset, split: str, test_data_ids: list[int]):
         return df.filter(lambda dp: dp['id'] not in test_data_ids)
 
 
-@hydra.main(config_path="./../configs", config_name="data", version_base=None)
+@hydra.main(config_path="../../configs", config_name="hf_data", version_base=None)
 def run_split_data(config: DictConfig):
     update_hf_data_splits(
         lambda df, category, split: split_data(df, split, config.test_data_ids),

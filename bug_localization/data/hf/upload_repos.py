@@ -6,32 +6,17 @@ import shutil
 import datasets
 import huggingface_hub
 import hydra
-from datasets import DatasetDict, Dataset
 from huggingface_hub import HfApi
 from omegaconf import DictConfig
 
-from utils.hf_utils import CATEGORIES, SPLITS, FEATURES, HUGGINGFACE_REPO
-
-
-@hydra.main(config_path="../../configs", config_name="local_data", version_base=None)
-def upload_bug_localization_data(config: DictConfig):
-    huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
-
-    for category in CATEGORIES:
-        df = Dataset.from_json(
-            os.path.join(config.bug_localization_data_path, f'bug_localization_data_{category}.jsonl'),
-            features=FEATURES['bug_localization_data'],
-        )
-        dataset_dict = DatasetDict({'dev': df})
-        dataset_dict.push_to_hub(HUGGINGFACE_REPO,
-                                 category, )
+from utils.hf_utils import CATEGORIES, HUGGINGFACE_REPO
 
 
 def archive_repo(repo_owner: str, repo_name: str, repos_path: str, archives_path: str):
+    os.chdir(archives_path)
     shutil.make_archive(
         f"{repo_owner}__{repo_name}",
         'gztar',
-        root_dir=archives_path,
         base_dir=os.path.join(repos_path, f"{repo_owner}__{repo_name}")
     )
 
@@ -53,13 +38,13 @@ def upload_bug_localization_repos(config: DictConfig):
 
     repos = {}
     for category in CATEGORIES:
-        for split in SPLITS:
+        for split in ['test']:
             df = datasets.load_dataset(
-                'json',
-                data_files=os.path.join(config.bug_localization_data_path, f'bug_localization_data_{category}.jsonl'),
-                features=FEATURES['bug_localization_data'],
+                HUGGINGFACE_REPO, category,
                 split=split,
+                ignore_verifications=True,
             )
+
             repos[category] = list(set(zip(df['repo_owner'], df['repo_name'])))
             print(f"Find {len(repos[category])} repos in category {category}")
 
@@ -94,5 +79,4 @@ def upload_bug_localization_repos(config: DictConfig):
 
 
 if __name__ == '__main__':
-    upload_bug_localization_data()
-    # upload_bug_localization_repos()
+    upload_bug_localization_repos()

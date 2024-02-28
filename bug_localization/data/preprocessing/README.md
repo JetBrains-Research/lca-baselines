@@ -1,4 +1,4 @@
-# Directory content description
+# Scripts for data preprocessing
 
 ### [parse_linked_issues.py](parse_linked_issues.py)
 
@@ -49,6 +49,7 @@ jsonl contains following jsons:
     "issue_url": datasets.Value("string"),
     "pull_url": datasets.Value("string"),
     "comment_url": datasets.Value("string"),
+    "links_count": datasets.Value("int64"),
     "issue_title": datasets.Value("string"),
     "issue_body": datasets.Value("string"),
     "base_sha": datasets.Value("string"),
