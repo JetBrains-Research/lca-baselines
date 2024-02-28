@@ -4,12 +4,7 @@ This folder contains code for Bug Localization task in Long Code Arena 🏟 benc
 given an issue with bug description, identify the files within the project that need to be modified
 to address the reported bug.
 
-We provide [scripts for data collection and processing](./src/data) as well as several [baselines implementations](./src/baselines):
-* TF-IDF
-* [GTE](https://huggingface.co/thenlper/gte-large)
-* [CodeT5](https://huggingface.co/Salesforce/codet5p-110m-embedding)
-* [GPT3.5](https://platform.openai.com/docs/models/gpt-3-5-turbo)
-
+We provide [scripts for data collection and processing](./src/data) as well as several [baselines implementations](./src/baselines).
 ## 💾 Install dependencies
 We provide dependencies for pip dependency manager, so please run the following command to install all required packages:
 ```shell
@@ -37,3 +32,7 @@ They are stored in `.tar.gz` so you need to run script to load them an unzip:
 2. Run [load_data_from_hf.py](./src/load_data_from_hf.py) which will load all repos from HF and unzip them
 
 ## ⚙️ Run Baseline
+* [TF-IDF](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn.feature_extraction.text.TfidfVectorizer)
+* [GTE](https://huggingface.co/thenlper/gte-large)
+* [CodeT5](https://huggingface.co/Salesforce/codet5p-110m-embedding)
+* [GPT3.5](https://platform.openai.com/docs/models/gpt-3-5-turbo)
