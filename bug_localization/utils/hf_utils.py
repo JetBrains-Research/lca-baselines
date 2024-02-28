@@ -21,6 +21,7 @@ FEATURES = {
             "issue_url": datasets.Value("string"),
             "pull_url": datasets.Value("string"),
             "comment_url": datasets.Value("string"),
+            "links_count": datasets.Value("int64"),
             "issue_title": datasets.Value("string"),
             "issue_body": datasets.Value("string"),
             "base_sha": datasets.Value("string"),

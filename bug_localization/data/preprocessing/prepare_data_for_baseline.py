@@ -46,11 +46,10 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
                 pull = pulls_by_urls[issues_link['issue_html_url']]
                 issue = issues_by_urls[issues_link['linked_issue_html_url']]
                 diff = get_diff_between_commits(repo_path, pull['base']['sha'], pull['head']['sha'])
-                diff.encode('utf-8')
                 changed_files = parse_changed_files_from_diff(diff)
                 files_exts = get_file_exts(changed_files)
             except Exception as e:
-                print("Failed to get diff", e)
+                print("Failed to get data", e)
                 continue
             records.append(
                 {
@@ -59,6 +58,7 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
                     "issue_url": issues_link['linked_issue_html_url'],
                     "pull_url": issues_link['issue_html_url'],
                     "comment_url": issues_link['comment_html_url'],
+                    "links_count": issues_link['links_count'],
                     "issue_title": issue['title'],
                     "issue_body": issue['body'],
                     "base_sha": pull['base']['sha'],
@@ -114,7 +114,7 @@ def main(config: DictConfig):
             results += r
 
     df = pd.DataFrame.from_records(results)
-    df.sort_values('stars', ascending=False)
+    df = df.sort_values('stars', ascending=False)
     df['id'] = df.index
     df_by_language = split_by_language(df)
 

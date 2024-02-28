@@ -7,7 +7,7 @@ import hydra
 from omegaconf import DictConfig
 
 from utils.file_utils import get_file_exts
-from utils.git_utils import get_repo_content_on_commit, get_changed_files_between_commits
+from utils.git_utils import get_repo_content_on_commit, get_diff_between_commits, parse_changed_files_from_diff
 from utils.jsonl_utils import get_jsonl_data, save_jsonl_data
 from utils.processing_utils import process_repos_data
 
@@ -16,10 +16,10 @@ def url_to_id(url: str) -> int:
     return int(url.split('/')[-1])
 
 
-def has_utf8_description(issue: dict):
+def is_utf_8(text: str) -> int:
     try:
-        decoded = issue['body'].decode('UTF-8')
-    except UnicodeDecodeError:
+        encoded = text.encode('utf-8')
+    except UnicodeEncodeError:
         return False
     else:
         return True
@@ -31,8 +31,15 @@ def has_bug_label(issue: dict) -> bool:
 
 def has_media_in_text(issue: dict) -> bool:
     try:
+        # URL
         images = re.findall(
             r"!\[.*?\]\((.*?\.(jpg|png|gif|jpeg|svg|bmp|tiff|webp|heic|psd|raw|mp3|mp4|mov|wmv|avi|mkv))\)",
+            issue['body'],
+            re.I
+        )
+        # HTML
+        images += re.findall(
+            r'src="(.*?\.(jpg|png|gif|jpeg|svg|bmp|tiff|webp|heic|psd|raw|mp3|mp4|mov|wmv|avi|mkv))"',
             issue['body'],
             re.I
         )
@@ -95,6 +102,12 @@ def filter_linked_issues(
                   f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
+        if linked_issue_id in issue_to_linked_issues.get(pull_id, set()) and pull_id not in issue_to_linked_issues.get(
+                linked_issue_id, set()):
+            links_count = 2
+        else:
+            links_count = 1
+
         linked_issue = issues_by_id[linked_issue_id]
 
         # Check issue is a bug
@@ -103,8 +116,8 @@ def filter_linked_issues(
                   f"Skipping pull request {pull_request['html_url']} ...")
             continue
 
-        if not has_utf8_description(linked_issue):
-            print(f"Issue has not utf-8 description which we can not process. "
+        if linked_issue['body'] == '' or linked_issue['body'] is None or not is_utf_8(linked_issue['body']):
+            print(f"Issue is empty or contains not-utf-8 characters in description. "
                   f"Skipping issue {linked_issue['html_url']} ...")
             continue
 
@@ -116,8 +129,12 @@ def filter_linked_issues(
 
         # Check diff between base and head commit can be extracted
         try:
-            changed_files = get_changed_files_between_commits(repo_path, pull_request['base']['sha'],
-                                                              pull_request['head']['sha'])
+            diff = get_diff_between_commits(repo_path, pull_request['base']['sha'], pull_request['head']['sha'])
+            changed_files = parse_changed_files_from_diff(diff)
+            if diff == '' or diff is None or not is_utf_8(diff):
+                print(f"Diff is empty or contains non-utf-8 characters. "
+                      f"Skipping pull request {pull_request['html_url']} ...")
+                continue
         except Exception as e:
             print(f"Can not get changed files. "
                   f"Skipping pull request {pull_request['html_url']} due to exception {e}...")
@@ -145,6 +162,7 @@ def filter_linked_issues(
                 "issue_html_url": pull_request['html_url'],
                 "linked_issue_html_url": linked_issue['html_url'],
                 "link_type": parsed_issue_link['link_type'],
+                "links_count": links_count,
             })
 
     print(f"Left issues links: {len(filtered_parsed_issue_links)}")
