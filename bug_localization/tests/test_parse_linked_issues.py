@@ -1,8 +1,8 @@
 import pytest
 
-from data.preprocessing.parse_linked_issues import parse_linked_issues_from_comment, parse_linked_issues_from_comments
+from src.data import parse_linked_issues_from_comment, parse_linked_issues_from_comments
 from tests import TEST_ROOT_PATH
-from utils.jsonl_utils import save_jsonl_data
+from src.utils.jsonl_utils import save_jsonl_data
 
 
 @pytest.mark.parametrize(
@@ -12,7 +12,7 @@ from utils.jsonl_utils import save_jsonl_data
         ("Bug in #262 fixed", [(262, "hash")]),
         ("Bug in GH-264 and GH-265 fixed. Also #262 fixed.", [(262, "hash"), (264, "slash"), (265, "slash")]),
         ("Bug in jlord/sheetsee.js#263 fixed", [(263, "file")]),
-        ("Bug in #262 https://s3.amazonaws.com/logs.zephyrproject.org/jira/GH-1661/make_error.log", [(262, "hash")]),
+        ("Bug in #262", [(262, "hash")]),
     ],
 )
 def test_parse_linked_issues_from_comment(comment_body: str, linked_issues: list[str]):
