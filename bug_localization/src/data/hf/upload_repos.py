@@ -17,7 +17,8 @@ def archive_repo(repo_owner: str, repo_name: str, repos_path: str, archives_path
     shutil.make_archive(
         f"{repo_owner}__{repo_name}",
         'gztar',
-        base_dir=os.path.join(repos_path, f"{repo_owner}__{repo_name}")
+        root_dir=repos_path,
+        base_dir=f"{repo_owner}__{repo_name}"
     )
 
 
