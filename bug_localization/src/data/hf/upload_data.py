@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 from src.utils.hf_utils import CATEGORIES, FEATURES, HUGGINGFACE_REPO
 
 
-@hydra.main(config_path="../../../configs", config_name="local_data", version_base=None)
+@hydra.main(config_path="../../../configs", config_name="server", version_base=None)
 def upload_bug_localization_data(config: DictConfig):
     huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
 

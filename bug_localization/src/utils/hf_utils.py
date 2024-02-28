@@ -10,7 +10,7 @@ SPLITS = ['dev', 'test', 'train']
 FEATURES = {
     'repos_paths': datasets.Features(
         {
-            "repos": [datasets.Value("string")]
+            category: [datasets.Value("string")] for category in CATEGORIES
         }
     ),
     'bug_localization_data': datasets.Features(

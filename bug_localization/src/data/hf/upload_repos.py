@@ -31,7 +31,7 @@ def archive_repos(repos_list: list[tuple[str, str]], repos_path: str, archives_p
         pool.starmap(archive_repo, params)
 
 
-@hydra.main(config_path="../../../configs", config_name="local_data", version_base=None)
+@hydra.main(config_path="../../../configs", config_name="server", version_base=None)
 def upload_bug_localization_repos(config: DictConfig):
     huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
     api = HfApi()

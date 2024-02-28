@@ -4,7 +4,7 @@ This folder contains code for Bug Localization task in Long Code Arena 🏟 benc
 given an issue with bug description, identify the files within the project that need to be modified
 to address the reported bug.
 
-We provide [scripts for data collection and processing](./src/data) as well as several [baselines implementations](./src/baselines).
+We provide scripts for [data collection and processing](./src/data), [data exploratory analysis](./src/notebooks) as well as several [baselines implementations](./src/baselines) for the task solution.
 ## 💾 Install dependencies
 We provide dependencies for pip dependency manager, so please run the following command to install all required packages:
 ```shell

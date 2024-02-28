@@ -196,7 +196,7 @@ def prepare_data(repo: dict, config: DictConfig):
     )
 
 
-@hydra.main(config_path="../../../configs", config_name="local_data", version_base=None)
+@hydra.main(config_path="../../../configs", config_name="server", version_base=None)
 def main(config: DictConfig):
     os.makedirs(config.issues_links_filtered_path, exist_ok=True)
     process_repos_data(prepare_data, config)
