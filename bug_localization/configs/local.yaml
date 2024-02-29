@@ -1,5 +1,0 @@
-data_path: /Users/Maria.Tigina/PycharmProjects/lca-baselines/data/lca-bug-localization
-repos_path: /Users/Maria.Tigina/PycharmProjects/lca-baselines/data/lca-bug-localization/repos
-baseline_name: tfidf
-categories: [ 'py' ]
-splits: [ 'test' ]

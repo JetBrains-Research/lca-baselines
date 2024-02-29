@@ -5,14 +5,14 @@ from omegaconf import DictConfig, OmegaConf
 
 from src.baselines.model.baseline_models import Baseline
 from src.baselines.model.baseline_tokenizers import BaseTokenizer
-from src.baselines.models import CodeT5Baseline
+from src.baselines.models.codet5_baseline import CodeT5Baseline
 from src.baselines.models.openai_baseline import OpenAIBaseline
 from src.baselines.models.tf_idf_baseline import TfIdfBaseline
 from src.baselines.tokenizers.bpe_tokenizer import BPETokenizer
 from src.baselines.tokenizers.codet5_tokenizer import CodeT5Tokenizer
 from src.baselines.tokenizers.nltk_tokenizer import NltkTokenizer
-from src import load_data_from_hf
 from src.utils.file_utils import create_dir, create_run_directory, save_config
+from src.utils.hf_utils import load_data
 
 
 def init_tokenizer(config: DictConfig) -> BaseTokenizer:
@@ -57,9 +57,10 @@ def init_model(config: DictConfig) -> Baseline:
 
 
 def run_baseline() -> None:
-    local_config = OmegaConf.load("../configs/local.yaml")
-    baseline_config = OmegaConf.load(f"src/baselines/configs/{local_config.baseline_name}.yaml")
-    config = OmegaConf.merge(local_config, baseline_config)
+    run_config = OmegaConf.load("../configs/run.yaml")
+    local_config = OmegaConf.load(f"../configs/data/{run_config.data}.yaml")
+    baseline_config = OmegaConf.load(f"../configs/baselines/{run_config.baseline}.yaml")
+    config = OmegaConf.merge(run_config, local_config, baseline_config)
 
     run_path, run_index = create_run_directory(os.path.join(config.data_path, 'runs'))
     save_config(config, run_path)

@@ -45,7 +45,7 @@ def load_repos(repos_path: str):
     shutil.rmtree(local_repo_tars_path)
 
 
-@hydra.main(config_path="../configs", config_name="local", version_base=None)
+@hydra.main(config_path="../configs/data", config_name="local", version_base=None)
 def load_dataset(config: DictConfig) -> None:
     load_repos(config.repos_path)
 

@@ -102,7 +102,7 @@ def split_by_language(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     return df_by_language
 
 
-@hydra.main(config_path="../../../configs", config_name="server", version_base=None)
+@hydra.main(config_path="../../../configs/data", config_name="server", version_base=None)
 def main(config: DictConfig):
     cpus = multiprocessing.cpu_count()
     results = []

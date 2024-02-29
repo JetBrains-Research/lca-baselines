@@ -9,3 +9,15 @@ issues_prs_path: /mnt/data/shared-data/lca/issues_prs_updated_dedup
 issues_comments_path: /mnt/data/shared-data/lca/comments_updated_dedup
 pull_requests_comments_path: /mnt/data/shared-data/lca/pulls_comments_updated
 bug_localization_data_path: /mnt/data/shared-data/lca/bug_localization_data
+test_data_ids: [
+  # py
+  5119, 5406, 5396, 6918, 7211, 5838, 5987, 5883, 2701, 2698, 7617, 7098, 7446, 8131, 6491,
+  6497, 6498, 6487, 6839, 6667, 3414,
+  # java
+  759, 249, 6871, 225, 52, 71, 107, 106, 87, 145, 125, 153, 0, 104, 24, 26, 46, 84, 78, 80,
+  # kotlin
+  1442, 1441, 7671, 7672, 1920, 7749, 7752, 7753, 7755, 1450, 1552, 1553, 1472, 1614, 1415,
+  1419, 2012, 1403, 134, 1421, 1413, 1944,
+  # mixed
+  4108
+]

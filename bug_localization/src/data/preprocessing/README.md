@@ -18,7 +18,7 @@ where
 * `linked_issue_html_url` -- url of the issue where link leads
 * `link_type` -- type of issue linkage
 
-Jsons are saved to `issues_links_path` defined in [config](../../../configs/server.yaml).
+Jsons are saved to `issues_links_path` defined in [config](../../../configs/data/server.yaml).
 
 
 ### [filter_linked_issues.py](filter_linked_issues.py)
@@ -31,7 +31,7 @@ Gets all issues <-> linked issues links and leaves only:
 * issue text has utf-8 encoding
 
 in format jsonl `{repo_owner}__{repo_name}.jsonl`. 
-Jsons are saved to `issues_links_filtered_path` defined in [config](../../../configs/server.yaml).
+Jsons are saved to `issues_links_filtered_path` defined in [config](../../../configs/data/server.yaml).
 
 ### [prepare_data_for_baseline.py](prepare_data_for_baseline.py)
 Collects all gathered data to jsonl/csv files splited by language:

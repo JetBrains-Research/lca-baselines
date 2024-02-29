@@ -2,6 +2,8 @@ import os
 from typing import Callable
 
 import datasets
+import huggingface_hub
+from datasets import Dataset
 
 HUGGINGFACE_REPO = 'JetBrains-Research/lca-bug-localization'
 CATEGORIES = ['py', 'java', 'kt', 'mixed']
@@ -45,41 +47,35 @@ FEATURES = {
 }
 
 
+def load_data(category: str, split: str) -> Dataset:
+    huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
+
+    return datasets.load_dataset(
+        HUGGINGFACE_REPO, category,
+        split=split,
+        ignore_verifications=True,
+    )
+
+
+def upload_data(df: Dataset, category: str, split: str) -> None:
+    huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
+
+    df.push_to_hub(HUGGINGFACE_REPO,
+                   category,
+                   split=split)
+
+
 def update_hf_data(update: Callable[[datasets.Dataset, str, str], datasets.Dataset]) -> None:
-    huggingface_token = os.environ['HUGGINGFACE_TOKEN']
-
-    for config in CATEGORIES:
+    for category in CATEGORIES:
         for split in SPLITS:
-            df = datasets.load_dataset(
-                HUGGINGFACE_REPO, config,
-                token=huggingface_token,
-                split=split,
-                ignore_verifications=True,
-            )
-
-            df = update(df, config, split)
-            df.push_to_hub(HUGGINGFACE_REPO,
-                           config,
-                           private=True,
-                           split=split,
-                           token=huggingface_token)
+            df = load_data(category, split)
+            df = update(df, category, split)
+            upload_data(df, category, split)
 
 
 def update_hf_data_splits(update: Callable[[datasets.Dataset, str, str], datasets.Dataset]) -> None:
-    huggingface_token = os.environ['HUGGINGFACE_TOKEN']
-
-    for config in CATEGORIES:
-        df = datasets.load_dataset(
-            HUGGINGFACE_REPO, config,
-            token=huggingface_token,
-            split='dev',
-            ignore_verifications=True,
-        )
-
+    for category in CATEGORIES:
+        df = load_data(category, 'dev')
         for split in SPLITS:
-            df = update(df, config, split)
-            df.push_to_hub(HUGGINGFACE_REPO,
-                           config,
-                           private=True,
-                           split=split,
-                           token=huggingface_token)
+            df = update(df, category, split)
+            upload_data(df, category, split)
