@@ -69,7 +69,7 @@ class PreprocessorBase:
         datapoint = datapoint.to_model_input(self.tokenize_datapoint)
         return datapoint
 
-    def prepare_model_input_parallel(self, num_workers=None, dataset_path=None):
+    def prepare_model_input_parallel(self, num_workers=1, dataset_path=None):
         self.prepare_data()
         if num_workers is None:
             num_workers = multiprocessing.cpu_count()
@@ -77,13 +77,18 @@ class PreprocessorBase:
         if os.path.exists(dataset_path):
             os.remove(dataset_path)
 
-        with Parallel(num_workers) as pool:
-            result = pool(delayed(self._datapoint_to_model_input)(datapoint) for datapoint in self.prepared_data)
-
         list_to_save = list()
+
         print('Tokenization...')
-        for p in tqdm(result):
-            list_to_save.append(dataclasses.asdict(p))
+        if num_workers == 1:
+            result = [self._datapoint_to_model_input(datapoint) for datapoint in tqdm(self.prepared_data)]
+            for p in result:
+                list_to_save.append(dataclasses.asdict(p))
+        else:
+            with Parallel(num_workers) as pool:
+                result = pool(delayed(self._datapoint_to_model_input)(datapoint) for datapoint in self.prepared_data)
+            for p in tqdm(result):
+                list_to_save.append(dataclasses.asdict(p))
 
         with open(dataset_path, 'w') as json_file:
             json.dump(list_to_save, json_file)
@@ -94,9 +99,22 @@ class PreprocessorBase:
 
     def tokenize_datapoint(self, datapoint: DatapointBase) -> TokenizerOutput:
         # print(len(datapoint.context), len(datapoint.completion))
-        cropped_context = datapoint.context[-500_000:]  # TODO: connect this to max_seq_len
+        chunk_size = 1000  # size in lines
+        cropped_context = datapoint.context[-60_000:]  # TODO: connect this to max_seq_len
+        # context_lines = cropped_context.split('\n')
+        # context_chunks_by_lines = [context_lines[i:i+chunk_size] for i in range(len(context_lines)//chunk_size)]
+        # context_chunks = ['\n'.join(lines_chunk) for lines_chunk in context_chunks_by_lines]
+        # splitting_char = 'METASEP\n'
+        # context_chunks = cropped_context.split(splitting_char)
+        # context_chunks[:-1] = [chunk + splitting_char for chunk in context_chunks[:-1]]
+        context_chunks = [cropped_context]
+        whitespace_char = '\n\n'
+        context_chunks = [new_chunk for chunk in context_chunks for new_chunk in chunk.split(whitespace_char)]
+        context_chunks[:-1] = [chunk + whitespace_char for chunk in context_chunks[:-1]]
+        tokenized_chunks = [self.tokenize(chunk) for chunk in context_chunks]
         return TokenizerOutput(
-            context=self.tokenize(cropped_context),
+            # context=self.tokenize(cropped_context),
+            context=[token_id for chunk in tokenized_chunks for token_id in chunk],
             completion=self.tokenize(datapoint.completion)
         )
 
@@ -139,6 +157,7 @@ class FLPythonPreprocessor(PreprocessorBase):
         self.meta_info_sep_symbol = '𐌼'
         self.extension = '.py'
         self._tokenizer: yttm.BPE
+        self._load_tokenizer(self.tokenizer_path)
 
     def compose_context(self, datapoint: DatapointBase) -> str:
         context = datapoint.context_dict
@@ -155,7 +174,6 @@ class FLPythonPreprocessor(PreprocessorBase):
         return self.lang_sep_symbol + self.lang_sep_symbol.join(composed_content)
 
     def tokenize(self, text) -> List[int]:
-        self._load_tokenizer(self.tokenizer_path)
         if "gpt" in self.tokenizer_path:
             return self._tokenizer(text)['input_ids']
         else:
@@ -178,6 +196,7 @@ class HFPreprocessor(PreprocessorBase):
         self.meta_info_sep_symbol = 'METASEP'
         self.extension = ''
         self._tokenizer: AutoTokenizer
+        self._load_tokenizer(self.tokenizer_path)
 
     def compose_context(self, datapoint: DatapointBase) -> str:
         context = datapoint.context_dict
@@ -194,8 +213,7 @@ class HFPreprocessor(PreprocessorBase):
         return self.lang_sep_symbol + self.lang_sep_symbol.join(composed_content)
 
     def tokenize(self, text) -> List[int]:
-        self._load_tokenizer(self.tokenizer_path)
-        return self._tokenizer(text)['input_ids']
+        return self._tokenizer(text, add_special_tokens=False)['input_ids']
 
     def _load_tokenizer(self, path):
         self._tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True)

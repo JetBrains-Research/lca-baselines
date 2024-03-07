@@ -56,7 +56,7 @@ def preprocess(args, composer_args):
         tokenizer_path=args.tokenizer,
         **composers
     )
-    preprocessor.prepare_model_input_parallel(dataset_path=prepared_dataset_path, num_workers=16)
+    preprocessor.prepare_model_input_parallel(dataset_path=prepared_dataset_path, num_workers=1)  # Don't change num_workers
     return prepared_dataset_path
 
 
