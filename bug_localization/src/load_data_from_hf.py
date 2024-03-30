@@ -1,5 +1,6 @@
 import os
 import shutil
+import tarfile
 
 import datasets
 import huggingface_hub
@@ -40,6 +41,17 @@ def load_repos(repos_path: str):
                 repo_type='dataset',
                 local_dir=local_repo_tars_path,
             )
+            with tarfile.open(local_repo_tar_path, "w:gz") as tar:
+                for file_ in tar:
+                    try:
+                        tar.extract(file_)
+                    except Exception as e:
+                        print(e)
+                        os.remove(file_.name)
+                        tar.extract(file_)
+                    finally:
+                        os.chmod(file_.name, 0o777)
+
             shutil.unpack_archive(local_repo_tar_path, extract_dir=repos_path, format='gztar')
             os.remove(local_repo_tar_path)
     shutil.rmtree(local_repo_tars_path)
