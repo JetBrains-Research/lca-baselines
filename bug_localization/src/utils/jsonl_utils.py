@@ -3,10 +3,10 @@ import json
 import os
 from typing import Optional
 
-PERMISSIVE_LICENSES = ["MIT License",
-                       "Apache License 2.0",
-                       "BSD 3-Clause New or Revised License",
-                       "BSD 2-Clause Simplified License"]
+PERMISSIVE_LICENSES = ['MIT License',
+                       'Apache License 2.0',
+                       'BSD 3-Clause "New" or "Revised" License',
+                       'BSD 2-Clause "Simplified" License']
 
 EXCLUDE_REPOS = ["moj-analytical-services/splink"]
 

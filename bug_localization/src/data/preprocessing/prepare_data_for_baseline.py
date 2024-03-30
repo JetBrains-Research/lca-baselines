@@ -1,3 +1,4 @@
+import json
 import multiprocessing
 import os
 from typing import List
@@ -13,7 +14,7 @@ from src.utils.jsonl_utils import get_jsonl_data, get_repos
 
 def has_test_files(changed_files: List[str]) -> bool:
     for file in changed_files:
-        if "/test/" in file or "test_" in file:
+        if "/test" in file.lower() or "test_" in file.lower():
             return True
     return False
 
@@ -53,18 +54,21 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
                 continue
             records.append(
                 {
+                    "text_id": f"{repo_owner}/{repo_name}/"
+                               f"{issues_link['issue_html_url'].split('/')[-1]}/"
+                               f"{issues_link['linked_issue_html_url'].split('/')[-1]}",
                     "repo_owner": repo_owner,
                     "repo_name": repo_name,
                     "issue_url": issues_link['linked_issue_html_url'],
                     "pull_url": issues_link['issue_html_url'],
                     "comment_url": issues_link['comment_html_url'],
                     "links_count": issues_link['links_count'],
-                    "issue_title": issue['title'],
-                    "issue_body": issue['body'],
+                    "issue_title": str(issue['title']),
+                    "issue_body": str(issue['body']),
                     "base_sha": pull['base']['sha'],
                     "head_sha": pull['head']['sha'],
                     "diff_url": f"https://github.com/{repo_owner}/{repo_name}/compare/{pull['base']['sha']}...{pull['head']['sha']}",
-                    "diff": diff,
+                    "diff": str(diff),
                     "changed_files": str(changed_files),
                     "changed_files_count": len(changed_files),
                     "java_changed_files_count": files_exts.get('.java', 0),
@@ -75,9 +79,9 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
                     "changed_files_exts": str(files_exts),
                     "pull_create_at": pull['created_at'],
                     "stars": repo['stars'],
-                    "language": repo['language'],
+                    "language": str(repo['language']),
                     "languages": str(repo['languages']),
-                    "license": repo['license'],
+                    "license": str(repo['license']),
                 }
             )
 
@@ -121,7 +125,7 @@ def main(config: DictConfig):
     os.makedirs(config.bug_localization_data_path, exist_ok=True)
     for lang, df_lang in df_by_language.items():
         df_lang.to_csv(os.path.join(config.bug_localization_data_path, f"bug_localization_data_{lang}.csv"),
-                       index=False)
+                       escapechar="\\", index=False)
         df_lang.to_json(os.path.join(config.bug_localization_data_path, f"bug_localization_data_{lang}.jsonl"),
                         orient="records", lines=True)
 
