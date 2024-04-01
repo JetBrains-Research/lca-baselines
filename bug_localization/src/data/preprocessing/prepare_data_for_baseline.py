@@ -1,4 +1,3 @@
-import json
 import multiprocessing
 import os
 from typing import List
@@ -6,6 +5,7 @@ from typing import List
 import hydra
 import pandas as pd
 from omegaconf import DictConfig
+from langdetect import detect
 
 from src.utils.file_utils import get_file_exts
 from src.utils.git_utils import get_diff_between_commits, parse_changed_files_from_diff
@@ -65,6 +65,7 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
                     "links_count": issues_link['links_count'],
                     "issue_title": str(issue['title']),
                     "issue_body": str(issue['body']),
+                    "issue_body_langauge": str(detect(issue['body'])),
                     "base_sha": pull['base']['sha'],
                     "head_sha": pull['head']['sha'],
                     "diff_url": f"https://github.com/{repo_owner}/{repo_name}/compare/{pull['base']['sha']}...{pull['head']['sha']}",
