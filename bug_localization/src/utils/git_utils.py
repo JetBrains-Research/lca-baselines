@@ -130,7 +130,8 @@ def parse_changed_files_and_lines_from_diff(diff_str: str) -> Dict[str, List[Tup
 
 
 def get_repo_content_on_commit(repo_path: str, commit_sha: str,
-                               extensions: Optional[list[str]] = None) -> Dict[str, str]:
+                               extensions: Optional[list[str]] = None,
+                               ignore_tests: bool = False) -> Dict[str, str]:
     """
     Get repo content on specific commit
     :param repo_path: path to directory where repo is cloned
@@ -146,6 +147,8 @@ def get_repo_content_on_commit(repo_path: str, commit_sha: str,
         if blob.type == "blob":
             file_path = str(blob.path)
             if extensions is not None and not any(file_path.endswith(ext) for ext in extensions):
+                continue
+            if ignore_tests and any(test_dir in file_path.lower() for test_dir in ['test/', 'tests/']):
                 continue
             with open(os.path.join(repo_path, file_path), "r") as file:
                 try:
