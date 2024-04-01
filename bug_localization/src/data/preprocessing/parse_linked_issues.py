@@ -48,9 +48,12 @@ def parse_linked_issues_from_comments(
         repo_name: str,
         issues_comments_path: str,
         pull_requests_comments_path: str,
+        issues_path: str,
+        pull_requests_path: str,
 ) -> list[dict]:
     issues_links = []
     comments = []
+
     issues_comments = get_jsonl_data(issues_comments_path, repo_owner, repo_name)
     if issues_comments is None:
         print(f"Issues comments are missed for repo {repo_owner}/{repo_name}")
@@ -62,6 +65,18 @@ def parse_linked_issues_from_comments(
         print(f"Pull requests comments are missed for repo {repo_owner}/{repo_name}")
     else:
         comments += pull_requests_comments
+
+    pull_requests = get_jsonl_data(pull_requests_path, repo_owner, repo_name)
+    if pull_requests is None:
+        print(f"Pull requests are missed for repo {repo_owner}/{repo_name}")
+    else:
+        comments += pull_requests
+
+    issues = get_jsonl_data(issues_path, repo_owner, repo_name)
+    if issues is None:
+        print(f"Issues are missed for repo {repo_owner}/{repo_name}")
+    else:
+        comments += issues
 
     for comment in comments:
         if comment['body'] is None:
@@ -101,7 +116,9 @@ def get_linked_issues_from_comments(
 
     issues_links = parse_linked_issues_from_comments(repo_owner, repo_name,
                                                      config.issues_comments_path,
-                                                     config.pull_requests_comments_path)
+                                                     config.pull_requests_comments_path,
+                                                     config.issues_path,
+                                                     config.pulls_path)
     print(f"Collected {len(issues_links)} issue links")
     save_jsonl_data(repo_owner, repo_name, issues_links, config.issues_links_path)
 

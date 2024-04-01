@@ -165,6 +165,10 @@ def filter_linked_issues(
                 "links_count": links_count,
             })
 
+        # Get only diffs without new files
+        if any(changed_file not in repo_content for changed_file in changed_files):
+            continue
+
     print(f"Left issues links: {len(filtered_parsed_issue_links)}")
     return list(filtered_parsed_issue_links)
 

@@ -5,9 +5,9 @@ from omegaconf import DictConfig, OmegaConf
 
 from src.baselines.model.baseline_models import Baseline
 from src.baselines.model.baseline_tokenizers import BaseTokenizer
-from src.baselines.models.codet5_baseline import CodeT5Baseline
-from src.baselines.models.openai_baseline import OpenAIBaseline
-from src.baselines.models.tf_idf_baseline import TfIdfBaseline
+from src.baselines.backbones.codet5_embed_backbone import CodeT5Baseline
+from src.baselines.backbones.openai_list_files_backbone import OpenAIBaseline
+from src.baselines.backbones.tf_idf_backbone import TfIdfBaseline
 from src.baselines.tokenizers.bpe_tokenizer import BPETokenizer
 from src.baselines.tokenizers.codet5_tokenizer import CodeT5Tokenizer
 from src.baselines.tokenizers.nltk_tokenizer import NltkTokenizer
