@@ -14,7 +14,7 @@ COMPOSERS = {
     'half_memory': {'module': 'eval.composers', 'name': 'HalfMemoryComposer'},
     'function_class_mask_half': {'module': 'eval.composers', 'name': 'FuncClassComposer'},
     'function_class_mask_one': {'module': 'eval.composers', 'name': 'FuncClassComposerOne'},
-    # 'imports_first': {'module': 'eval.composers', 'name': 'ImportsFirstComposer'},
+    'imports_first': {'module': 'eval.composers', 'name': 'ImportsFirstComposer'},
 }
 
 

@@ -17,7 +17,7 @@ def get_model(args):
         raise NotImplementedError
     else:
         model_metainfo = MODEL_REGISTRY[args.model]
-        model, device = model_metainfo.builder.build_model(model_metainfo.checkpoint)
+        model, device = model_metainfo.builder.build_model(model_metainfo.checkpoint, trust_remote_code=True)
     return model, device
 
 
