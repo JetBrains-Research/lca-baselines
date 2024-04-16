@@ -1,8 +1,11 @@
 import os
-import re
+from collections import defaultdict
 from typing import Dict, List, Tuple, Optional
 
 import git
+import unidiff
+
+from src.utils.file_utils import is_test_file
 
 
 def get_changed_files_between_commits(repo_path: str, first_commit_sha: str, second_commit_sha: str,
@@ -87,51 +90,45 @@ def parse_changed_files_from_diff(diff_str: str) -> List[str]:
     :param diff_str: diff in string format gather from `get_git_diff_between_commits`
     :return: list of changed files according to diff
     """
-    changed_files = set()
-    for line in diff_str.splitlines():
-        if line.startswith("+++ b/"):
-            file_name = line[6:]
-            changed_files.add(file_name)
+    source_files = {
+        patched_file.source_file.split("a/", 1)[-1]
+        for patched_file in unidiff.PatchSet.from_string(diff_str)
+    }
 
-    return list(changed_files)
+    return list(source_files)
 
 
-def parse_changed_files_and_lines_from_diff(diff_str: str) -> Dict[str, List[Tuple[Tuple[int, int], Tuple[int, int]]]]:
+def parse_added_files_from_diff(diff_str: str) -> List[str]:
+    source_files = {
+        patched_file.target_file.split("b/", 1)[-1]
+        for patched_file in unidiff.PatchSet.from_string(diff_str) if patched_file.is_added_file
+    }
+
+    return list(source_files)
+
+
+def parse_changed_files_and_lines_from_diff(diff_str: str) -> Dict[str, list[tuple[int, str, str]]]:
     """
     Parse change file names and lines in it from diff
     :param diff_str: diff in string format gather from `get_git_diff_between_commits`
     :return: dict from file path to lines for each changed files according to diff
     """
-    changed_files = dict()
-    diff_lines = diff_str.splitlines()
-    changed_line_regex = re.compile(r"@@ ([-+]\d+,\d+) ([-+]\d+,\d+) @@")
+    changed_files_and_lines = defaultdict(list)
+    patch_set = unidiff.PatchSet(diff_str)
+    for patched_file in patch_set:
+        for hunk in patched_file:
+            for line in hunk:
+                if line.is_added:
+                    changed_files_and_lines[patched_file.path].append((line.target_line_no - 1, 'a', line.value))
+                elif line.is_removed:
+                    changed_files_and_lines[patched_file.path].append((line.source_line_no - 1, 'r', line.value))
 
-    i = 0
-    prev_file_name = None
-    while i < len(diff_lines):
-        line = diff_lines[i]
-        if line.startswith("+++ b/"):
-            file_name = line[6:]
-            changed_files[file_name] = []
-            prev_file_name = file_name
-
-        if prev_file_name is not None:
-
-            matches = changed_line_regex.findall(line)
-
-            for match in matches:
-                start1, count1 = map(int, match[0][1:].split(","))
-                start2, count2 = map(int, match[1][1:].split(","))
-                changed_files[prev_file_name].append(((start1, count1), (start2, count2)))
-
-        i += 1
-
-    return changed_files
+    return dict(changed_files_and_lines)
 
 
 def get_repo_content_on_commit(repo_path: str, commit_sha: str,
                                extensions: Optional[list[str]] = None,
-                               ignore_tests: bool = False) -> Dict[str, str]:
+                               ignore_tests: bool = False) -> Dict[str, Optional[str]]:
     """
     Get repo content on specific commit
     :param repo_path: path to directory where repo is cloned
@@ -148,15 +145,20 @@ def get_repo_content_on_commit(repo_path: str, commit_sha: str,
             file_path = str(blob.path)
             if extensions is not None and not any(file_path.endswith(ext) for ext in extensions):
                 continue
-            if ignore_tests and any(test_dir in file_path.lower() for test_dir in ['test/', 'tests/']):
+            if ignore_tests and is_test_file(file_path):
                 continue
-            with open(os.path.join(repo_path, file_path), "r") as file:
-                try:
-                    content = file.read()
-                    file_contents[file_path] = str(content)
-                except Exception as e:
-                    file_contents[file_path] = ""
-                    # print(f"Can not read file with ext {file_path}. Replace with empty string...", e)
-
+            full_file_path = os.path.join(repo_path, file_path)
+            if not os.path.isfile(full_file_path):
+                continue
+            try:
+                with open(full_file_path, "r") as file:
+                    try:
+                        content = file.read()
+                        file_contents[file_path] = str(content)
+                    except Exception as e:
+                        file_contents[file_path] = None
+                        # print(f"Can not read file with ext {file_path}. Replace with empty string...", e)
+            except Exception as e:
+                file_contents[file_path] = None
     repo.git.checkout('HEAD', '.')
     return file_contents

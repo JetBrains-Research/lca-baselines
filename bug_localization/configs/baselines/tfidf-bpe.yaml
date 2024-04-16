@@ -1,0 +1,18 @@
+backbone:
+  _target_: src.baselines.backbones.emb.tfidf_emb_backbone.TfIdfEmbBackbone
+  model_name: tf-idf
+  pretrained_path: null
+  tokenizer:
+    _target_: src.baselines.backbones.emb.tokenizers.bpe_tokenizer.BPETokenizer
+    vocab_size: 10000
+    min_frequency: 2
+    pretrained_path: null
+data:
+  _target_: src.baselines.data_sources.hf.HFDataSource
+  cache_dir: null
+  hub_name: tiginamaria/bug-localization
+  configs:
+  - py
+  - java
+  - kt
+  split: test

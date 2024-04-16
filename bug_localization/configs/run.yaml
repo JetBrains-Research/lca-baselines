@@ -1,4 +1,0 @@
-data: 'local'
-baseline: 'tfidf'
-categories: [ 'py', 'java', 'kt' ]
-splits: [ 'test' ]

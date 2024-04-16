@@ -9,7 +9,7 @@ import hydra
 from huggingface_hub import HfApi
 from omegaconf import DictConfig
 
-from src.utils.hf_utils import CATEGORIES, HUGGINGFACE_REPO
+from src.utils.hf_utils import HUGGINGFACE_REPO, CATEGORIES
 
 
 def archive_repo(repo_owner: str, repo_name: str, repos_path: str, archives_path: str):

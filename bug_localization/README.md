@@ -1,6 +1,6 @@
 # Bug Localization
 
-This folder contains code for **Bug Localization** task in **Long Code Arena** 🏟 benchmark. Challenge: 
+This folder contains code for **Bug Localization** benchmark. Challenge: 
 given an issue with bug description, identify the files within the project that need to be modified
 to address the reported bug.
 
@@ -13,7 +13,7 @@ pip install -r requirements.txt
 Bug Localization task: given an issue with bug description, identify the files within the project that need to be modified to address the reported bug
 
 ## 🤗 Load data
-All data is stored in [HuggingFace 🤗](https://huggingface.co/datasets/JetBrains-Research/lca-bug-localization). It contains:
+All data is stored in [HuggingFace 🤗](https://huggingface.co/datasets/tiginamaria/bug-localization). It contains:
 
 * Dataset with bug localization data (with issue description, sha of repo with initial state and to the state after issue fixation).
 You can access data using [datasets](https://huggingface.co/docs/datasets/en/index) library:
@@ -44,7 +44,16 @@ They are stored in `.tar.gz` so you need to run script to load them and unzip:
   2. Run [load_data_from_hf.py](./src/load_data_from_hf.py) which will load all repos from HF and unzip them
 
 ## ⚙️ Run Baseline
-* [TF-IDF](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn.feature_extraction.text.TfidfVectorizer)
-* [GTE](https://huggingface.co/thenlper/gte-large)
-* [CodeT5](https://huggingface.co/Salesforce/codet5p-110m-embedding)
-* [GPT3.5](https://platform.openai.com/docs/models/gpt-3-5-turbo)
+
+* Embedding-based
+  * [TF-IDF](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn.feature_extraction.text.TfidfVectorizer)
+  * [GTE](https://huggingface.co/thenlper/gte-large)
+  * [CodeT5](https://huggingface.co/Salesforce/codet5p-110m-embedding)
+  * [BM25](https://platform.openai.com/docs/models/gpt-3-5-turbo)
+  
+* Name-based
+  * [GPT3.5](https://platform.openai.com/docs/models/gpt-3-5-turbo)
+  * [GPT4](https://platform.openai.com/docs/models/gpt-3-5-turbo)
+  * [Cloud 2](https://platform.openai.com/docs/models/gpt-3-5-turbo)
+  * [CodeLLama](https://platform.openai.com/docs/models/gpt-3-5-turbo)
+  * [Mistral](https://platform.openai.com/docs/models/gpt-3-5-turbo)

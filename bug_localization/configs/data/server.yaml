@@ -11,13 +11,11 @@ pull_requests_comments_path: /mnt/data/shared-data/lca/pulls_comments_updated
 bug_localization_data_path: /mnt/data/shared-data/lca/bug_localization_data
 test_data_ids: [
   # py
-  5119, 5406, 5396, 6918, 7211, 5838, 5987, 5883, 2701, 2698, 7617, 7098, 7446, 8131, 6491,
-  6497, 6498, 6487, 6839, 6667, 3414,
+  "keras-team/keras/15422/15382","serverless/serverless/5500/5499","hpcaitech/colossalai/409/408","google/jax/1039/1033","openbb-finance/openbbterminal/410/409","gradio-app/gradio/760/759","jerryjliu/llama_index/3695/1769","jina-ai/jina/900/899","jina-ai/jina/907/873","jina-ai/jina/569/552","wekan/wekan/3889/3884",
   # java
-  759, 249, 6871, 225, 52, 71, 107, 106, 87, 125, 153, 0, 104, 24, 26, 46, 84, 78, 80,
+  "square/okhttp/1254/1158","dbeaver/dbeaver/20881/20529","square/leakcanary/458/449","alibaba/spring-cloud-alibaba/46/42","google/gson/2364/904","libgdx/libgdx/856/798","apache/shardingsphere/2352/2343","ibotpeaches/apktool/1570/1564","appium/appium/1145/1140","appium/appium/1104/1100","williamfiset/algorithms/98/59","prestodb/presto/6427/6379","prestodb/presto/6208/6196","deeplearning4j/deeplearning4j/4664/4635","pinpoint-apm/pinpoint/2078/2077","quarkusio/quarkus/33586/33305","codecentric/spring-boot-admin/1589/1586","zaproxy/zaproxy/7494/7484","apache/dolphinscheduler/3957/3956","tootallnate/java-websocket/329/259","axonframework/axonframework/2756/2751","webbukkit/dynmap/3990/3982","jdbi/jdbi/1339/1338","citrusframework/citrus/598/588",
   # kotlin
-  1442, 1441, 7671, 7672, 1920, 7749, 7752, 7753, 7755, 1450, 1552, 1553, 1472, 1614, 1415,
-  1419, 2012, 1403, 134, 1421, 1413, 1944,
+  "airbnb/lottie-android/2078/2077","square/leakcanary/2144/2137","square/leakcanary/2168/2114","android/compose-samples/1045/1023","android/nowinandroid/713/611","android/nowinandroid/858/853","kotlin/kotlinx.coroutines/3584/3578","quarkusio/quarkus/23504/23501","quarkusio/quarkus/21328/21304","ktorio/ktor/43/813","thundernest/k-9/5687/5661","thundernest/k-9/5905/5873","thundernest/k-9/5928/5922","mockk/mockk/2/7","intellij-rust/intellij-rust/9545/9543","intellij-rust/intellij-rust/9695/9414","square/kotlinpoet/1519/1518","netflix/dgs-framework/1183/1135","cashapp/paparazzi/645/610","uwetrottmann/seriesguide/874/839","kasperskylab/kaspresso/390/389","hannah-sten/texify-idea/3151/3038",
   # mixed
-  4108
+  "electron/electron/11103/11101",
 ]

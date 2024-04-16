@@ -1,6 +1,0 @@
-baseline_type:
-  embed
-model:
-  name: codet5
-  device: cpu
-  checkpoint: Salesforce/codet5p-110m-embedding
