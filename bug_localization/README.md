@@ -13,7 +13,7 @@ pip install -r requirements.txt
 Bug Localization task: given an issue with bug description, identify the files within the project that need to be modified to address the reported bug
 
 ## 🤗 Load data
-All data is stored in [HuggingFace 🤗](https://huggingface.co/datasets/tiginamaria/bug-localization). It contains:
+All data is stored in [HuggingFace 🤗](JetBrains-Research/lca-bug-localization). It contains:
 
 * Dataset with bug localization data (with issue description, sha of repo with initial state and to the state after issue fixation).
 You can access data using [datasets](https://huggingface.co/docs/datasets/en/index) library:

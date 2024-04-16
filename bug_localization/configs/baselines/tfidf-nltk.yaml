@@ -8,7 +8,7 @@ backbone:
 data:
   _target_: src.baselines.data_sources.hf.HFDataSource
   cache_dir: null
-  hub_name: tiginamaria/bug-localization
+  hub_name: JetBrains-Research/lca-bug-localization
   configs:
   - py
   - java

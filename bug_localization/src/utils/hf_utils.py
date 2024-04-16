@@ -5,7 +5,7 @@ import datasets
 import huggingface_hub
 from datasets import Dataset
 
-HUGGINGFACE_REPO = 'tiginamaria/bug-localization'
+HUGGINGFACE_REPO = 'JetBrains-Research/lca-bug-localization'
 CATEGORIES = ['py', 'java', 'kt', 'mixed']
 SPLITS = ['dev', 'test', 'train']
 
