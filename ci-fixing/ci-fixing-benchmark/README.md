@@ -6,7 +6,7 @@ To initialize the benchmark, you need to pass a path to a config file with the f
 **out_folder**: here the result files would be stored  
 **data_cache_dir**: here the cached dataset would be stored  
 **username_gh**: your GitHub username  
-**test_username**: Optional. Username that would be displayed in the benchmark. If ommitted, username_gh would be used. We prefer it in that way.
+**test_username**: Optional. Username that would be displayed in the benchmark. If ommitted, username_gh would be used. We prefer it in that way.  
 **language**: dataset language (now only Python is available)  
 
 ## Benchmark usage
