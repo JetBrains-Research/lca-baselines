@@ -6,6 +6,7 @@ import pandas as pd
 from datasets import load_dataset
 from omegaconf import OmegaConf
 from tqdm import tqdm
+from typing import List
 
 from benchmark_utils import read_jsonl, save_jsonl
 from benhmark_functions import get_results, process_datapoint
@@ -14,6 +15,8 @@ from benhmark_functions import get_results, process_datapoint
 def filter_files(directory, files):
     return [file for file in files if file != "meta_info.json"]
 
+def filter_by_id(example, ids):
+    return example['id'] in ids
 
 class CIFixBenchmark:
     def __init__(self, model_name, config_path, token_gh):
@@ -137,10 +140,23 @@ class CIFixBenchmark:
         self.jobs_results = jobs_results
         return jobs_results
 
+    def get_results(self, job_ids_file=None, result_filename=None):
+
+        if job_ids_file is None:
+            job_ids_file = os.path.join(
+                self.config.out_folder, f"jobs_ids_{self.model_name}.jsonl"
+            )
+
+        self.eval_jobs(self, job_ids_file, result_filename)
+        if result_filename is None:
+            result_filename = f"jobs_results_{self.model_name}.jsonl"
+            result_file = os.path.join(self.config.out_folder, result_filename)
+        self.analyze_results(jobs_results_file=result_file)
+
     def analyze_results(self, jobs_results=None, jobs_results_file=None):
         if jobs_results_file is not None:
             jobs_results = read_jsonl(jobs_results_file)
-        elif jobs_results is None:
+        if jobs_results is None:
             jobs_results = self.jobs_ids
 
         results_df = pd.DataFrame(jobs_results)
@@ -166,10 +182,11 @@ class CIFixBenchmark:
     def eval_dataset(
         self,
         fix_repo_function,
-        num_dp=None,
-        force_download=False,
-        result_filename=None,
-        dataset_folder=None,
+        num_dp: int = None,
+        ids_list: List = None,
+        force_download = False,
+        result_filename = None,
+        dataset_folder = None,
     ):
         print("---------------- Downloading data -------------------")
         self.get_dataset(
@@ -177,6 +194,8 @@ class CIFixBenchmark:
             force_download=force_download,
             dataset_folder=dataset_folder,
         )
+        if ids_list is not None:
+            self.dataset = self.dataset.filter(lambda example: filter_by_id(example, ids_list))
         print(f"Got {len(self.dataset)} datapoints")
         print("---------------- Running datapoints -------------------")
         self.run_dataset(fix_repo_function)
