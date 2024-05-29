@@ -1,15 +1,15 @@
 import os
-import shutil
-import tarfile
+import zipfile
+from dotenv import load_dotenv
 from typing import List, Optional
 
 import huggingface_hub
 from datasets import get_dataset_config_names, load_dataset
 from huggingface_hub import hf_hub_download
 
-from .base_data_source import BaseDataSource
+from src.baselines.data_sources.base_data_source import BaseDataSource
 from src.utils.git_utils import get_repo_content_on_commit, get_changed_files_between_commits
-from src.utils.hf_utils import HUGGINGFACE_REPO, FEATURES, CATEGORIES
+from src.utils.hf_utils import HUGGINGFACE_REPO, FEATURES
 
 
 class HFDataSource(BaseDataSource):
@@ -38,52 +38,41 @@ class HFDataSource(BaseDataSource):
         # Load json file with repos paths
         paths_json = load_dataset(
             HUGGINGFACE_REPO,
-            data_files=f"repos_paths.json",
+            data_files=f"repos.json",
             ignore_verifications=True,
             split="train",
-            features=FEATURES['repos_paths']
+            features=FEATURES['repos']
         )
 
-        local_repo_tars_path = os.path.join(self._repos_dir, "local_repos_tars")
+        local_repo_zips_path = os.path.join(self._repos_dir, "local_repos_zips")
 
-        # Load each repo in .tar.gz format, unzip, delete archive
-        for category in CATEGORIES:
+        # Load each repo in .zip format, unzip, delete archive
+        for category in self._configs:
             repos = paths_json[category][0]
-            for i, repo_tar_path in enumerate(repos):
-                print(f"Loading {i}/{len(repos)} {repo_tar_path}")
+            for i, repo_zip_path in enumerate(repos):
+                print(f"Loading {i}/{len(repos)} {repo_zip_path}")
 
-                repo_name = os.path.basename(repo_tar_path)
+                repo_name = os.path.basename(repo_zip_path).split('.')[0]
+                repo_path = os.path.join(self._repos_dir, repo_name)
                 if os.path.exists(os.path.join(self._repos_dir, repo_name)):
-                    print(f"Repo {repo_tar_path} is already loaded...")
+                    print(f"Repo {repo_zip_path} is already loaded...")
                     continue
 
-                local_repo_tar_path = hf_hub_download(
+                local_repo_zip_path = hf_hub_download(
                     HUGGINGFACE_REPO,
-                    filename=repo_tar_path,
+                    filename=repo_zip_path,
                     repo_type='dataset',
-                    local_dir=local_repo_tars_path,
+                    local_dir=local_repo_zips_path,
                 )
 
-                with tarfile.open(local_repo_tar_path, "w:gz") as tar:
-                    for file_ in tar:
-                        try:
-                            tar.extract(file_)
-                        except Exception as e:
-                            print(e)
-                            os.remove(file_.name)
-                            tar.extract(file_)
-                        finally:
-                            os.chmod(file_.name, 0o777)
-
-                shutil.unpack_archive(local_repo_tar_path, extract_dir=self._repos_dir, format='gztar')
-                os.remove(local_repo_tar_path)
-        shutil.rmtree(local_repo_tars_path)
+                with zipfile.ZipFile(local_repo_zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(repo_path)
+                os.remove(local_repo_zip_path)
 
     def __iter__(self):
         for config in self._configs:
             dataset = load_dataset(self._hub_name, config, split=self._split, cache_dir=self._cache_dir)
-            # TODO: fix loading of repos and tar.gz opening
-            # self._load_repos()
+            self._load_repos()
             for dp in dataset:
                 repo_path = os.path.join(self._repos_dir, f"{dp['repo_owner']}__{dp['repo_name']}")
                 extensions = [config] if config != 'mixed' else None
@@ -95,3 +84,14 @@ class HFDataSource(BaseDataSource):
                                                                   extensions=extensions,
                                                                   ignore_tests=True)
                 yield dp, repo_content, changed_files
+
+
+if __name__ == '__main__':
+    load_dotenv()
+    ds = HFDataSource('JetBrains-Research/lca-bug-localization',
+                      '/home/tigina/lca-baselines/bug_localization/repos',
+                      split='test',
+                      configs=['py'])
+
+    for dp in ds:
+        print(dp)

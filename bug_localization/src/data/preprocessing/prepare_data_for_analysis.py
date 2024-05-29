@@ -80,10 +80,10 @@ def get_repo_records(repo: dict, config: DictConfig) -> List[dict]:
                         [v for k, v in files_exts.items() if k in ['.java', '.py', '.kt']]),
                     "changed_files_exts": str(files_exts),
                     "pull_create_at": pull['created_at'],
-                    "stars": repo['stars'],
-                    "language": str(repo['language']),
-                    "languages": str(repo['languages']),
-                    "license": str(repo['license']),
+                    "repo_stars": repo['stars'],
+                    "repo_language": str(repo['language']),
+                    "repo_languages": str(repo['languages']),
+                    "repo_license": str(repo['license']),
                 }
             )
 
@@ -120,7 +120,7 @@ def main(config: DictConfig):
             results += r
 
     df = pd.DataFrame.from_records(results)
-    df = df.sort_values('stars', ascending=False)
+    df = df.sort_values('repo_stars', ascending=False)
     df.insert(0, 'id', df.index)
     df_by_language = split_by_language(df)
 

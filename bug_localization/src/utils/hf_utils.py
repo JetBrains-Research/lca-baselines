@@ -5,12 +5,12 @@ import datasets
 import huggingface_hub
 from datasets import Dataset
 
-HUGGINGFACE_REPO = 'tiginamaria/bug-localization'
+HUGGINGFACE_REPO = 'JetBrains-Research/lca-bug-localization'
 CATEGORIES = ['py', 'java', 'kt', 'mixed']
 SPLITS = ['dev', 'test', 'train']
 
 FEATURES = {
-    'repos_paths': datasets.Features(
+    'repos': datasets.Features(
         {
             category: [datasets.Value("string")] for category in CATEGORIES
         }
@@ -54,10 +54,10 @@ FEATURES = {
             'issue_links_count': datasets.Value("int64"),
             'issue_code_blocks_count': datasets.Value("int64"),
             "pull_create_at": datasets.Value("timestamp[s]"),
-            "stars": datasets.Value("int64"),
-            "language": datasets.Value("string"),
-            "languages": datasets.Value("string"),
-            "license": datasets.Value("string"),
+            "repo_stars": datasets.Value("int64"),
+            "repo_language": datasets.Value("string"),
+            "repo_languages": datasets.Value("string"),
+            "repo_license": datasets.Value("string"),
         }
     )
 }
