@@ -4,7 +4,7 @@ from typing import List
 from src.baselines.utils.type_utils import ChatMessage
 
 
-class BasePrompt(ABC):
+class ChatBasePrompt(ABC):
 
     @abstractmethod
     def base_prompt(self, issue_description: str, project_content: dict[str, str]) -> str:

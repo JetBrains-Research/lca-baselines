@@ -5,7 +5,7 @@ import datasets
 import huggingface_hub
 from datasets import Dataset
 
-HUGGINGFACE_REPO = 'JetBrains-Research/lca-bug-localization'
+HUGGINGFACE_REPO = 'tiginamaria/bug-localization'
 CATEGORIES = ['py', 'java', 'kt', 'mixed']
 SPLITS = ['dev', 'test', 'train']
 
@@ -48,6 +48,7 @@ FEATURES = {
             'changed_lines_count': datasets.Value("int64"),
             'changed_files_without_tests_count': datasets.Value("int64"),
             'issue_symbols_count': datasets.Value("int64"),
+            'issue_words_count': datasets.Value("int64"),
             'issue_tokens_count': datasets.Value("int64"),
             'issue_lines_count': datasets.Value("int64"),
             'issue_links_count': datasets.Value("int64"),
@@ -92,5 +93,5 @@ def update_hf_data_splits(update: Callable[[datasets.Dataset, str, str], dataset
     for category in CATEGORIES:
         df = load_data(category, 'dev')
         for split in SPLITS:
-            df = update(df, category, split)
-            upload_data(df, category, split)
+            df_split = update(df, category, split)
+            upload_data(df_split, category, split)

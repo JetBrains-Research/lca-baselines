@@ -2,12 +2,12 @@ import json
 import re
 from typing import List, Dict, Any, Optional
 
-from src.baselines.backbones.gen.prompts.base_prompt import BasePrompt
+from src.baselines.backbones.chat.prompts.chat_base_prompt import ChatBasePrompt
 from src.utils.tokenization_utils import TokenizationUtils
 
 
 def check_match_context_size(tokenization_utils: TokenizationUtils,
-                             prompt: BasePrompt,
+                             prompt: ChatBasePrompt,
                              issue_description: str,
                              project_content: Dict[str, str],
                              is_chat: bool):
@@ -20,7 +20,7 @@ def check_match_context_size(tokenization_utils: TokenizationUtils,
 
 
 def batch_project_context(model: str,
-                          prompt: BasePrompt,
+                          prompt: ChatBasePrompt,
                           issue_description: str,
                           project_content: Dict[str, str],
                           is_chat: bool) -> List[Dict[str, str]]:
@@ -53,7 +53,7 @@ def parse_json_response(response: str) -> Optional[dict[str, Any]]:
     try:
         return json.loads(response)
     except json.decoder.JSONDecodeError:
-        print("Failed to parse raw json from response", response)
+        pass
 
     pattern = r'```json\s*([\s\S]*?)\s*```'
     match = re.search(pattern, response, re.MULTILINE)

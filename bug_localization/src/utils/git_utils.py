@@ -9,7 +9,8 @@ from src.utils.file_utils import is_test_file
 
 
 def get_changed_files_between_commits(repo_path: str, first_commit_sha: str, second_commit_sha: str,
-                                      extensions: Optional[list[str]] = None) -> List[str]:
+                                      extensions: Optional[list[str]] = None,
+                                      ignore_tests: bool = False) -> List[str]:
     """
     Get changed files between `first_commit` and `second_commit`
     :param repo_path: path to directory where repo is cloned
@@ -21,15 +22,16 @@ def get_changed_files_between_commits(repo_path: str, first_commit_sha: str, sec
 
     pull_request_diff = get_diff_between_commits(repo_path, first_commit_sha, second_commit_sha)
     changed_files = parse_changed_files_from_diff(pull_request_diff)
-    if not extensions:
-        return changed_files
+    filtered_changed_files = []
 
-    changed_files_with_extensions = []
     for changed_file in changed_files:
-        if any(changed_file.endswith(ext) for ext in extensions):
-            changed_files_with_extensions.append(changed_file)
+        if ignore_tests and is_test_file(changed_file):
+            continue
 
-    return changed_files_with_extensions
+        if extensions and any(changed_file.endswith(ext) for ext in extensions):
+            filtered_changed_files.append(changed_file)
+
+    return filtered_changed_files
 
 
 def get_changed_files_in_commit(repo_path: str, commit_sha: str) -> List[str]:

@@ -11,9 +11,11 @@ from src.baselines.utils.embed_utils import data_to_vectors
 class TfIdfEmbBackbone(BaseBackbone):
 
     def __init__(self,
+                 name: str,
                  tokenizer: BaseTokenizer,
                  ranker: BaseRanker,
                  pretrained_path: str):
+        super().__init__(name)
         self._tokenizer = tokenizer
         self._ranker = ranker
         self._pretrained_path = pretrained_path

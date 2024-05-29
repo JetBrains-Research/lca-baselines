@@ -3,7 +3,9 @@ from typing import Dict, Any
 
 
 class BaseBackbone(ABC):
-    name: str = "base"
+
+    def __init__(self, name: str):
+        self.name = name
 
     @abstractmethod
     def localize_bugs(self, issue_description: str, repo_content: Dict[str, str], **kwargs) -> Dict[str, Any]:

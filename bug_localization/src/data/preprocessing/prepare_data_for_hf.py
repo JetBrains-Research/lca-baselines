@@ -21,6 +21,7 @@ def add_stats(dp, dp_info):
     dp['changed_files_without_tests_count'] = dp_info['changed_files_without_tests_count']
 
     dp['issue_symbols_count'] = dp_info['issue_symbols_count']
+    dp['issue_words_count'] = dp_info['issue_words_count']
     dp['issue_tokens_count'] = dp_info['issue_tokens_count']
     dp['issue_lines_count'] = dp_info['issue_lines_count']
     dp['issue_links_count'] = dp_info['issue_links_count']

@@ -72,6 +72,10 @@ def count_lines(text: str) -> int:
     return len(text.split('\n'))
 
 
+def count_words(text: str) -> int:
+    return len(text.split())
+
+
 def add_stats(config: DictConfig, dp, category: str):
     print(f"Processing {dp['text_id']}")
     repo_path = os.path.join(config.repos_path, f"{dp['repo_owner']}__{dp['repo_name']}")
@@ -97,6 +101,7 @@ def add_stats(config: DictConfig, dp, category: str):
     dp['issue_symbols_count'] = count_symbols(issue_text)
     dp['issue_tokens_count'] = count_tokens(issue_text)
     dp['issue_lines_count'] = count_lines(issue_text)
+    dp['issue_words_count'] = count_words(issue_text)
     dp['issue_links_count'] = len(get_links(dp['issue_body']))
     dp['issue_code_blocks_count'] = len(get_code_blocks(dp['issue_body']))
 

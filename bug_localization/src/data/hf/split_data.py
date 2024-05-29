@@ -13,10 +13,10 @@ def split_data(df: datasets.Dataset, split: str, test_data_ids: list[str]):
         return df
 
     if split == 'test':
-        return df.filter(lambda dp: dp['text_id'] in test_data_ids)
+        return df.filter(lambda dp: dp['text_id'].lower() in test_data_ids)
 
     if split == 'train':
-        return df.filter(lambda dp: dp['text_id'] not in test_data_ids)
+        return df.filter(lambda dp: dp['text_id'].lower() not in test_data_ids)
 
 
 @hydra.main(config_path="../../../configs/data", config_name="server", version_base=None)

@@ -5,17 +5,16 @@ from tenacity import retry, stop_after_attempt, wait_random_exponential
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from src.baselines.backbones.base_backbone import BaseBackbone
-from src.baselines.backbones.gen.prompts.base_prompt import BasePrompt
+from src.baselines.backbones.chat.prompts.chat_base_prompt import ChatBasePrompt
 from src.baselines.utils.prompt_utils import batch_project_context
 
 
-class HfGenBackbone(BaseBackbone):
+class HfChatBackbone(BaseBackbone):
 
-    def __init__(self, model_name: str, prompt: BasePrompt) -> None:
+    def __init__(self, name: str, model_name: str, prompt: ChatBasePrompt) -> None:
+        super().__init__(name)
         self._model_name = model_name
         self._prompt = prompt
-
-    name: str = "huggingface"
 
     @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(3))
     def localize_bugs(self, issue_description: str, repo_content: dict[str, str]) -> Dict[str, Any]:
