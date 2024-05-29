@@ -1,5 +1,0 @@
-baseline_type:
-  score
-model:
-  name: openai
-  model: gpt-3.5-turbo

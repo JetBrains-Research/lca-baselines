@@ -1,0 +1,25 @@
+hydra:
+  job:
+    name: ${backbone.name}_${model_name.model_name}
+  run:
+    dir: /mnt/data/shared-data/lca/bug_localization_results/output/${hydra:job.name}
+  job_logging:
+    root:
+      handlers: [console, file]
+backbone:
+  _target_: src.baselines.backbones.emb.tfidf_emb_backbone.TfIdfEmbBackbone
+  pretrained_path: null
+  tokenizer:
+    _target_: src.baselines.backbones.emb.tokenizers.nltk_tokenizer.NltkTokenizer
+  ranker:
+    _target_: src.baselines.backbones.emb.rankers.cosine_distance_ranker.CosineDistanceRanker
+data_source:
+  _target_: src.baselines.data_sources.hf.HFDataSource
+  cache_dir: null
+  hub_name: tiginamaria/bug-localization
+  configs:
+    - py
+    - java
+    - kt
+  split: test
+output_path: /Users/Maria.Tigina/PycharmProjects/lca-baselines/data/lca-bug-localization

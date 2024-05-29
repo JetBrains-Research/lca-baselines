@@ -6,10 +6,11 @@ import shutil
 import datasets
 import huggingface_hub
 import hydra
+from dotenv import load_dotenv
 from huggingface_hub import HfApi
 from omegaconf import DictConfig
 
-from src.utils.hf_utils import CATEGORIES, HUGGINGFACE_REPO
+from src.utils.hf_utils import HUGGINGFACE_REPO, CATEGORIES
 
 
 def archive_repo(repo_owner: str, repo_name: str, repos_path: str, archives_path: str):
@@ -80,4 +81,5 @@ def upload_bug_localization_repos(config: DictConfig):
 
 
 if __name__ == '__main__':
+    load_dotenv()
     upload_bug_localization_repos()
