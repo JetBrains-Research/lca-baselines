@@ -6,7 +6,7 @@ import huggingface_hub
 from datasets import Dataset
 
 HUGGINGFACE_REPO = 'JetBrains-Research/lca-bug-localization'
-CATEGORIES = ['py', 'java', 'kt', 'mixed']
+CATEGORIES = ['py', 'java', 'kt']
 SPLITS = ['dev', 'test', 'train']
 
 FEATURES = {

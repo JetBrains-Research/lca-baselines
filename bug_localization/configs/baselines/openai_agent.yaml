@@ -2,7 +2,7 @@ hydra:
   job:
     name: ${backbone.name}_${backbone.model_name}
   run:
-    dir: /home/tigina/bug-localization/output/${hydra:job.name}
+    dir: /home/tigina/lca-baselines/bug_localization/output/${hydra:job.name}
   job_logging:
     root:
       handlers: [console, file]

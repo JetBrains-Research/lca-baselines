@@ -41,7 +41,8 @@ class OpenAIChatBackbone(BaseBackbone):
             self._model_name, self._prompt, issue_description, repo_content, True
         )
 
-        expected_files = set()
+        files = set()
+        final_files = set()
         raw_completions = []
         for batched_project_content in batched_project_contents:
             messages = self._prompt.chat(issue_description, batched_project_content)
@@ -49,11 +50,20 @@ class OpenAIChatBackbone(BaseBackbone):
             completion = self._get_chat_completion(messages)
             raw_completion_content = completion.choices[0].message.content
             raw_completions.append(raw_completion_content)
+            files.update(parse_list_files_completion(raw_completion_content))
 
-            expected_files.update(parse_list_files_completion(raw_completion_content, repo_content))
+        if len(batched_project_contents) > 1:
+            messages = self._prompt.chat(issue_description, {f: repo_content[f] for f in files if f in repo_content})
+            completion = self._get_chat_completion(messages)
+            raw_completion_content = completion.choices[0].message.content
+            raw_completions.append(raw_completion_content)
+            final_files.update(parse_list_files_completion(raw_completion_content))
+        else:
+            final_files = [f for f in files if f in repo_content]
 
         return {
-            "expected_files": list(expected_files),
+            "all_generated_files": list(files),
+            "final_files": list(final_files),
             "raw_completions": raw_completions,
             "batches_count": len(batched_project_contents)
         }

@@ -1,20 +1,20 @@
 hydra:
   job:
-    name: ${backbone.name}_bpe_cosine
+    name: ${backbone.name}_bpe_emb
   run:
-    dir: /home/tigina/bug-localization/output/${hydra:job.name}
+    dir: /home/tigina/lca-baselines/bug_localization/output/${hydra:job.name}
   job_logging:
     root:
       handlers: [console, file]
 backbone:
   _target_: src.baselines.backbones.emb.tfidf_emb_backbone.TfIdfEmbBackbone
   name: tfidf
-  pretrained_path: None
+  pretrained_path: null
   tokenizer:
     _target_: src.baselines.backbones.emb.tokenizers.bpe_tokenizer.BPETokenizer
     vocab_size: 10000
     min_frequency: 2
-    pretrained_path: None
+    pretrained_path: null
   ranker:
     _target_: src.baselines.backbones.emb.rankers.cosine_distance_ranker.CosineDistanceRanker
 data_source:
@@ -27,4 +27,3 @@ data_source:
     - java
     - kt
   split: test
-output_path: /Users/Maria.Tigina/PycharmProjects/lca-baselines/data/lca-bug-localization

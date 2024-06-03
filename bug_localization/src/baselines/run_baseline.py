@@ -1,7 +1,10 @@
 import csv
 import os
+import shutil
+import time
 
 import hydra
+from datasets import config
 from dotenv import load_dotenv
 from hydra.core.hydra_config import HydraConfig
 
@@ -20,22 +23,23 @@ def main(cfg: BaselineConfig) -> None:
     os.makedirs(output_path, exist_ok=True)
     results_csv_path = os.path.join(output_path, "results.csv")
 
-    count = 3
     for dp, repo_content, changed_files in data_src:
-        if count == 0:
-            break
-        count -= 1
         issue_description = dp['issue_title'] + '\n' + dp['issue_body']
+        start_time = time.time()
         results_dict = backbone.localize_bugs(issue_description, repo_content)
-        results_dict['text_id'] = dp['text_id']
+        end_time = time.time()
+        dp.update(results_dict)
+        dp['time_s'] = (end_time - start_time) * 1000000
 
         with open(results_csv_path, 'a', newline='') as f:
             writer = csv.writer(f)
             if f.tell() == 0:
-                writer.writerow(results_dict.keys())
-            writer.writerow(results_dict.values())
+                writer.writerow(dp.keys())
+            writer.writerow(dp.values())
 
 
 if __name__ == '__main__':
+    cache_dir = config.HF_DATASETS_CACHE
+    shutil.rmtree(cache_dir, ignore_errors=True)
     load_dotenv()
     main()

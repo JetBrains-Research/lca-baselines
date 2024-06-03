@@ -16,7 +16,7 @@ def upload_bug_localization_data(config: DictConfig):
 
     for category in CATEGORIES:
         df = Dataset.from_json(
-            os.path.join(config.bug_localization_data_path, f'bug_localization_data_{category}.jsonl'),
+            os.path.join(config.bug_localization_data_path, f'bug_localization_data_{category}_d.jsonl'),
             features=FEATURES['bug_localization_data']
         )
         dataset_dict = DatasetDict({'dev': df})

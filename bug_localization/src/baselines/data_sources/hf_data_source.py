@@ -1,6 +1,5 @@
 import os
 import zipfile
-from dotenv import load_dotenv
 from typing import List, Optional
 
 import huggingface_hub
@@ -75,23 +74,10 @@ class HFDataSource(BaseDataSource):
             self._load_repos()
             for dp in dataset:
                 repo_path = os.path.join(self._repos_dir, f"{dp['repo_owner']}__{dp['repo_name']}")
-                extensions = [config] if config != 'mixed' else None
-                # Move parameters to data source config
                 repo_content = get_repo_content_on_commit(repo_path, dp['base_sha'],
-                                                          extensions=extensions,
+                                                          extensions=[config],
                                                           ignore_tests=True)
                 changed_files = get_changed_files_between_commits(repo_path, dp['base_sha'], dp['head_sha'],
-                                                                  extensions=extensions,
+                                                                  extensions=[config],
                                                                   ignore_tests=True)
                 yield dp, repo_content, changed_files
-
-
-if __name__ == '__main__':
-    load_dotenv()
-    ds = HFDataSource('JetBrains-Research/lca-bug-localization',
-                      '/home/tigina/lca-baselines/bug_localization/repos',
-                      split='test',
-                      configs=['py'])
-
-    for dp in ds:
-        print(dp)
