@@ -1,24 +1,25 @@
 hydra:
   job:
-    name: ${backbone.name}_${model_name.model_name}
+    name: ${backbone.name}_bpe_cosine
   run:
-    dir: /mnt/data/shared-data/lca/bug_localization_results/output/${hydra:job.name}
+    dir: /home/tigina/bug-localization/output/${hydra:job.name}
   job_logging:
     root:
       handlers: [console, file]
 backbone:
   _target_: src.baselines.backbones.emb.tfidf_emb_backbone.TfIdfEmbBackbone
-  model_name: tf-idf
-  pretrained_path: null
+  name: tfidf
+  pretrained_path: None
   tokenizer:
     _target_: src.baselines.backbones.emb.tokenizers.bpe_tokenizer.BPETokenizer
     vocab_size: 10000
     min_frequency: 2
-    pretrained_path: null
+    pretrained_path: None
   ranker:
     _target_: src.baselines.backbones.emb.rankers.cosine_distance_ranker.CosineDistanceRanker
 data_source:
-  _target_: src.baselines.data_sources.hf.HFDataSource
+  _target_: src.baselines.data_sources.hf_data_source.HFDataSource
+  repos_dir:  /mnt/data/shared-data/lca/repos_updated
   cache_dir: null
   hub_name: tiginamaria/bug-localization
   configs:
