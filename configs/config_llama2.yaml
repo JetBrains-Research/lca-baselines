@@ -1,7 +1,0 @@
-hf_api_key: "pattern"
-hf_tokenizer_checkpoint: "meta-llama/Llama-2-7b-chat-hf"
-openai_api_key: "pattern"
-model_name: "meta-llama/Llama-2-7b-chat-hf"
-logs_dir: "./logs"
-save_dir: "./predictions-llama2-50"
-max_context_toks: 50

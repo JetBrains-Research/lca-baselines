@@ -1,0 +1,7 @@
+hf_api_key: "pattern"
+hf_tokenizer_checkpoint: "meta-llama/Llama-2-7b-chat-hf"
+api_key: "pattern"
+model_name: "codellama/CodeLlama-70b-Instruct-hf"
+logs_dir: "./logs"
+save_dir: "./predictions-llama2-1k"
+max_context_toks: 1000
