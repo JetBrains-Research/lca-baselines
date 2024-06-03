@@ -66,7 +66,7 @@ def parse_json_response(response: str) -> Optional[dict[str, Any]]:
     return None
 
 
-def parse_list_files_completion(raw_completion: str, repo_content: dict[str, str]) -> List[str]:
+def parse_list_files_completion(raw_completion: str,) -> List[str]:
     json_data = parse_json_response(raw_completion)
     list_files = []
 
@@ -74,15 +74,13 @@ def parse_list_files_completion(raw_completion: str, repo_content: dict[str, str
     if json_data:
         if 'files' in json_data:
             for file in json_data['files']:
-                if file in repo_content.keys():
-                    list_files.append(file)
+                list_files.append(file)
         else:
             print("No 'file' key in json output")
 
     # If data in list files format
     else:
         for file in raw_completion.split('\n'):
-            if file in repo_content.keys():
-                list_files.append(file)
+            list_files.append(file)
 
     return list_files
