@@ -6,6 +6,7 @@ import sys
 from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from openai import OpenAI
+from together import Together
 from utils.files_utils import load_config
 from utils.api_generation import gpt_generation
 from utils.context_utils import collect_good_context, trim_context
@@ -79,14 +80,15 @@ if __name__ == '__main__':
     api_key = config.get("api_key")
     model_name = config.get("model_name")
 
+    model_name = model_name.replace('/', '_')
     logging.basicConfig(
-        filename=f'{logs_dir}/openai_gen_{model_name}.log',
+        filename=f'{logs_dir}/together_gen_{model_name}.log',
         encoding='utf-8',
         level=logging.DEBUG
     )
 
     logging.info("Creating OpenAI client")
-    client = OpenAI(api_key=api_key)
+    client = Together(api_key=api_key)
     logging.info("Done")
 
     logging.info("Call generate all function")

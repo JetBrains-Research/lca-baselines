@@ -1,7 +1,7 @@
 import ast
 
 
-def collect_good_context(row):
+def collect_good_context_pathes(row):
     context = ""
     row['good_code_files'] = ast.literal_eval(str(row['good_code_files']).replace('repos', '../data/repos_clean'))
     for con_path in row['good_code_files']:
@@ -10,6 +10,9 @@ def collect_good_context(row):
             context += '\n\n' + con
     context = context.lstrip()
     return context
+
+def collect_good_context(row):
+    return row['relevant_code_context']
 
 
 def trim_context(context, tokenizer, max_len):
