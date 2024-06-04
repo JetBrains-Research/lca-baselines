@@ -16,6 +16,8 @@ MODEL_REGISTRY = {
     'starcoderbase-7b': ModelMetainfo(builder=HFModelBuilder, checkpoint="bigcode/starcoderbase-7b"),
     'starcoderbase': ModelMetainfo(builder=HFModelBuilder, checkpoint="bigcode/starcoderbase"),
 
+    'starcoder2-3b': ModelMetainfo(builder=HFModelBuilder, checkpoint="bigcode/starcoder2-3b"),
+
     'starcoderbase-1b-4bit': ModelMetainfo(builder=HFModelBuilder4bit, checkpoint="bigcode/starcoderbase-1b"),
     'starcoderbase-3b-4bit': ModelMetainfo(builder=HFModelBuilder4bit, checkpoint="bigcode/starcoderbase-3b"),
     'starcoderbase-7b-4bit': ModelMetainfo(builder=HFModelBuilder4bit, checkpoint="bigcode/starcoderbase-7b"),
@@ -30,4 +32,5 @@ MODEL_REGISTRY = {
     'codellama-34b-4bit': ModelMetainfo(builder=HFModelBuilder4bit, checkpoint="codellama/CodeLlama-34b-hf"),
 
     'deepseek-coder-1b': ModelMetainfo(builder=HFModelBuilder, checkpoint="deepseek-ai/deepseek-coder-1.3b-base"),
+    'deepseek-coder-7b': ModelMetainfo(builder=HFModelBuilder, checkpoint="deepseek-ai/deepseek-coder-6.7b-base"),
 }

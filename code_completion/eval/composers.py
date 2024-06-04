@@ -10,11 +10,12 @@ COMPOSERS = {
     'naive': {'module': 'eval.composers', 'name': 'DummyComposer'},
     # 'alphabetical': {'module': 'lca.code_generation.eval.composers', 'name': 'AlphabeticalComposer'},
     'path_distance': {'module': 'eval.composers', 'name': 'PathDistanceComposer'},
-    'file_length': {'module': 'eval.composers', 'name': 'FileLengthComposer'},
+    # 'file_length': {'module': 'eval.composers', 'name': 'FileLengthComposer'},
     'half_memory': {'module': 'eval.composers', 'name': 'HalfMemoryComposer'},
-    'function_class_mask_half': {'module': 'eval.composers', 'name': 'FuncClassComposer'},
+    'half_memory_path': {'module': 'eval.composers', 'name': 'HalfMemoryPathComposer'},
+    # 'function_class_mask_half': {'module': 'eval.composers', 'name': 'FuncClassComposer'},
     'function_class_mask_one': {'module': 'eval.composers', 'name': 'FuncClassComposerOne'},
-    'imports_first': {'module': 'eval.composers', 'name': 'ImportsFirstComposer'},
+    # 'imports_first': {'module': 'eval.composers', 'name': 'ImportsFirstComposer'},
 }
 
 
@@ -180,6 +181,25 @@ class HalfMemoryComposer(OneCompletonFileComposer):
         completion_path = list(completion)[0]
 
         composed_content = [path + self.meta_info_sep_symbol + self._forget_half(content) for path, content in context.items()]
+
+        composed_content.append(completion_path + self.meta_info_sep_symbol)
+
+        repo_metainfo = f"{self.extension}{self.lang_sep_symbol}{repo_name}{self.meta_info_sep_symbol}"
+
+        return repo_metainfo + self.lang_sep_symbol.join(composed_content)
+
+
+class HalfMemoryPathComposer(PathDistanceComposer, HalfMemoryComposer):
+    def context_composer(self, datapoint: DatapointBase) -> str:
+        # context = datapoint['context']
+        context = datapoint.get_context()
+        completion = datapoint.get_completion()
+        repo_name = datapoint.repo_name
+        assert len(completion) == 1, 'Only one file should be completed'
+        completion_path = list(completion)[0]
+        sorted_pathes = self._sort_filepathes(completion_path, list(context))
+
+        composed_content = [path + self.meta_info_sep_symbol + self._forget_half(context[path]) for path in sorted_pathes[::-1]]
 
         composed_content.append(completion_path + self.meta_info_sep_symbol)
 

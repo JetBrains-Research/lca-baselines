@@ -27,6 +27,7 @@ class PreprocessConfig:
     # config_path: str  # Path to composer configs
     composers: str  # One of COMPOSERS from lca.code_generation.eval.preprocess
     out_dir: str  # Where to save preprocessed dataset
+    context_len_char: int  # How much do we need to crop context string 5*seq_max_len by default
 
 
 @dataclass
@@ -83,6 +84,7 @@ class EvalPipeline:
 
         # eval_params["dataset_dir"] = inference_params["out_dir"]
         self.preprocess_args = PreprocessConfig(dataset=config.dataset, out_dir=os.path.join(dataset_out_dir, 'in'),
+                                                context_len_char=5 * inference_params['seq_max_len'],
                                                 **preprocess_params)
         self.inference_args = InferenceConfig(out_dir=os.path.join(dataset_out_dir, 'out'), **inference_params)
         self.eval_args = EvalConfig(dataset_dir=self.inference_args.out_dir,
@@ -105,7 +107,7 @@ class EvalPipeline:
         do_generation = self.config.do_generation
         seed = self.config.seed
         # Run Zero context scenario
-        wb_run = wandb.init(project=self.project_name, group=f"zero_context", )
+        wb_run = wandb.init(project=self.project_name, group=f"zero_context", name=f"zero_context")
         results = list()
         result_0 = self.run_zero_context()
         results.append(result_0)
@@ -149,7 +151,8 @@ class EvalPipeline:
             )
             gen_scores, gen_results, em_difference, line_counts = evaluate_generation(self.generator_config)
 
-            wb_run.log(gen_scores | {'EM_difference': em_difference, 'Line Counts': line_counts})
+            wb_run.log(gen_scores | {'EM_difference': em_difference, 'Line Counts': line_counts,
+                                     "dataset": self.config.dataset, "model": self.inference_args.model})
             wb_run.finish()
             with open(os.path.join(self.out_dir, 'generation_scores.json'), 'w') as f:
                 json.dump(gen_results, f, indent=4)
@@ -177,10 +180,11 @@ class EvalPipeline:
         print(">>Evaluation...")
         mean_ppl = evaluate(self.eval_args)
 
-        return {"perplexity": mean_ppl, "context": 0, "composer": "naive"} | lost_tokens
+        return {"perplexity": mean_ppl, "context": 0, "composer": "zero", "dataset": self.config.dataset,
+                "model": self.inference_args.model} | lost_tokens
 
     def run_composer(self, composer, results):
-        wb_run = wandb.init(project=self.project_name, group=f"{composer} composer", )
+        wb_run = wandb.init(project=self.project_name, group=f"{composer} composer", name=f"{composer} composer")
         self.preprocess_args.composers = composer
         print(f'>>Preprocessing for {composer} composer...')
         prepared_dataset_path = preprocess(self.preprocess_args, self.config.composers_config)
@@ -204,7 +208,8 @@ class EvalPipeline:
             print(">>>>>>Evaluation...")
             mean_ppl = evaluate(self.eval_args)
             results.append({"perplexity": mean_ppl, "context": self.inference_args.context_max,
-                            "composer": composer} | lost_tokens)
+                            "composer": composer, "dataset": self.config.dataset,
+                            "model": self.inference_args.model} | lost_tokens)
             print(results[-1])
             wb_run.log(results[-1])
 

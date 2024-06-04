@@ -23,6 +23,7 @@ class PreprocessorBase:
     def __init__(self,
                  filepath: str,
                  tokenizer_path: str | None = None,
+                 context_len_char: int = 60_000,
                  context_composer: Callable[[Dict[str, Any]], str] | None = None,
                  completion_composer: Callable[[Dict[str, Any]], str] | None = None,
                  data_source: str = 'hf',
@@ -34,6 +35,7 @@ class PreprocessorBase:
         self.context_composer = context_composer
         self.completion_composer = completion_composer
         self.data_source = data_source
+        self.context_len_char = context_len_char
 
     def compose_context(self, context: Dict[str, str]) -> str:
         raise NotImplementedError
@@ -100,7 +102,7 @@ class PreprocessorBase:
     def tokenize_datapoint(self, datapoint: DatapointBase) -> TokenizerOutput:
         # print(len(datapoint.context), len(datapoint.completion))
         chunk_size = 1000  # size in lines
-        cropped_context = datapoint.context[-60_000:]  # TODO: connect this to max_seq_len
+        cropped_context = datapoint.context[-self.context_len_char:]  # TODO: connect this to max_seq_len
         # context_lines = cropped_context.split('\n')
         # context_chunks_by_lines = [context_lines[i:i+chunk_size] for i in range(len(context_lines)//chunk_size)]
         # context_chunks = ['\n'.join(lines_chunk) for lines_chunk in context_chunks_by_lines]
@@ -151,8 +153,8 @@ class PreprocessorBase:
 
 import youtokentome as yttm
 class FLPythonPreprocessor(PreprocessorBase):
-    def __init__(self, filepath, tokenizer_path=None, **composers):
-        super().__init__(filepath, tokenizer_path, **composers)
+    def __init__(self, filepath, tokenizer_path=None, context_len_char=60_000, **composers):
+        super().__init__(filepath, tokenizer_path, context_len_char, **composers)
         self.lang_sep_symbol = '₣'
         self.meta_info_sep_symbol = '𐌼'
         self.extension = '.py'
@@ -190,8 +192,8 @@ class FLPythonPreprocessor(PreprocessorBase):
 
 from transformers import AutoTokenizer
 class HFPreprocessor(PreprocessorBase):
-    def __init__(self, filepath, tokenizer_path, **composers):
-        super().__init__(filepath, tokenizer_path, **composers)
+    def __init__(self, filepath, tokenizer_path, context_len_char=60_000, **composers):
+        super().__init__(filepath, tokenizer_path, context_len_char, **composers)
         self.lang_sep_symbol = ''
         self.meta_info_sep_symbol = 'METASEP'
         self.extension = ''
@@ -220,8 +222,8 @@ class HFPreprocessor(PreprocessorBase):
 
 
 class StarcoderPreprocessor(HFPreprocessor):
-    def __init__(self, filepath, tokenizer_path="bigcode/starcoder", **composers):
-        super().__init__(filepath, tokenizer_path, **composers)
+    def __init__(self, filepath, tokenizer_path="bigcode/starcoder", context_len_char=60_000, **composers):
+        super().__init__(filepath, tokenizer_path, context_len_char, **composers)
         self.lang_sep_symbol = 'LANGSEP'
         self.meta_info_sep_symbol = 'METASEP'
         self.extension = '.py'
