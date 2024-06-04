@@ -3,6 +3,8 @@ import json
 import os.path
 from typing import Dict, List, Any, Optional, Callable
 from dataclasses import dataclass
+
+import omegaconf
 import torch
 from datasets import load_dataset
 from joblib import Parallel, delayed
@@ -21,15 +23,15 @@ class TokenizerOutput:
 
 class PreprocessorBase:
     def __init__(self,
-                 filepath: str,
+                 dataset_params: str | dict,
                  tokenizer_path: str | None = None,
                  context_len_char: int = 60_000,
                  context_composer: Callable[[Dict[str, Any]], str] | None = None,
                  completion_composer: Callable[[Dict[str, Any]], str] | None = None,
                  data_source: str = 'hf',
                  ):
-        self.filepath = filepath
-        self.data: list[DatapointBase] = self._load_data(filepath)
+        self.dataset_params = dataset_params
+        self.data: list[DatapointBase] = self._load_data(dataset_params)
         self.prepared_data: Optional[List[Dict[str, Any]]] = None
         self.tokenizer_path = tokenizer_path
         self.context_composer = context_composer
@@ -124,10 +126,16 @@ class PreprocessorBase:
         with open(filepath, 'w') as f:
             json.dump(self.prepared_data, f)
 
-    def _load_data(self, path: str) -> list[DatapointBase]:
+    def _load_data(self, dataset_params: str | dict) -> list[DatapointBase]:
         if True: #self.data_source == 'hf':
             data = list()
-            hf_data = load_dataset(path, split='test')
+            if isinstance(dataset_params, str):
+                hf_data = load_dataset(dataset_params, split='test')
+            elif isinstance(dataset_params, omegaconf.dictconfig.DictConfig):
+                hf_data = load_dataset(split='test', **dataset_params)
+            else:
+                raise ValueError('check `config.dataset`, it must be string or dictionary')
+
             repos_list = list(set([hf_dp['repo'] for hf_dp in hf_data]))
             repos_map = {repo: repo_num for repo_num, repo in enumerate(repos_list)}
 
@@ -153,8 +161,8 @@ class PreprocessorBase:
 
 import youtokentome as yttm
 class FLPythonPreprocessor(PreprocessorBase):
-    def __init__(self, filepath, tokenizer_path=None, context_len_char=60_000, **composers):
-        super().__init__(filepath, tokenizer_path, context_len_char, **composers)
+    def __init__(self, dataset_params, tokenizer_path=None, context_len_char=60_000, **composers):
+        super().__init__(dataset_params, tokenizer_path, context_len_char, **composers)
         self.lang_sep_symbol = '₣'
         self.meta_info_sep_symbol = '𐌼'
         self.extension = '.py'
@@ -192,8 +200,8 @@ class FLPythonPreprocessor(PreprocessorBase):
 
 from transformers import AutoTokenizer
 class HFPreprocessor(PreprocessorBase):
-    def __init__(self, filepath, tokenizer_path, context_len_char=60_000, **composers):
-        super().__init__(filepath, tokenizer_path, context_len_char, **composers)
+    def __init__(self, dataset_params, tokenizer_path, context_len_char=60_000, **composers):
+        super().__init__(dataset_params, tokenizer_path, context_len_char, **composers)
         self.lang_sep_symbol = ''
         self.meta_info_sep_symbol = 'METASEP'
         self.extension = ''
@@ -222,8 +230,8 @@ class HFPreprocessor(PreprocessorBase):
 
 
 class StarcoderPreprocessor(HFPreprocessor):
-    def __init__(self, filepath, tokenizer_path="bigcode/starcoder", context_len_char=60_000, **composers):
-        super().__init__(filepath, tokenizer_path, context_len_char, **composers)
+    def __init__(self, dataset_params, tokenizer_path="bigcode/starcoder", context_len_char=60_000, **composers):
+        super().__init__(dataset_params, tokenizer_path, context_len_char, **composers)
         self.lang_sep_symbol = 'LANGSEP'
         self.meta_info_sep_symbol = 'METASEP'
         self.extension = '.py'

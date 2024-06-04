@@ -2,6 +2,7 @@ import json
 import warnings
 
 import hydra
+import omegaconf
 import torch.cuda
 from omegaconf import DictConfig
 
@@ -22,7 +23,7 @@ from model_hub.model_registry import MODEL_REGISTRY
 @dataclass
 class PreprocessConfig:
     model: str  # One of PREPROCESSORS from lca.code_generation.eval.preprocess
-    dataset: str  # Path to dataset
+    dataset: str | omegaconf.dictconfig.DictConfig  # Path to dataset or dictionary with `path`, `name` keys
     tokenizer: str  # Path to tokenizer
     # config_path: str  # Path to composer configs
     composers: str  # One of COMPOSERS from lca.code_generation.eval.preprocess
@@ -75,7 +76,10 @@ class EvalPipeline:
             warnings.warn(f'Model and Tokenizer have different paths')
 
         # preprocess_params.dataset = config.dataset
-        self.dataset_name = config.dataset.split('/')[-1].replace('-', '_')
+        if isinstance(config.dataset, str):
+            self.dataset_name = config.dataset.split('/')[-1].replace('-', '_')
+        elif isinstance(config.dataset, omegaconf.dictconfig.DictConfig):
+            self.dataset_name = config.dataset['name']
         dataset_out_dir = os.path.join(config.artifacts_dir, config.language, inference_params['model'],
                                        self.dataset_name)
         # preprocess_params['out_dir'] = os.path.join(dataset_out_dir, 'in')
@@ -152,7 +156,7 @@ class EvalPipeline:
             gen_scores, gen_results, em_difference, line_counts = evaluate_generation(self.generator_config)
 
             wb_run.log(gen_scores | {'EM_difference': em_difference, 'Line Counts': line_counts,
-                                     "dataset": self.config.dataset, "model": self.inference_args.model})
+                                     "dataset": self.dataset_name, "model": self.inference_args.model})
             wb_run.finish()
             with open(os.path.join(self.out_dir, 'generation_scores.json'), 'w') as f:
                 json.dump(gen_results, f, indent=4)
@@ -180,7 +184,7 @@ class EvalPipeline:
         print(">>Evaluation...")
         mean_ppl = evaluate(self.eval_args)
 
-        return {"perplexity": mean_ppl, "context": 0, "composer": "zero", "dataset": self.config.dataset,
+        return {"perplexity": mean_ppl, "context": 0, "composer": "zero", "dataset": self.dataset_name,
                 "model": self.inference_args.model} | lost_tokens
 
     def run_composer(self, composer, results):
@@ -208,7 +212,7 @@ class EvalPipeline:
             print(">>>>>>Evaluation...")
             mean_ppl = evaluate(self.eval_args)
             results.append({"perplexity": mean_ppl, "context": self.inference_args.context_max,
-                            "composer": composer, "dataset": self.config.dataset,
+                            "composer": composer, "dataset": self.dataset_name,
                             "model": self.inference_args.model} | lost_tokens)
             print(results[-1])
             wb_run.log(results[-1])

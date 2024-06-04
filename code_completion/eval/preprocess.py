@@ -52,7 +52,7 @@ def preprocess(args, composer_args):
     prepared_dataset_path = os.path.join(resolve_directories(args), f'model_inputs_composer_{args.composers}.json')
 
     preprocessor = get_preprocessor(args)(
-        filepath=args.dataset,
+        dataset_params=args.dataset,
         tokenizer_path=args.tokenizer,
         context_len_char=args.context_len_char,
         **composers

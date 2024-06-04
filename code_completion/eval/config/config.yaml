@@ -1,8 +1,8 @@
 defaults:
   - params: codellama7b
   - composers_config: python_standard
+  - dataset: small
 
-dataset: "JetBrains-Research/lca-codegen-small"
 language: 'python'
 
 artifacts_dir: "data/code_generation/artifacts/"
