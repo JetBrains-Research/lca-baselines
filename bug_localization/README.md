@@ -31,7 +31,7 @@ You can access the data using the [datasets](https://huggingface.co/docs/dataset
     ...where the labels are:\
     `dev` — all the collected data;\
     `test` — manually selected data ([labeling artifacts](https://docs.google.com/spreadsheets/d/1cEyFHjse-iUYQlUO7GO5KpqkvJ3wu6vheou4W61TMOg/edit?usp=sharing));\
-    `train` — all the collected data that is not in `test`;\
+    `train` — all the collected data that is not in `test`;
 
     ...and configurations are:\
     `py` — only `.py` files in diff;\
