@@ -1,0 +1,5 @@
+hf_api_key: "YOUR_KEY_HERE"
+hf_tokenizer_checkpoint: "meta-llama/Llama-2-7b-chat-hf"
+model_name: "mistralai/Mistral-7B-Instruct-v0.2"
+max_context_toks: 6000
+device: "cuda:0"

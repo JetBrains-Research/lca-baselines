@@ -1,0 +1,7 @@
+hf_api_key: "YOUR_KEY_HERE"
+hf_tokenizer_checkpoint: "meta-llama/Llama-2-7b-chat-hf"
+api_key: "YOUR_KEY_HERE"
+model_name: "meta-llama/Llama-2-7b-chat-hf"
+logs_dir: "./logs"
+save_dir: "./predictions-llama2-2k"
+max_context_toks: 2000
