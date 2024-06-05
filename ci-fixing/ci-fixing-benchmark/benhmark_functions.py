@@ -4,6 +4,7 @@ import git
 import requests
 from git import GitCommandError
 from ruamel.yaml import YAML
+import ruamel.yaml
 
 
 def edit_workflow_push(workflow_file):
@@ -16,6 +17,64 @@ def edit_workflow_push(workflow_file):
         yaml_data = yaml.load(file)
 
     yaml_data["on"] = "push"
+
+    with open(workflow_file, "w") as file:
+        yaml.dump(yaml_data, file)
+
+
+def build_command(formatters):
+    command = '\n'.join([f'pip install {lib}' for lib in formatters])
+
+    return command
+
+
+def check_setup(name):
+    name = name.lower()
+    setup_words = ["checkout", "install", "set up", "setup"]
+    is_setup = any([word in name for word in setup_words])
+
+    return is_setup
+
+
+def get_step_num(steps):
+    step_to_insert = 0
+
+    for i, step in enumerate(steps):
+        if "name" in step:
+            if check_setup(step["name"]):
+                step_to_insert = i + 1
+        if "uses" in step:
+            if check_setup(step["uses"]):
+                step_to_insert = i + 1
+
+    return step_to_insert
+
+
+def add_step(data, new_step):
+    job_names = list(data["jobs"].keys())
+
+    for job_name in job_names:
+        steps = data["jobs"][job_name]["steps"]
+        idx = get_step_num(steps)
+
+        steps.insert(idx, new_step)
+
+
+def workflow_add_packages(workflow_file):
+    """
+    editing workflow.yaml to add specific packages
+    """
+
+    ruamel.yaml.representer.RoundTripRepresenter.ignore_aliases = lambda x, y: True
+    yaml = YAML()
+    with open(workflow_file, "r") as file:
+        yaml_data = yaml.load(file)
+
+    with open('packages_to_add.txt', 'r') as f:
+        formatters = [line.strip() for line in f]
+    command = '\n'.join([f'pip install {lib}' for lib in formatters])
+    new_step = {"name": "install formatters", "run": command, "continue-on-error": True}
+    add_step(yaml_data, new_step)
 
     with open(workflow_file, "w") as file:
         yaml.dump(yaml_data, file)
@@ -35,6 +94,7 @@ def copy_and_edit_workflow_file(datapoint, repo):
     with open(workflow_file, "w") as f:
         f.write(datapoint["workflow"])
     edit_workflow_push(workflow_file)
+    # workflow_add_packages(workflow_file)
 
 
 def rename_precommit_files(repo_path):
