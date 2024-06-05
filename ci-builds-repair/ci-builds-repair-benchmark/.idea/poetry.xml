@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PoetryConfigService">
+    <option name="poetryVirtualenvPaths">
+      <set>
+        <option value="$USER_HOME$/.cache/pypoetry/virtualenvs/lca-ci-fixing-benchmark-YBoI9s7L-py3.10/bin/python" />
+        <option value="$USER_HOME$/.cache/pypoetry/virtualenvs/lca-ci-fixing-benchmark-TMPMTkZB-py3.10/bin/python" />
+      </set>
+    </option>
+  </component>
+</project>
