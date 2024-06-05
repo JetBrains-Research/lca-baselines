@@ -1,7 +1,6 @@
-from omegaconf import OmegaConf
 import json
-import shutil
 import os
+import shutil
 
 
 def read_jsonl(file_path):
@@ -11,29 +10,13 @@ def read_jsonl(file_path):
             data.append(json.loads(line))
     return data
 
+
 def save_jsonl(file_path, data):
     with open(file_path, "w") as f:
         for entry in data:
             json.dump(entry, f)
             f.write("\n")
 
-def get_token_gh(config_path):
-    config_private = OmegaConf.load(config_path)
-    with open(config_private.token_gh_path) as f:
-        token_gh = f.read()
-    return token_gh
-
-
-def get_token_hf(config_path):
-    config_private = OmegaConf.load(config_path)
-    token_hf = get_token(config_private.token_hf_path)
-    return token_hf
-
-def get_token(token_path):
-    with open(token_path) as f:
-        token = f.read()
-
-    return token
 
 def filter_out_res(data_folder, out_folder):
     """
@@ -46,8 +29,16 @@ def filter_out_res(data_folder, out_folder):
     orig_path = os.path.join(data_folder, "datapoints_json_verified")
     filtered_path = os.path.join(data_folder, "datapoints_json_filtered")
     os.makedirs(filtered_path, exist_ok=True)
-    original_sha = {result["sha_original"][:7] for result in results_none if result["conclusion"] == "failure"}
-    fixed_sha = {result["sha_original"][:7] for result in results_diff if result["conclusion"] == "success"}
+    original_sha = {
+        result["sha_original"][:7]
+        for result in results_none
+        if result["conclusion"] == "failure"
+    }
+    fixed_sha = {
+        result["sha_original"][:7]
+        for result in results_diff
+        if result["conclusion"] == "success"
+    }
 
     sha_valid = original_sha.intersection(fixed_sha)
 

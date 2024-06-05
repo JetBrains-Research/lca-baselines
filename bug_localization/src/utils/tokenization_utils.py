@@ -12,10 +12,17 @@ class TokenizationUtils:
     """
 
     PROFILE_NAME_TO_PROVIDER_AND_MODEL = {
-        "chat-llama-v2-7b": {"model_provider": "huggingface", "model_name": "codellama/CodeLlama-7b-Instruct-hf", "context_size": 16000},
+        "deepseek-ai/deepseek-coder-1.3b-instruct": {"model_provider": "huggingface",
+                                                     "model_name": "deepseek-ai/deepseek-coder-1.3b-instruct",
+                                                     "context_size": 16384},
+        "chat-llama-v2-7b": {"model_provider": "huggingface", "model_name": "codellama/CodeLlama-7b-Instruct-hf",
+                             "context_size": 16000},
         "anthropic-claude": {"model_provider": "anthropic", "model_name": "claude", "context_size": 16000},
-        "openai-gpt-3.5-turbo": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 16000},
-        "openai-gpt-4": {"model_provider": "openai", "model_name": "gpt-4", "context_size": 32000},
+
+        "gpt-3.5-turbo-0613": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 4096},
+        "gpt-3.5-turbo-1106": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 16385},
+        "gpt-4-0613": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 8192},
+        "gpt-4-1106-preview": {"model_provider": "openai", "model_name": "gpt-4", "context_size": 128000},
     }
 
     def __init__(self, profile_name: str):
@@ -57,6 +64,23 @@ class TokenizationUtils:
         """
         return sum([self.count_text_tokens(value) for message in messages for key, value in message.items()])
 
+    def truncate(self, messages: list[dict[str, str]]) -> list[dict[str, str]]:
+        """Truncates a given list of messages to first `max_num_tokens` tokens.
+
+        Note: A current version only truncates a last message, which might not be suitable for all use-cases.
+        """
+        num_tokens_except_last = self.count_messages_tokens(messages[:-1])
+        messages[-1]["content"] = self._truncate(
+            messages[-1]["content"], max_num_tokens=self._context_size - num_tokens_except_last
+        )
+        return messages
+
+    def messages_match_context_size(self, messages: list[dict[str, str]]) -> bool:
+        return self.count_messages_tokens(messages) <= self._context_size
+
+    def text_match_context_size(self, text: str) -> bool:
+        return self.text_match_context_size(text) <= self._context_size
+
     def _truncate(self, text: str, max_num_tokens: int) -> str:
         """Truncates a given string to first `max_num_tokens` tokens.
 
@@ -76,13 +100,6 @@ class TokenizationUtils:
 
         raise ValueError(f"{self._model_provider} is currently not supported for prompt truncation.")
 
-    def truncate(self, messages: list[dict[str, str]]) -> list[dict[str, str]]:
-        """Truncates a given list of messages to first `max_num_tokens` tokens.
 
-        Note: A current version only truncates a last message, which might not be suitable for all use-cases.
-        """
-        num_tokens_except_last = self.count_messages_tokens(messages[:-1])
-        messages[-1]["content"] = self._truncate(
-            messages[-1]["content"], max_num_tokens=self._context_size - num_tokens_except_last
-        )
-        return messages
+if __name__ == '__main__':
+    print(TokenizationUtils("gpt-4-0613").count_text_tokens("sfef efwe ef"))

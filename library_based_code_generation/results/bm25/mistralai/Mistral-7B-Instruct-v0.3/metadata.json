@@ -1,0 +1,1 @@
+{"metrics": {"ChrF": {"mean": 0.3119175329254502}, "API_recall": {"mean": 0.13013912520593546}}, "name": "bm25/mistralai/Mistral-7B-Instruct-v0.3"}

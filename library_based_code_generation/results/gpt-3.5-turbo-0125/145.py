@@ -1,0 +1,17 @@
+import numpy as np
+import dream
+eq = dream.EquationSystem()
+eq.setInitialProfiles(n_e=1e19, Te=1e3, Ti=1e3, V_fi=0.0, n_D=1e20, n_A=1e17)
+eq.setBoundaryCondition('n', 'flux')
+eq.setBoundaryCondition('V', 'sheath')
+eq.setBoundaryCondition('T', 'conductive')
+eq.setBoundaryCondition('Phi', 'floating')
+eq.setOperator('Dreicer', True)
+eq.setOperator('Avalanche', True)
+eq.setRadialGrid(0.1, 2.0, 129)
+eq.setHotTailGrid(0.1, 10.0, 100)
+eq.setRunawayGrid(0.1, 10.0, 100)
+eq.setSvenssonTransport(0.1, 0.1, 0.1, 0.1)
+eq.setNonlinearSolver({'tol': 1e-3})
+eq.setTimeStepper({'dt0': 1e-6, 'eps_time': 1e-6})
+eq.save('output.h5')

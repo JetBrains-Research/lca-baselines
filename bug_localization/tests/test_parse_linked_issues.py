@@ -1,6 +1,7 @@
 import pytest
 
-from src.data import parse_linked_issues_from_comment, parse_linked_issues_from_comments
+from src.data.preprocessing.parse_linked_issues import parse_linked_issues_from_comment, \
+    parse_linked_issues_from_comments
 from tests import TEST_ROOT_PATH
 from src.utils.jsonl_utils import save_jsonl_data
 
@@ -8,11 +9,12 @@ from src.utils.jsonl_utils import save_jsonl_data
 @pytest.mark.parametrize(
     "comment_body, linked_issues",
     [
-        ("Bug in https://github.com/jlord/sheetsee.js/issues/263 fixed", [(263, "issue_link")]),
-        ("Bug in #262 fixed", [(262, "hash")]),
-        ("Bug in GH-264 and GH-265 fixed. Also #262 fixed.", [(262, "hash"), (264, "slash"), (265, "slash")]),
-        ("Bug in jlord/sheetsee.js#263 fixed", [(263, "file")]),
-        ("Bug in #262", [(262, "hash")]),
+        ("Solves https://github.com/jlord/sheetsee.js/issues/263", [(263, "solves", "issue_link")]),
+        ("Fixes #262", [(262, "fixes", "hash")]),
+        ("Hey!\nResolves GH-264 and GH-265, GH-268 fixed. Also Fixes #262.",
+         [(262, "fixes", "hash"), (264, "resolves", "slash"), (265, "", "slash"), (268, "fixed", "slash")]),
+        # Double parsing, but ok
+        ("Resolved jlord/sheetsee.js#263 fixed", [(263, "fixed", "hash"), (263, "resolved", "file")]),
     ],
 )
 def test_parse_linked_issues_from_comment(comment_body: str, linked_issues: list[str]):

@@ -1,6 +1,6 @@
 repos_folder: /mnt/data/shared-data/lca/CI-fix-benchmark/repos # here the cloned repos would be stored
 out_folder: /mnt/data/galimzyanov/data/LCA/benchmark/out # here the result files would be stored
 data_cache_dir: /mnt/data/galimzyanov/data/LCA/temp # here the cached dataset would be stored
-username: timur-for-test # your GitHub username
-test_username: test_user # username that would be displayed in the benchmark
+username_gh: timur-for-test # your GitHub username
+# test_username: test_user # username that would be displayed in the benchmark. Optional. If ommitted, username_gh would be used
 language: Python # dataset language (now only Python is available)

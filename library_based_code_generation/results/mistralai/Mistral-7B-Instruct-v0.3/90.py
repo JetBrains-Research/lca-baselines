@@ -1,0 +1,86 @@
+ Here is a basic example of how you might set up a self-consistent fluid DREAM run in Python, using the DREAM library. Please note that this is a simplified example and may need to be adjusted to fit your specific needs.
+
+```python
+from dream.physics import *
+from dream.run import *
+from dream.grid import *
+from dream.io import *
+
+# Set up simulation parameters
+params = SimulationParams()
+params.name = "self_consistent_fluid_dream"
+params.time_stepper = "RK4"
+params.ion_species = ["H", "He"]
+params.electron_temperature = 1e6
+params.ion_temperature = 1e6
+params.electron_beta = 0.1
+params.ion_beta = 0.1
+params.electron_charge = 1.0
+params.ion_charge = 2.0
+params.ion_mass = {"H": 1.0, "He": 4.0}
+params.grid_type = "radial"
+params.grid_min_radius = 1e-3
+params.grid_max_radius = 1000
+params.grid_npoints = 1000
+params.grid_refinement_level = 0
+params.grid_refinement_factor = 2.0
+params.grid_refinement_min_radius = None
+params.grid_refinement_max_radius = None
+params.grid_refinement_criteria = None
+params.grid_refinement_criteria_value = None
+params.grid_refinement_criteria_type = None
+params.grid_refinement_criteria_order = None
+params.grid_refinement_criteria_order_derivative = None
+params.grid_refinement_criteria_order_derivative_derivative = None
+params.grid_refinement_criteria_order_derivative_derivative_derivative = None
+params.grid_refinement_criteria_order_derivative_derivative_derivative_derivative = None
+params.grid_refinement_criteria_order_derivative_derivative_derivative_derivative = None
+params.grid_refinement_criteria_order_derivative_derivative = None
+params.grid_refinement_criteria_order_derivative = None
+params.grid_refinement_criteria_order = None
+params.grid_refinement_criteria = None
+params.runaway_grid_enabled = False
+params.hot_tail_grid_enabled = True
+params.hot_tail_grid_npoints = 1000
+params.hot_tail_grid_refinement_level = 0
+params.hot_tail_grid_refinement_factor = 2.0
+params.hot_tail_grid_refinement_min_radius = None
+params.hot_tail_grid_refinement_max_radius = None
+params.hot_tail_grid_refinement_criteria = None
+params.hot_tail_grid_refinement_criteria_value = None
+params.hot_tail_grid_refinement_criteria_type = None
+params.hot_tail_grid_refinement_criteria_order = None
+params.hot_tail_grid_refinement_criteria_order_derivative = None
+params.hot_tail_grid_refinement_criteria_order_derivative_derivative = None
+params.hot_tail_grid_refinement_criteria_order_derivative_derivative_derivative = None
+params.hot_tail_grid_refinement_criteria_order_derivative_derivative_derivative = None
+params.hot_tail_grid_refinement_criteria_order_derivative_derivative_derivative = None
+params.solver_type = "fluid"
+params.solver_fluid_ion_order = 2
+params.solver_fluid_electron_order = 2
+params.solver_fluid_ion_order_derivative = 1
+params.solver_fluid_electron_order_derivative = 1
+params.solver_fluid_ion_order_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_ion_order_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative_derivative = 0
+params.solver_fluid_electron_order_derivative_derivative_derivative_derivative_deriv

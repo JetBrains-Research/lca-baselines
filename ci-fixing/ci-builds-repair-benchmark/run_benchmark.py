@@ -1,33 +1,24 @@
 import os
 from omegaconf import OmegaConf
 
-from benhmark_functions import fix_none, fix_apply_diff
 from benchmark import CIFixBenchmark
-from benchmark_utils import get_token
+from benhmark_functions import fix_apply_diff, fix_none
 
 """
 private
 """
-
+#TODO add contact info
 """
 Here the tokens are read.
-I registered new GitHub user and added it to the organization. For now only this user can use benchmark.
-Therefore I placed the GH token to a shared folder on the server and username in the benchmark.yaml (timur-for-test)
-Current token path - /mnt/data/shared-data/lca/CI-fix-benchmark/gh_timur-for-test.txt
-Better option - ask me to add you to the organization and use your personal token.
-Before that DO NOT pass your token. 
-As our dataset is private, you should pass your HuggingFace token either from file or from ENV variable.
+First, ask us (placeholder for contact info) to add you to the benchmark-owner organization,
+then you need your personal GH token to use the benchmark.
 """
 
-# TODO move token ENV variable to config
-config_private_path = "send_datapoint.yaml"
-config_private = OmegaConf.load(config_private_path)
 token_gh = os.environ.get("TOKEN_GH")
-token_hf = os.environ.get("TOKEN_HF")
+config_private_path = "tokens_paths.yaml"
+if os.path.exists(config_private_path):
+    config_private = OmegaConf.load(config_private_path)
 
-if token_hf is None:
-    print("Reading HuggingFace token from file")
-    token_hf = get_token(config_private.token_hf_path)
 if token_gh is None:
     print("Reading GitHub token from file")
     with open(config_private.token_gh_path) as f:
@@ -38,29 +29,35 @@ Public part
 """
 
 # Name of the model used for the benchmark. It is used to track evaluation
-model_name = "none"
+model_name = "diff"
 
 # Creating benchmark object
 config_path = "benchmark.yaml"
 CIBenchPython = CIFixBenchmark(model_name, config_path, token_gh)
 
-fix_repo_function = fix_none  # fix_apply_diff  #
-out_filename = f"jobs_results_{model_name}.jsonl"
-# CIBenchPython.eval_dataset(fix_repo_function, hf_token=token_hf, result_filename=out_filename)
+# pass your fixing function
+# For debugging, please, limit yourself to a small amount of datapoints (argument num_dp)
+# fix_repo_function = fix_none  # fix_apply_diff  #
+fix_repo_function = fix_apply_diff  #
+ids_list = [159, 160]
+# CIBenchPython.eval_dataset(fix_repo_function, num_dp=None, ids_list=None)
+dataset_folder = '/mnt/data/galimzyanov/data/LCA/HF_dataset/lca-ci-fixing_filtered'
+CIBenchPython.eval_dataset(fix_repo_function, num_dp=None, ids_list=None, dataset_folder=dataset_folder)
+# You can run this method after evaluating dataset if some datapoints remained in waiting list.
+# CIBenchPython.get_results()
 
-# Download dataset if you want to play with it
-test_dataset = CIBenchPython.get_dataset(token_hf, force_download=False)
+# Download the dataset if you want to play with it
+# test_dataset = CIBenchPython.get_dataset(force_download=False, num_dp=5)
 
-# You can load datased from local folder with json files, passing path to an argument dataset_folder
-# dataset_folder = "/mnt/data/shared-data/lca/CI-fix-benchmark/datapoints_json_verified"
-# test_dataset = CIBenchPython.get_dataset(token_hf, force_download=False, dataset_folder=dataset_folder)
+# You can load datased from the local folder with json files, passing the path to an argument dataset_folder
+# test_dataset = CIBenchPython.get_dataset(force_download=False, dataset_folder=dataset_folder)
 
 # Evaluate jobs
-# job_ids_file = "/mnt/data/shared-data/lca/CI-fix-benchmark/benchmark/out/jobs_ids.jsonl"
+# job_ids_file = "examples/jobs_ids.jsonl"
 # job_results = CIBenchPython.eval_jobs(job_ids_file=job_ids_file, result_filename="jobs_results_test.jsonl")
 
 # Analyze jobs
-# job_results_file = "/mnt/data/shared-data/lca/CI-fix-benchmark/benchmark/out/jobs_results_none.jsonl"
+# job_results_file = "examples/jobs_results.jsonl"
 # CIBenchPython.analyze_results(jobs_results_file=job_results_file)
 
 pass
