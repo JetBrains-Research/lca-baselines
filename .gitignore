@@ -3,5 +3,12 @@
 .idea/
 tree-sitter-python
 wandb
+
+ci-builds-repair/ci-builds-repair-benchmark/packages_version_before_Jan24.txt
+ci-builds-repair/ci-builds-repair-benchmark/filter_dps.py
+ci-builds-repair/ci-builds-repair-benchmark/recalc_results.py
+ci-builds-repair/ci-builds-repair-benchmark/tokens_paths.yaml
+ci-builds-repair/ci-builds-repair-benchmark/work_with_workflows.py
+
 =======
 /venv/
