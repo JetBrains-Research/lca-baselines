@@ -1,7 +1,7 @@
 # 🏟️ Long Code Arena Baselines
 ## Commit Message Generation
 
-This folder contains code for running baselines for Commit Message Generation (CMG) task in Long Code Arena benchmark.
+This directory contains the code for running baselines for the Commit message generation (CMG) task in the Long Code Arena benchmark.
 
 We provide the implementation for the following baseline: a language model that is fed with a zero-shot prompt with a simple instruction and a commit diff.
 
@@ -16,7 +16,7 @@ We provide dependencies for two Python dependencies managers: [pip](https://pip.
 
 ## ⚙️ Configure a baseline
 
-We use [Hydra](https://hydra.cc/docs/intro/) for configuration. Main config used for running experiments is `BaselineConfig`, located in [`configs/baseline_config.py`](configs/baseline_config.py). 
+We use [Hydra](https://hydra.cc/docs/intro/) for configuration. The main config used for running experiments is `BaselineConfig`, located in [`configs/baseline_config.py`](configs/baseline_config.py). 
 Refer to Hydra documentation and to documentation of this class for more details.
 
 ### Supported configurations
@@ -29,7 +29,7 @@ This baseline consists of the following configurable components:
 * **Prompts:** stored under [`src/prompts`](src/prompts), base class is [`CMGPrompt`](src/prompts/base_prompt.py)
 
 <details>
-<summary>💛 Click here to view currently supported options for each component.</summary>
+<summary>💛 Click here to view the currently supported options for each component.</summary>
 
 * **Models / Backbones:**
   * Models from OpenAI API: implemented as [`OpenAIBackbone`](src/backbones/openai_backbone.py) class
