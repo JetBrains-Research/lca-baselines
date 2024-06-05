@@ -13,7 +13,7 @@ It currently spans six different tasks and contains six datasets:
 
 ## Where are the baselines? 
 
-For each task we have different approachs and environmet. You can find baseline solution and necessary information about each task in the corresponding folder. 
+For each task, we have different approaches and environments. You can find the baseline solutions and the necessary information about each task in the corresponding directories. 
 
 ## How can I submit my results? 
 
