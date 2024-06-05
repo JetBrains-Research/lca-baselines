@@ -1,0 +1,13 @@
+preprocess_params:
+  model: "huggingface"
+  composers: "none"
+  tokenizer: "codellama/CodeLlama-7b-hf"
+
+inference_params :
+    model: "codellama-7b-4bit"
+    seq_max_len: 16000
+    input_data_path: ""
+    context_max: -1
+
+eval_params:
+    device: cuda

@@ -1,0 +1,16 @@
+preprocess_params:
+  model: "huggingface"
+  composers: "none"
+#  dataset: "JetBrains-Research/lca-codegen-small"
+  tokenizer: "bigcode/starcoderbase-1b"
+#  out_dir: "/mnt/data/shared-data/lca/code_generation/data/artifacts/python/debug/in"
+inference_params:
+  model: "starcoderbase-1b"
+  seq_max_len: 1500
+#  out_dir: "/mnt/data/shared-data/lca/code_generation/data/artifacts/python/debug/out"
+  input_data_path: ""
+  context_max: -1
+eval_params:
+  device: cuda
+#  out_dir: "/mnt/data/shared-data/lca/code_generation/data/artifacts/python/debug/results"
+#  dataset_dir: ""
