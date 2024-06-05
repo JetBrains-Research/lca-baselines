@@ -33,7 +33,7 @@ pandas-stubs = "^2.0.3.230814"
 types-pyyaml = "^6.0.12.11"
 #transformers = "^4.32.0"
 accelerate = "*"
-youtokentome = {git = "https://github.com/JetBrains-Research/YouTokenToMe.git"}
+#youtokentome = {git = "https://github.com/JetBrains-Research/YouTokenToMe.git"}
 torch = "2.0.0"
 #accelerate = "^0.22.0"
 bitsandbytes = "^0.41.1"

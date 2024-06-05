@@ -1,14 +1,10 @@
-import importlib
 import argparse
+import importlib
 import os
-import json
 
-from omegaconf import OmegaConf
-
-from eval.composers import COMPOSERS
+from composers.composer_registry import COMPOSERS
 
 PREPROCESSORS = {
-    'fl_python': {'module': 'eval.preprocessors', 'name': 'FLPythonPreprocessor'},
     'starcoder': {'module': 'eval.preprocessors', 'name': 'StarcoderPreprocessor'},
     'huggingface': {'module': 'eval.preprocessors', 'name': 'HFPreprocessor'},
 }

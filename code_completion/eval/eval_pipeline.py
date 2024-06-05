@@ -1,22 +1,21 @@
 import json
+import os
+import shutil
 import warnings
+from dataclasses import dataclass, asdict
+from pathlib import Path
 
 import hydra
 import omegaconf
 import torch.cuda
+import wandb
 from omegaconf import DictConfig
 
+from composers.composer_registry import COMPOSERS
+from eval.eval import evaluate
 from eval.line_generators import evaluate_generation
 from eval.preprocess import preprocess
 from model_hub.model_inference import inference
-from eval.eval import evaluate
-from dataclasses import dataclass, asdict
-from pathlib import Path
-import shutil
-import os
-from eval.composers import COMPOSERS
-import wandb
-
 from model_hub.model_registry import MODEL_REGISTRY
 
 

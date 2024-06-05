@@ -1,15 +1,14 @@
 import dataclasses
 import json
+import multiprocessing
 import os.path
-from typing import Dict, List, Any, Optional, Callable
 from dataclasses import dataclass
+from typing import Dict, List, Any, Optional, Callable
 
 import omegaconf
-import torch
 from datasets import load_dataset
 from joblib import Parallel, delayed
 from tqdm.auto import tqdm
-import multiprocessing
 
 from data_classes.datapoint_base import DatapointBase
 from data_classes.datapoint_commit_dataset import DatapointCommitDataset
@@ -157,45 +156,6 @@ class PreprocessorBase:
         # with open(path, 'r') as f:
         #     data = json.load(f)
         # return data
-
-
-import youtokentome as yttm
-class FLPythonPreprocessor(PreprocessorBase):
-    def __init__(self, dataset_params, tokenizer_path=None, context_len_char=60_000, **composers):
-        super().__init__(dataset_params, tokenizer_path, context_len_char, **composers)
-        self.lang_sep_symbol = '₣'
-        self.meta_info_sep_symbol = '𐌼'
-        self.extension = '.py'
-        self._tokenizer: yttm.BPE
-        self._load_tokenizer(self.tokenizer_path)
-
-    def compose_context(self, datapoint: DatapointBase) -> str:
-        context = datapoint.context_dict
-        repo_name = datapoint.repo_name
-        # You could implement specific order of contents in composed_content
-        composed_content = [path + self.meta_info_sep_symbol + content for path, content in context.items()]
-        repo_metainfo = f"{self.extension}{self.lang_sep_symbol}{repo_name}{self.meta_info_sep_symbol}"
-        return repo_metainfo + self.lang_sep_symbol.join(composed_content)
-
-    def compose_completion(self, datapoint: DatapointBase) -> str:
-        completion = datapoint.completion_dict
-        # TODO: move path to the context
-        composed_content = [path + self.meta_info_sep_symbol + content for path, content in completion.items()]
-        return self.lang_sep_symbol + self.lang_sep_symbol.join(composed_content)
-
-    def tokenize(self, text) -> List[int]:
-        if "gpt" in self.tokenizer_path:
-            return self._tokenizer(text)['input_ids']
-        else:
-            return self._tokenizer.encode([text], bos=False, eos=False, dropout_prob=0.0)[0]
-
-
-    def _load_tokenizer(self, path):
-        if "gpt" in path:
-            from transformers import GPT2Tokenizer
-            self._tokenizer = GPT2Tokenizer.from_pretrained(path)
-        else:
-            self._tokenizer = yttm.BPE(path)
 
 
 from transformers import AutoTokenizer
