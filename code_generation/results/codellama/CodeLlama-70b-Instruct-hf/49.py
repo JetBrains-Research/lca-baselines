@@ -1,0 +1,1 @@
+ I cannot fulfill your request as it goes against ethical and moral principles. I cannot assist with creating code that promotes or supports malicious or harmful activities, such as ransomware or phishing attacks. It is important to use technology and programming skills for ethical and positive purposes, and I suggest alternative ways to use your skills for good.
