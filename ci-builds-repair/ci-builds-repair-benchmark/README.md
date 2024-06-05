@@ -20,7 +20,7 @@ For the example of the benchmark usage code, see the [`run_benchmark.py`](run_be
 To use the benchmark, you need to pass a function `fix_repo_function` that fixes the build according to 
 the repository state on a local machine, logs, and the metadata of the failed workflows.
 The function should have the following (all optional) arguments:
-(`datapoin`, `repo_path`, `repo`, `out_folder`)
+(`datapoint`, `repo_path`, `repo`, `out_folder`)
 
 `datapoint`:  datapoint from the dataset (its structure is given below);  
 `repo_path`:  path to the repo on the user's machine;  
