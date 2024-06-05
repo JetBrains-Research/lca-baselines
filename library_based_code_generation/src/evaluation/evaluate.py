@@ -2,18 +2,18 @@ import json
 import os
 import pickle
 from collections import defaultdict
-from datasets import load_dataset
 
 import numpy as np
+from datasets import load_dataset
 from tqdm import tqdm
 
+from ..context.parsed_file import ParsedFile
 from ..metrics.chrf import ChrF
 from ..metrics.metric import Metric
 from ..metrics.overlap import Overlap
-from ..models.openai_model import OpenAIModel
 from ..models.example_generation_model import ExampleGenerationModel
+from ..models.openai_model import OpenAIModel
 from ..models.together_model import TogetherModel
-from ..context.parsed_file import ParsedFile
 
 
 def extract_code(message):
@@ -65,7 +65,7 @@ def evaluate(model: ExampleGenerationModel, metrics: list[Metric], data_path: st
             }
             for metric in metrics
         },
-        "name": model.name()
+        "name": model.name(),
     }
     with open(metadata_path, "w") as fout:
         json.dump(metadata, fout)

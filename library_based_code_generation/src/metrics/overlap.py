@@ -1,5 +1,5 @@
-from .metric import Metric
 from ..context.parsed_file import ParsedFile
+from .metric import Metric
 
 
 class Overlap(Metric):

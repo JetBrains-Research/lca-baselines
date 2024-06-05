@@ -150,11 +150,7 @@ class ParsedFile:
 
     @staticmethod
     def filter_function_names(names):
-        return {
-            name
-            for name in names
-            if not (name.startswith("__") and name.endswith("__")) and not name == "super"
-        }
+        return {name for name in names if not (name.startswith("__") and name.endswith("__")) and not name == "super"}
 
     def clean_comments(self):
         start1 = bytes("'''", "utf8")
@@ -163,9 +159,9 @@ class ParsedFile:
         comment_nodes = []
 
         def walk(node):
-            if 'comment' in node.type.lower():
+            if "comment" in node.type.lower():
                 comment_nodes.append(node)
-            elif node.type == 'string' and (node.text.startswith(start1) or node.text.startswith(start2)):
+            elif node.type == "string" and (node.text.startswith(start1) or node.text.startswith(start2)):
                 comment_nodes.append(node)
             else:
                 for child in node.children:

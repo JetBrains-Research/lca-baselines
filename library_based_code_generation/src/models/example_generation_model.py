@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
-from rank_bm25 import BM25Okapi
-from .utils import split_identifier
+
 import numpy as np
+from rank_bm25 import BM25Okapi
+
+from .utils import split_identifier
+
 
 class ExampleGenerationModel(ABC):
     @abstractmethod
@@ -30,9 +33,9 @@ class ExampleGenerationModel(ABC):
             predictions.append(project_apis[ind])
 
         bm25_instruction = (
-            instruction +
-            "\n\n" +
-            "You can find the following APIs from the library helpful:\n" +
-            ", ".join(predictions)
+            instruction
+            + "\n\n"
+            + "You can find the following APIs from the library helpful:\n"
+            + ", ".join(predictions)
         )
         return self.get_prompt(bm25_instruction)

@@ -13,15 +13,14 @@ class OpenAIModel(ExampleGenerationModel):
         self.use_bm25 = use_bm25
 
     def generate(self, task_description: str, project_apis: list[str] = None) -> str:
-        instruction = self.get_prompt(task_description) \
-            if not self.use_bm25 \
+        instruction = (
+            self.get_prompt(task_description)
+            if not self.use_bm25
             else self.get_bm25_prompt(task_description, project_apis)
+        )
 
         prompt = [
-            {
-                "role": "user",
-                "content": instruction
-            },
+            {"role": "user", "content": instruction},
         ]
         response = self.client.chat.completions.create(
             model=self.model_name,

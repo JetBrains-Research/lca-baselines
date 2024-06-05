@@ -25,12 +25,8 @@ class ParsedProject:
                         parsed_file = ParsedFile(filepath)
                         self.parsed_files.append(parsed_file)
 
-        self.defined_functions = set(chain.from_iterable(
-            parsed_file.function_names
-            for parsed_file in self.parsed_files
-        ))
+        self.defined_functions = set(
+            chain.from_iterable(parsed_file.function_names for parsed_file in self.parsed_files)
+        )
 
-        self.defined_classes = set(chain.from_iterable(
-            parsed_file.class_names
-            for parsed_file in self.parsed_files
-        ))
+        self.defined_classes = set(chain.from_iterable(parsed_file.class_names for parsed_file in self.parsed_files))

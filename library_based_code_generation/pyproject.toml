@@ -19,8 +19,19 @@ jupyter = "^1.0.0"
 notebook = "^7.2.0"
 tree-sitter-python = "^0.21.0"
 rank-bm25 = "^0.2.2"
+black = "^24.4.2"
+isort = "^5.13.2"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+[tool.isort]
+line_length = 120
+py_version = 310
+profile = "black"
