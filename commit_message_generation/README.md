@@ -1,5 +1,5 @@
 # 🏟️ Long Code Arena Baselines
-## Commit Message Generation
+## Commit message generation
 
 This directory contains the code for running baselines for the Commit message generation (CMG) task in the Long Code Arena benchmark.
 
