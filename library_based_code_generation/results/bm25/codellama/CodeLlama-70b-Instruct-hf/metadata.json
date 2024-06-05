@@ -1,0 +1,1 @@
+{"metrics": {"ChrF": {"mean": 0.11215975232786808}, "API_recall": {"mean": 0.03562475098001414}}, "name": "bm25/codellama/CodeLlama-70b-Instruct-hf"}

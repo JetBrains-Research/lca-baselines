@@ -3,3 +3,5 @@
 .idea/
 tree-sitter-python
 wandb
+=======
+/venv/

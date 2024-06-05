@@ -1,0 +1,1 @@
+{"metrics": {"ChrF": {"mean": 0.260515496257304}, "API_recall": {"mean": 0.19202696525816057}}, "name": "bm25/gpt-3.5-turbo-0125"}

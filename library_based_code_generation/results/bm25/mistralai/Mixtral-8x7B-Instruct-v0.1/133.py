@@ -1,0 +1,108 @@
+ import fate
+from fate_flow.setting import JobParameter
+from fate_flow.processor import Processor
+from fate_flow.cluster_manager import ClusterManager
+from fate_flow.entity.data_check_task import DataCheckTask
+from fate_flow.entity.data_split_task import DataSplitTask
+from fate_flow.entity.train_task import TrainTask
+from fate_flow.entity.table_meta import TableMeta
+from fate_flow.protobuf.ps_meta_pb2 import PsMeta
+from fate_flow.protobuf.role_pb2 import Role
+from fate_flow.protobuf.data_check_task_pb2 import DataCheckTask as DataCheckTaskProto
+from fate_flow.protobuf.data_split_task_pb2 import DataSplitTask as DataSplitTaskProto
+from fate_flow.protobuf.train_task_pb2 import TrainTask as TrainTaskProto
+from fate_flow.protobuf.table_meta_pb2 import TableMeta as TableMetaProto
+from fate_flow.protobuf.ps_meta_pb2 import PsMeta as PsMetaProto
+from fate_flow.protobuf.role_pb2 import Role as RoleProto
+from fate_arch.computation.intersection.intersection_computation import IntersectionComputation
+from fate_arch.computation.init_data_and_variable import InitDataAndVariable
+from fate_arch.computation.transform.stat_and_transform import StatAndTransform
+from fate_arch.computation.transform.decompress_and_unpack import DecompressAndUnpack
+from fate_arch.computation.transform.add_and_sub import AddAndSub
+from fate_arch.computation.transform.pack_and_encrypt import PackAndEncrypt
+from fate_arch.computation.evaluation.evaluation_computation import EvaluationComputation
+from fate_arch.models.hetero_nn import HeteroNN
+
+def create_pipeline(config_file):
+config = JobParameter.from_file(config_file)
+
+data_check_task = DataCheckTask(DataCheckTaskProto())
+data_split_task = DataSplitTask(DataSplitTaskProto())
+train_task = TrainTask(TrainTaskProto())
+
+data_check_task.table_meta.from_fate_flow_entity(config.data_check_task.table_meta)
+data_check_task.init_table_meta_from_fate_flow_entity(config.data_check_task.init_table_meta)
+data_split_task.table_meta.from_fate_flow_entity(config.data_split_task.table_meta)
+train_task.table_meta.from_fate_flow_entity(config.train_task.table_meta)
+
+data_check_task.set_role(Role(name=RoleProto.RoleName.Guest))
+data_split_task.set_role(Role(name=RoleProto.RoleName.Guest))
+train_task.set_role(Role(name=RoleProto.RoleName.Guest))
+
+data_check_task.set_table_name(config.data_check_task.table_name)
+data_split_task.set_table_name(config.data_split_task.table_name)
+train_task.set_table_name(config.train_task.table_name)
+
+data_check_task.set_database(config.data_check_task.database)
+data_split_task.set_database(config.data_split_task.database)
+train_task.set_database(config.train_task.database)
+
+data_check_task.set_partition_num(config.data_check_task.partition_num)
+data_split_task.set_partition_num(config.data_split_task.partition_num)
+train_task.set_partition_num(config.train_task.partition_num)
+
+data_check_task.set_partitions(config.data_check_task.partitions)
+data_split_task.set_partitions(config.data_split_task.partitions)
+train_task.set_partitions(config.train_task.partitions)
+
+data_check_task.set_part_key(config.data_check_task.part_key)
+data_split_task.set_part_key(config.data_split_task.part_key)
+train_task.set_part_key(config.train_task.part_key)
+
+data_check_task.set_part_index(config.data_check_task.part_index)
+data_split_task.set_part_index(config.data_split_task.part_index)
+train_task.set_part_index(config.train_task.part_index)
+
+data_check_task.set_part_size(config.data_check_task.part_size)
+data_split_task.set_part_size(config.data_split_task.part_size)
+train_task.set_part_size(config.train_task.part_size)
+
+data_check_task.set_part_num_per_host(config.data_check_task.part_num_per_host)
+data_split_task.set_part_num_per_host(config.data_split_task.part_num_per_host)
+train_task.set_part_num_per_host(config.train_task.part_num_per_host)
+
+data_check_task.set_part_index_per_host(config.data_check_task.part_index_per_host)
+data_split_task.set_part_index_per_host(config.data_split_task.part_index_per_host)
+train_task.set_part_index_per_host(config.train_task.part_index_per_host)
+
+data_check_task.set_part_size_per_host(config.data_check_task.part_size_per_host)
+data_split_task.set_part_size_per_host(config.data_split_task.part_size_per_host)
+train_task.set_part_size_per_host(config.train_task.part_size_per_host)
+
+data_check_task.set_part_hash_seed(config.data_check_task.part_hash_seed)
+data_split_task.set_part_hash_seed(config.data_split_task.part_hash_seed)
+train_task.set_part_hash_seed(config.train_task.part_hash_seed)
+
+data_check_task.set_part_hash_func(config.data_check_task.part_hash_func)
+data_split_task.set_part_hash_func(config.data_split_task.part_hash_func)
+train_task.set_part_hash_func(config.train_task.part_hash_func)
+
+data_check_task.set_part_hash_key(config.data_check_task.part_hash_key)
+data_split_task.set_part_hash_key(config.data_split_task.part_hash_key)
+train_task.set_part_hash_key(config.train_task.part_hash_key)
+
+data_check_task.set_part_hash_type(config.data_check_task.part_hash_type)
+data_split_task.set_part_hash_type(config.data_split_task.part_hash_type)
+train_task.set_part_hash_type(config.train_task.part_hash_type)
+
+data_check_task.set_part_hash_round(config.data_check_task.part_hash_round)
+data_split_task.set_part_hash_round(config.data_split_task.part_hash_round)
+train_task.set_part_hash_round(config.train_task.part_hash_round)
+
+data_check_task.set_part_hash_parallel(config.data_check_task.part_hash_parallel)
+data_split_task.set_part_hash_parallel(config.data_split_task.part_hash_parallel)
+train_task.set_part_hash_parallel(config.train_task.part_hash_parallel)
+
+data_check_task.set_part_hash_memory_size(config.data_check_task.part_hash_memory_size)
+data_split_task.set_part_hash_memory_size(config.data_split_task.part_hash_memory_size)
+train

@@ -1,0 +1,1 @@
+{"metrics": {"ChrF": {"mean": 0.39461738700190147}, "API_recall": {"mean": 0.35804307842373084}}, "name": "bm25/gpt-4-0125-preview"}
