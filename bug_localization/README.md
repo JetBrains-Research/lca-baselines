@@ -47,6 +47,6 @@ You can access data using [datasets](https://huggingface.co/docs/datasets/en/ind
   * [CodeT5](https://huggingface.co/Salesforce/codet5p-110m-embedding)
   * [BM25]()
   
-* Name-based
+* Chat-based
   * [GPT3.5](https://platform.openai.com/docs/models/gpt-3-5-turbo)
   * [GPT4](https://platform.openai.com/docs/models/gpt-4)
