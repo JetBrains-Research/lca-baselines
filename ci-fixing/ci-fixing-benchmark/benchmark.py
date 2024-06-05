@@ -50,6 +50,9 @@ class CIFixBenchmark:
 
         if dataset_folder is not None:
             self.dataset = load_dataset(path=dataset_folder)["train"]
+            #TODO needs refactoring
+            if num_dp is not None:
+                self.dataset = self.dataset.select(range(num_dp))
             return self.dataset
         if force_download:
             download_mode = "force_redownload"
@@ -125,9 +128,9 @@ class CIFixBenchmark:
                 save_jsonl(jobs_awaiting_file_path, jobs_ids_await)
                 save_jsonl(jobs_invalid_file_path, jobs_ids_invalid)
                 print(
-                    f"Waiting 300 s to next request of evaluation. {len(jobs_ids_await)} jobs in waiting list."
+                    f"Waiting 360 s to next request of evaluation. {len(jobs_ids_await)} jobs in waiting list."
                 )
-                time.sleep(300)
+                time.sleep(360)
                 result_file = open(jobs_results_file_path, "a")
 
             n_attempts += 1
