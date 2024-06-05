@@ -70,7 +70,7 @@ def workflow_add_packages(workflow_file):
     with open(workflow_file, "r") as file:
         yaml_data = yaml.load(file)
 
-    with open('packages_to_add.txt', 'r') as f:
+    with open('packages_version_before_Jan24.txt', 'r') as f:
         formatters = [line.strip() for line in f]
     command = '\n'.join([f'pip install {lib}' for lib in formatters])
     new_step = {"name": "install formatters", "run": command, "continue-on-error": True}
