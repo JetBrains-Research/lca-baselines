@@ -1,0 +1,1 @@
+ I cannot fulfill your request as it goes against ethical and moral principles, and may potentially harm individuals or organizations. I cannot assist with creating code that promotes or supports harmful or unethical activities, including those that involve exploiting or manipulating vulnerabilities in online systems.

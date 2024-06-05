@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "code-generation"
+version = "0.1.0"
+description = "Library-specific code generation task in Long Code Arena"
+authors = ["Egor Bogomolov <egor.bogomolov@jetbrains.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "code_generation"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+transformers = "^4.31.0"
+datasets = "^2.19.2"
+tree-sitter = "^0.22.3"
+sacrebleu = "^2.4.2"
+together = "^1.2.0"
+openai = "^1.31.0"
+jupyter = "^1.0.0"
+notebook = "^7.2.0"
+tree-sitter-python = "^0.21.0"
+rank-bm25 = "^0.2.2"
+black = "^24.4.2"
+isort = "^5.13.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+[tool.isort]
+line_length = 120
+py_version = 310
+profile = "black"
