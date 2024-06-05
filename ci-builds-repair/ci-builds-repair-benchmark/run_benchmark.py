@@ -32,7 +32,7 @@ Public part
 model_name = "diff"
 
 # Creating benchmark object
-config_path = "benchmark.yaml"
+config_path = "config.yaml"
 CIBenchPython = CIFixBenchmark(model_name, config_path, token_gh)
 
 # pass your fixing function
