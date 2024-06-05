@@ -29,7 +29,7 @@ Public part
 """
 
 # Name of the model used for the benchmark. It is used to track evaluation
-model_name = "none"
+model_name = "diff"
 
 # Creating benchmark object
 config_path = "benchmark.yaml"
@@ -39,8 +39,10 @@ CIBenchPython = CIFixBenchmark(model_name, config_path, token_gh)
 # For debugging, please, limit yourself to a small amount of datapoints (argument num_dp)
 # fix_repo_function = fix_none  # fix_apply_diff  #
 fix_repo_function = fix_apply_diff  #
-ids_list = [189]
-CIBenchPython.eval_dataset(fix_repo_function, num_dp=None, ids_list=None)
+ids_list = [159, 160]
+# CIBenchPython.eval_dataset(fix_repo_function, num_dp=None, ids_list=None)
+dataset_folder = '/mnt/data/galimzyanov/data/LCA/HF_dataset/lca-ci-fixing_filtered'
+CIBenchPython.eval_dataset(fix_repo_function, num_dp=None, ids_list=None, dataset_folder=dataset_folder)
 # You can run this method after evaluating dataset if some datapoints remained in waiting list.
 # CIBenchPython.get_results()
 
