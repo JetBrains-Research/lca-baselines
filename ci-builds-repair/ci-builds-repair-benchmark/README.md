@@ -3,6 +3,15 @@
 
 This directory contains the code for the CI builds repair benchmark. 
 
+# How to
+
+## 💾 Install dependencies
+
+We provide dependencies for two Python dependencies managers: [pip](https://pip.pypa.io/en/stable/) and [Poetry](https://python-poetry.org/docs/). Poetry is preferred, `requirements.txt` is obtained by running `poetry export --with dev,eda --output requirements.txt`.
+
+* If you prefer pip, run `pip install -r requirements.txt`
+* If you prefer Poetry, run `poetry install`
+
 ## ⚙️ Config
 
 To initialize the benchmark, you need to pass a path to a config file with the following fields (see example in [`config_template.yaml`](config_template.yaml)):
