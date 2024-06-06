@@ -19,7 +19,7 @@ We provide dependencies via the [Poetry](https://python-poetry.org/docs/) manage
 
 #### Generation
 
-In order to generate your predictions, add your parameters in the [config](configs) directory and run: 
+In order to generate your predictions, add your parameters in the [configs](configs) directory and run: 
 
 * `poetry run python chatgpt.py --config="configs/config_openai.yaml"` if you use [OpenAI](https://platform.openai.com/docs/overview) models;
 * `poetry run python togetherai.py --config="configs/config_together.yaml"` if you use [Together.AI](https://www.together.ai/) models.
@@ -34,7 +34,7 @@ To compare predicted and ground truth metrics we introduce the new metric based 
 CompScore = \frac{ P(pred | LLM(code, pred, gold)) + P(pred | LLM(code, gold, pred))}{2}
 ```
 
-In order to evaluate predictions, add your parameters in the (config)[configs/config_eval.yaml] and run:
+In order to evaluate predictions, add your parameters in the [config](configs/config_eval.yaml) and run:
 * `poetry run python metrics.py --config="configs/config_eval.yaml"`
 
 The script will evaluate the predictions and save the results into the `results.json` file.
