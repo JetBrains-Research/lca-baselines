@@ -17,7 +17,7 @@ The evaluation steps are the following:
 
 ## 💾 Install dependencies
 
-* Change the working directory: `cd code_completion`
+* Change the working directory: `cd project_level_code_completion`
 * install all the dependencies: `poetry install`
 * If you are going to use Flash Attention, run `poetry run pip install flash-attn --no-build-isolation`.
   * Refer to the [official documentation](https://github.com/Dao-AILab/flash-attention?tab=readme-ov-file#installation-and-features) for more details.
