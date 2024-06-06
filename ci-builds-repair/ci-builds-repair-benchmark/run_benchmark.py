@@ -19,7 +19,7 @@ fix_repo_function = fix_apply_diff
 # CIBenchPython.get_results()
 
 # Download the dataset if you want to play with it
-# test_dataset = CIBenchPython.get_dataset(force_download=False)
+test_dataset = CIBenchPython.get_dataset(force_download=True)
 
 # You can load datased from the local folder with json files, passing the path to an argument dataset_folder
 # test_dataset = CIBenchPython.get_dataset(force_download=False, dataset_folder=dataset_folder)
@@ -31,3 +31,5 @@ fix_repo_function = fix_apply_diff
 # Analyze jobs
 # job_results_file = "examples/jobs_results.jsonl"
 # CIBenchPython.analyze_results(jobs_results_file=job_results_file)
+
+pass

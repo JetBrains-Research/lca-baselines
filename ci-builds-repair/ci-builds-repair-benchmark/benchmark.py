@@ -22,7 +22,9 @@ def filter_by_id(example, ids):
 class CIFixBenchmark:
     def __init__(self, model_name, config_path):
 
-        benchmark_owner = "LCA-CI-fix-benchmark"
+        benchmark_owner = "LCA-CI-builds-repair"
+        self.dataset_id = "JetBrains-Research/lca-ci-builds-repair"
+
         self.config = OmegaConf.load(config_path)
         if not "test_username" in self.config:
             self.config.test_username = self.config.username_gh
@@ -35,7 +37,6 @@ class CIFixBenchmark:
 
         os.makedirs(self.config.out_folder, exist_ok=True)
         os.makedirs(self.config.repos_folder, exist_ok=True)
-        self.dataset_id = f"JetBrains-Research/lca-ci-fixing"
         OmegaConf.update(
             self.config, "benchmark_owner", benchmark_owner, force_add=True
         )
