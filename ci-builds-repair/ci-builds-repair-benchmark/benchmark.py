@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from dotenv import load_dotenv
 
 import pandas as pd
 from datasets import load_dataset
@@ -11,7 +12,7 @@ from typing import List
 from benchmark_utils import read_jsonl, save_jsonl
 from benhmark_functions import get_results, process_datapoint
 
-
+load_dotenv()
 def filter_files(directory, files):
     return [file for file in files if file != "meta_info.json"]
 
@@ -19,8 +20,8 @@ def filter_by_id(example, ids):
     return example['id'] in ids
 
 class CIFixBenchmark:
-    def __init__(self, model_name, config_path, token_gh):
-        # languages = ["Python", "Kotlin", "Rust", "C++", "Java"]
+    def __init__(self, model_name, config_path):
+
         benchmark_owner = "LCA-CI-fix-benchmark"
         self.config = OmegaConf.load(config_path)
         if not "test_username" in self.config:
@@ -28,7 +29,7 @@ class CIFixBenchmark:
         language = self.config.language
         self.credentials = {
             "username": self.config.username_gh,
-            "token": token_gh,
+            "token": os.environ.get("TOKEN_GH"),
             "model": model_name,
         }
 

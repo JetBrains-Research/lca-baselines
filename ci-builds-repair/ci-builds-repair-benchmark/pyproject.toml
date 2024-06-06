@@ -13,6 +13,7 @@ omegaconf = "^2.3.0"
 datasets = "^2.16.1"
 gitpython = "^3.1.41"
 ruamel-yaml = "^0.18.5"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
