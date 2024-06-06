@@ -19,7 +19,7 @@ We provide dependencies via the [Poetry](https://python-poetry.org/docs/) manage
 
 #### Generation
 
-In order to generate your predictions, add your parameters in the (config)[configs/] directory and run: 
+In order to generate your predictions, add your parameters in the (config)[configs] directory and run: 
 
 * `poetry run python chatgpt.py --config="configs/config_openai.yaml"` if you use [OpenAI](https://platform.openai.com/docs/overview) models;
 * `poetry run python togetherai.py --config="configs/config_together.yaml"` if you use [Together.AI](https://www.together.ai/) models.
