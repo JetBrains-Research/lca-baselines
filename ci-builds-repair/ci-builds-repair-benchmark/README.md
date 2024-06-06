@@ -7,7 +7,7 @@ This directory contains the code for the CI builds repair benchmark.
 
 To initialize the benchmark, you need to pass a path to a config file with the following fields (see example in [`config_template.yaml`](config_template.yaml)):
 
-`repos_folder`: the path to where the cloned repos will be stored;
+`repos_folder`: the path to where the cloned repos will be stored; 
 `out_folder`: the path to where the result files will be stored;  
 `data_cache_dir`: the path to where the cached dataset will be stored;  
 `username_gh`: your GitHub username;  
