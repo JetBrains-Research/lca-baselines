@@ -4,8 +4,7 @@
 This directory contains code for running baselines for the Module summarization task in the Long Code Arena benchmark.
 
 We provide implementation of baselines running inference via [OpenAI](https://platform.openai.com/docs/overview) and [Together.AI](https://www.together.ai/).
-We generate documentation based on a plain instruction, without any repository-level information.
-* Generating based on instruction and top-20 method and class names from the library according to BM-25 with instruction as a reference.
+We generate documentation based on an intent (one sentence description of documentation content), target documentation name and relevant code context. 
 
 # How-to
 
