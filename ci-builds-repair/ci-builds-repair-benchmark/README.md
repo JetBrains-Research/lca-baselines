@@ -16,6 +16,7 @@ To initialize the benchmark, you need to pass a path to a config file with the f
 
 ## 🏟️ Benchmark usage
 
+**Important**: Before usage, please request to be added to the benchmark [organization]([https://huggingface.co/datasets/JetBrains-Research/lca-ci-builds-repair](https://github.com/orgs/LCA-CI-fix-benchmark) on Github to be able to push the repos for the test.
 For the example of the benchmark usage code, see the [`run_benchmark.py`](run_benchmark.py) script.
 To use the benchmark, you need to pass a function `fix_repo_function` that fixes the build according to 
 the repository state on a local machine, logs, and the metadata of the failed workflows.
