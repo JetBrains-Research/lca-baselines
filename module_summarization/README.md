@@ -1,17 +1,17 @@
 # 🏟️ Long Code Arena Baselines
-## Module Summarization
+## Module summarization
 
-This folder contains code for running baselines for Module Summarization task in Long Code Arena benchmark.
+This directory contains code for running baselines for the Module summarization task in the Long Code Arena benchmark.
 
 We provide implementation of baselines running inference via [OpenAI](https://platform.openai.com/docs/overview) and [Together.AI](https://www.together.ai/).
-We generate documentation based on an  plain instruction, without any repository-level information
-* Generating based on instruction and top-20 method and class names from the library according to BM-25 with instruction as a reference
+We generate documentation based on a plain instruction, without any repository-level information.
+* Generating based on instruction and top-20 method and class names from the library according to BM-25 with instruction as a reference.
 
 # How-to
 
 ## 💾 Install dependencies
 
-We provide dependencies via [Poetry](https://python-poetry.org/docs/) manager. 
+We provide dependencies via the [Poetry](https://python-poetry.org/docs/) manager. 
 
 * To install dependecies, run `poetry install`
 
@@ -19,12 +19,12 @@ We provide dependencies via [Poetry](https://python-poetry.org/docs/) manager.
 
 #### Generation
 
-In order to generate your predictions add your parameters in the config[configs] and run: 
+In order to generate your predictions, add your parameters in the (config)[configs/] directory and run: 
 
-* `poetry run python chatgpt.py --config="configs/config_openai.yaml"` if you use [OpenAI](https://platform.openai.com/docs/overview) models
-* `poetry run python togetherai.py --config="configs/config_together.yaml"` if you use [Together.AI](https://www.together.ai/) models
+* `poetry run python chatgpt.py --config="configs/config_openai.yaml"` if you use [OpenAI](https://platform.openai.com/docs/overview) models;
+* `poetry run python togetherai.py --config="configs/config_together.yaml"` if you use [Together.AI](https://www.together.ai/) models.
 
-The script will generate predictions and put it into "save_dir" folder from config.
+The script will generate predictions and put them into the `save_dir` directory from config.
 
 #### Metrics 
 
@@ -34,7 +34,7 @@ To compare predicted and ground truth metrics we introduce the new metric based 
 CompScore = \frac{ P(pred | LLM(code, pred, gold)) + P(pred | LLM(code, gold, pred))}{2}
 ```
 
-In order to evaluate predictions add your parameters in the config[configs/config_eval.yaml] and run:
+In order to evaluate predictions, add your parameters in the (config)[configs/config_eval.yaml] and run:
 * `poetry run python metrics.py --config="configs/config_eval.yaml"`
 
-The script will evaluate the predictions and put results "results.json" file.
+The script will evaluate the predictions and save the results into the `results.json` file.
