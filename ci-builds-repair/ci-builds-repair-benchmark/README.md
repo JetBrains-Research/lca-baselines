@@ -7,12 +7,12 @@ This directory contains the code for the CI builds repair benchmark.
 
 ## 💾 Install dependencies
 
-We provide dependencies for two Python dependencies managers: [pip](https://pip.pypa.io/en/stable/) and [Poetry](https://python-poetry.org/docs/). Poetry is preferred, `requirements.txt` is obtained by running `poetry export --with dev,eda --output requirements.txt`.
+We provide dependencies for two Python dependencies managers: [pip](https://pip.pypa.io/en/stable/) and [Poetry](https://python-poetry.org/docs/). Poetry is preferred, `requirements.txt` is obtained by running ` poetry export --output requirements.txt`.
 
 * If you prefer pip, run `pip install -r requirements.txt`
 * If you prefer Poetry, run `poetry install`
 
-## ⚙️ Config
+## ⚙️ Configure
 
 To initialize the benchmark, you need to pass a path to a config file with the following fields (see example in [`config_template.yaml`](config_template.yaml)):
 
@@ -23,12 +23,25 @@ To initialize the benchmark, you need to pass a path to a config file with the f
 `test_username`: _Optional_. Username that would be displayed in the benchmark, if omitted, `username_gh` will be used;  
 `language`: dataset language (for now, only Python is available).  
 
-## 🏟️ Benchmark usage
+## 🚀 Run
 
-**Important**: Before usage, please request to be added to the benchmark [organization]([https://huggingface.co/datasets/JetBrains-Research/lca-ci-builds-repair](https://github.com/orgs/LCA-CI-fix-benchmark) on Github to be able to push the repos for the test.  
+**Important**: Before usage, please request to be added to the benchmark [organization]([https://huggingface.co/datasets/JetBrains-Research/lca-ci-builds-repair](https://github.com/orgs/LCA-CI-fix-benchmark) on Github to be able to push the repos for the test.
 
 For the example of the benchmark usage code, see the [`run_benchmark.py`](run_benchmark.py) script.
-To use the benchmark, you need to pass a function `fix_repo_function` that fixes the build according to 
+
+The method `CIFixBenchmark.eval_dataset(fix_repo_function)` evaluates the baseline function. Specifically, it:
+
+1. Downloads the [dataset](https://huggingface.co/datasets/JetBrains-Research/lca-ci-builds-repair);
+2. Repairs repo by `fix_repo_function` function that utilizes repo state and logs of fails
+3. Sends the datapoints to GitHub to run workflows;
+4. Requests results from GitHub;
+5. Analyzes results and prints them.
+
+For debugging, please limit yourself to a small number of datapoints (argument `num_dp=num_dp`).
+
+### ⚒️ fix_repo_function
+
+To use the benchmark, you need to pass a function `fix_repo_function` that repairs the build according to 
 the repository state on a local machine, logs, and the metadata of the failed workflows.
 The function should have the following (all optional) arguments:
 (`datapoint`, `repo_path`, `repo`, `out_folder`)
@@ -41,20 +54,9 @@ The function should have the following (all optional) arguments:
 For now, only two functions have been implemented:
 
 `fix_none` —       does nothing;  
-`fix_apply_diff` — applies the diff that fixed the issue in the original repository;  
+`fix_apply_diff` — applies the diff that repairs the issue in the original repository;  
 
 You can download the dataset using the `CIFixBenchmark.get_dataset()` method.
-
-## 🚀 Evaluate the baseline
-
-The method `CIFixBenchmark.eval_dataset(fix_repo_function)` evaluates the baseline function. Specifically, it:
-
-1. Downloads the [dataset](https://huggingface.co/datasets/JetBrains-Research/lca-ci-builds-repair);
-2. Sends the datapoints to GitHub to run workflows;
-3. Requests results from GitHub;
-4. Analyzes results and prints them.
-
-For debugging, please limit yourself to a small number of datapoints (argument `num_dp=num_dp`).
 
 ## 📈 Outputs
 
