@@ -11,12 +11,13 @@ To initialize the benchmark, you need to pass a path to a config file with the f
 `out_folder`: the path to where the result files will be stored;  
 `data_cache_dir`: the path to where the cached dataset will be stored;  
 `username_gh`: your GitHub username;  
-`test_username`: _Optional_. Username that would be displayed in the benchmark, if ommitted, `username_gh` will be used;  
+`test_username`: _Optional_. Username that would be displayed in the benchmark, if omitted, `username_gh` will be used;  
 `language`: dataset language (for now, only Python is available).  
 
 ## 🏟️ Benchmark usage
 
 **Important**: Before usage, please request to be added to the benchmark [organization]([https://huggingface.co/datasets/JetBrains-Research/lca-ci-builds-repair](https://github.com/orgs/LCA-CI-fix-benchmark) on Github to be able to push the repos for the test.  
+
 For the example of the benchmark usage code, see the [`run_benchmark.py`](run_benchmark.py) script.
 To use the benchmark, you need to pass a function `fix_repo_function` that fixes the build according to 
 the repository state on a local machine, logs, and the metadata of the failed workflows.
@@ -33,6 +34,8 @@ For now, only two functions have been implemented:
 `fix_none` —       does nothing;  
 `fix_apply_diff` — applies the diff that fixed the issue in the original repository;  
 
+You can download the dataset using the `CIFixBenchmark.get_dataset()` method.
+
 ## 🚀 Evaluate the baseline
 
 The method `CIFixBenchmark.eval_dataset(fix_repo_function)` evaluates the baseline function. Specifically, it:
@@ -48,7 +51,7 @@ For debugging, please limit yourself to a small number of datapoints (argument `
 
 The evaluation method outputs the following results:
 
-1. `jobs_ids.jsonl` — identifiers of the jobs that were sent to GitHub. They are used for the further evaluation.
+1. `jobs_ids.jsonl` — identifiers of the jobs that were sent to GitHub. They are used for further evaluation.
 2. `jobs_results.jsonl` — results of each job.
 3. `jobs_awaiting.jsonl` — list of awaiting jobs (normally should be empty).
 3. `jobs_invalid.jsonl` — list of invalid jobs (normally should be empty).
@@ -56,4 +59,4 @@ The evaluation method outputs the following results:
 Examples of these files can be found in the (`/examples`)[examples/] directory.
 
 You can also evaluate your results using the method `CIFixBenchmark.eval_jobs(result_filename=result_filename)`,
-passing the `jobs_ids.jsonl` file. You can download the dataset using the `CIFixBenchmark.get_dataset()` method.
+passing the `jobs_ids.jsonl` file.
