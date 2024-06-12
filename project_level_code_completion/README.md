@@ -1,7 +1,7 @@
 # 🏟️ Long Code Arena Baselines
 ## Project-level code completion
 
-This directory contains the code for running baselines for the Project-level code completion task in the Long Code Arena benchmark.
+This directory contains the code for running baselines for the Project-level code completion task in the [Long Code Arena benchmark](https://huggingface.co/spaces/JetBrains-Research/long-code-arena).
 
 We provide the implementation for the following baseline: a language model that is fed with differently composed context from a repository snapshot.
 
