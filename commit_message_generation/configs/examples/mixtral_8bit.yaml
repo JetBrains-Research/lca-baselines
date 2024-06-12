@@ -2,12 +2,12 @@ backbone:
   _target_: src.backbones.HuggingFaceBackbone
   prompt:
     _target_: src.prompts.DetailedCMGPrompt
-  model_name: codellama/CodeLlama-7b-Instruct-hf
+  model_name: mistralai/Mixtral-8x7B-Instruct-v0.1
   is_encoder_decoder: false
   model_kwargs:
     torch_dtype: auto
     device_map: auto
-    load_in_8bit: false
+    load_in_8bit: true
     load_in_4bit: false
     attn_implementation: flash_attention_2
   generation:
@@ -23,7 +23,7 @@ preprocessor:
   include_path: true
 logger:
   use_wandb: true
-  name: codellama7b_detailed
+  name: mixtral_8bit_detailed
   project: lca_cmg
   local_artifact: false
 data_src:

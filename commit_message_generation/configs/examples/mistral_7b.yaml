@@ -8,8 +8,7 @@ backbone:
     torch_dtype: auto
     device_map: auto
     load_in_8bit: false
-    load_in_4bit: true
-    attn_implementation: flash_attention_2
+    load_in_4bit: false
   generation:
     do_sample: true
     temperature: 0.8
@@ -31,5 +30,5 @@ data_src:
   cache_dir: null
   hub_name: JetBrains-Research/lca-commit-message-generation
   configs:
-  - commitchronicle-py-long
+  - default
   split: test

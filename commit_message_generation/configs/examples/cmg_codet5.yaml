@@ -29,5 +29,5 @@ data_src:
   cache_dir: null
   hub_name: JetBrains-Research/lca-commit-message-generation
   configs:
-  - commitchronicle-py-long
+  - default
   split: test
