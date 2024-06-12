@@ -7,7 +7,9 @@ class AlphabeticalComposer(OneCompletionFileComposer):
         # context = datapoint['context']
         context = datapoint.get_context()
         repo_name = datapoint.repo_name
-        composed_content = [path + self.meta_info_sep_symbol + content for path, content in sorted(context.items())]
+        composed_content = [
+            path + self.meta_info_sep_symbol + content for path, content in sorted(context.items(), reverse=True)
+        ]
 
         completion = datapoint.get_completion()
         assert len(completion) == 1, 'Only one file should be completed'

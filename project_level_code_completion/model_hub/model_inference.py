@@ -80,10 +80,12 @@ def model_inference(
         np.save(os.path.join(curr_dir, 'completion_tokens.npy'), input_ids[0].detach().cpu().numpy()[context_len:])
 
         ctxt_lens.append(context_len)
-        repo_ids.append(str(datapoint['repo_id']))
+        repo_ids.append(str(f"{datapoint['repo_id']}_{num_dp}"))
 
     with open(os.path.join(out_dir, 'context_lengths.json'), 'w') as json_file:
         json.dump(dict(zip(repo_ids, ctxt_lens)), json_file)
+    with open(os.path.join(out_dir, 'input_lengths.json'), 'w') as json_file:
+        json.dump(dict(zip(repo_ids, input_lens)), json_file)
 
     return {'lost_tokens_num': sum(crop_lens), 'lost_tokens_mean': sum(crop_lens)/len(crop_lens), 'lost_tokens_ratio': sum(crop_lens)/sum(input_lens)}
 
