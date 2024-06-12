@@ -71,3 +71,6 @@ Examples of these files can be found in the (`/examples`)[examples/] directory.
 
 You can also evaluate your results using the method `CIFixBenchmark.eval_jobs(result_filename=result_filename)`,
 passing the `jobs_ids.jsonl` file.
+
+## 📩 Contact info
+If you have any questions or requests concerning this dataset, please contact lca@jetbrains.com
