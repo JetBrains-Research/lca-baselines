@@ -51,7 +51,7 @@ class HFDataSource(BaseDataSource):
             for i, repo_zip_path in enumerate(repos):
                 print(f"Loading {i}/{len(repos)} {repo_zip_path}")
 
-                repo_name = os.path.basename(repo_zip_path).split('.')[0]
+                repo_name = os.path.basename(repo_zip_path).split('.zip')[0]
                 repo_path = os.path.join(self._repos_dir, repo_name)
                 if os.path.exists(os.path.join(self._repos_dir, repo_name)):
                     print(f"Repo {repo_zip_path} is already loaded...")
@@ -74,10 +74,15 @@ class HFDataSource(BaseDataSource):
             self._load_repos()
             for dp in dataset:
                 repo_path = os.path.join(self._repos_dir, f"{dp['repo_owner']}__{dp['repo_name']}")
-                repo_content = get_repo_content_on_commit(repo_path, dp['base_sha'],
-                                                          extensions=[config],
-                                                          ignore_tests=True)
-                changed_files = get_changed_files_between_commits(repo_path, dp['base_sha'], dp['head_sha'],
-                                                                  extensions=[config],
-                                                                  ignore_tests=True)
-                yield dp, repo_content, changed_files
+                try:
+                    repo_content = get_repo_content_on_commit(repo_path, dp['base_sha'],
+                                                              extensions=[config],
+                                                              ignore_tests=True)
+
+                    changed_files = get_changed_files_between_commits(repo_path, dp['base_sha'], dp['head_sha'],
+                                                                      extensions=[config],
+                                                                      ignore_tests=True)
+                    yield dp, repo_content, changed_files
+                except Exception as e:
+                    print(f"Failed to get repo content for {dp['repo_owner']}__{dp['repo_name']}", e)
+                    continue
