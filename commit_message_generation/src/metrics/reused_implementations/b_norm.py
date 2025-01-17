@@ -23,7 +23,6 @@ The reason for breaking the BLEU computation into three phases cook_refs(), cook
 import math
 import os
 import re
-import subprocess
 import sys
 import xml.sax.saxutils
 

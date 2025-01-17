@@ -47,6 +47,6 @@ class TokenizationUtils:
         if self._model_provider == "huggingface":
             assert isinstance(self._tokenizer, PreTrainedTokenizerFast)
             encoding = self._tokenizer(text).input_ids[:max_num_tokens]
-            return self._tokenizer.decode(encoding)
+            return self._tokenizer.decode(encoding, skip_special_tokens=True)
 
         raise ValueError(f"{self._model_provider} is currently not supported.")

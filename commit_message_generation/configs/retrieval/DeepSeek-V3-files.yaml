@@ -1,0 +1,29 @@
+backbone:
+  _target_: src.backbones.TogetherBackbone
+  prompt:
+    _target_: src.prompts.DetailedCMGPrompt
+  model_name: deepseek-ai/DeepSeek-V3
+  api_key: null
+  parameters:
+    temperature: 0.8
+preprocessor:
+  _target_: src.preprocessors.FullFilesCMGPreprocessor
+  include_path: true
+  hf_repo_id: "JetBrains-Research/lca-commit-message-generation"
+  hf_path_in_repo: "repos"
+  local_data_dir: "tmp"
+  max_num_tokens: 64000
+  model_name: "deepseek-ai/DeepSeek-V3"
+  model_provider: "huggingface"
+logger:
+  use_wandb: false
+  name: null
+  project: null
+  local_artifact: null
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: JetBrains-Research/lca-commit-message-generation
+  configs:
+  - default
+  split: test

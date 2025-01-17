@@ -1,0 +1,23 @@
+backbone:
+  _target_: src.backbones.OpenAIBackbone
+  prompt:
+    _target_: src.prompts.DetailedCMGPrompt
+  model_name: o1-mini-2024-09-12
+  api_key: null
+  parameters:
+    temperature: 0.8
+preprocessor:
+  _target_: src.preprocessors.SimpleCMGPreprocessor
+  include_path: true
+logger:
+  use_wandb: false
+  name: null
+  project: null
+  local_artifact: null
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: JetBrains-Research/lca-commit-message-generation
+  configs:
+  - default
+  split: test

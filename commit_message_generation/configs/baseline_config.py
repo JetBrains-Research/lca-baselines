@@ -4,9 +4,20 @@ from typing import Optional
 from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING
 
-from .backbones_configs import BackboneConfig, HFBackboneConfig, OpenAIBackboneConfig
+from .backbones_configs import (
+    BackboneConfig,
+    DeepSeekBackboneConfig,
+    HFBackboneConfig,
+    OpenAIBackboneConfig,
+    TogetherBackboneConfig,
+)
 from .data_sources_configs import DataSourceConfig, HFDataSourceConfig, LocalFileDataSourceConfig
-from .preprocessor_configs import BasePreprocessorConfig, SimpleCMGDiffPreprocessor, TruncationCMGDiffPreprocessor
+from .preprocessor_configs import (
+    BasePreprocessorConfig,
+    RetrivalCMGPreprocessorConfig,
+    SimpleCMGDiffPreprocessor,
+    TruncationCMGDiffPreprocessor,
+)
 from .prompts_configs import DetailedPrompt, SimplePrompt
 
 
@@ -51,12 +62,15 @@ cs.store(name="baseline_config", node=BaselineConfig)
 # all available options for the backbone
 cs.store(name="openai", group="backbone", node=OpenAIBackboneConfig)
 cs.store(name="hf", group="backbone", node=HFBackboneConfig)
+cs.store(name="together", group="backbone", node=TogetherBackboneConfig)
+cs.store(name="deepseek", group="backbone", node=DeepSeekBackboneConfig)
 # all available options for the prompt
 cs.store(name="simple", group="backbone/prompt", node=SimplePrompt)
 cs.store(name="detailed", group="backbone/prompt", node=DetailedPrompt)
 # all available options for the preprocessor
 cs.store(name="simple", group="preprocessor", node=SimpleCMGDiffPreprocessor)
 cs.store(name="truncation", group="preprocessor", node=TruncationCMGDiffPreprocessor)
+cs.store(name="retrieval", group="preprocessor", node=RetrivalCMGPreprocessorConfig)
 # all available options for the input
 cs.store(name="local", group="data_src", node=LocalFileDataSourceConfig)
 cs.store(name="hf", group="data_src", node=HFDataSourceConfig)

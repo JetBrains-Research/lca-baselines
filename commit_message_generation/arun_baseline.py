@@ -1,14 +1,18 @@
+import asyncio
 import json
 import logging
 import os
 import random
-from typing import Dict
+import sys
+from argparse import ArgumentParser
+from typing import Any, Dict
 
 import hydra
 import jsonlines
 import pandas as pd  # type: ignore[import-untyped]
 import wandb
 from dotenv import load_dotenv
+from hydra import compose, initialize
 from omegaconf import OmegaConf
 from tqdm import tqdm  # type: ignore[import-untyped]
 
@@ -16,6 +20,13 @@ from configs import BaselineConfig
 from src import CMGBackbone, CMGBaseline, CMGMetrics
 
 load_dotenv()
+
+root = logging.getLogger()
+root.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter("[%(asctime)s][%(name)s][%(levelname)s] - %(message)s")
+handler.setFormatter(formatter)
+root.addHandler(handler)
 
 
 def init_baseline(cfg: BaselineConfig) -> CMGBaseline:
@@ -30,22 +41,28 @@ def init_baseline(cfg: BaselineConfig) -> CMGBaseline:
     return CMGBaseline(backbone=backbone, preprocessor=preprocessor)
 
 
-def get_predictions(baseline: CMGBaseline, cfg: BaselineConfig, predictions_path: str = "predictions.jsonl") -> str:
+async def get_predictions(
+    baseline: CMGBaseline, cfg: BaselineConfig, predictions_path: str = "predictions.jsonl"
+) -> str:
     # init iterator (either over local file or over HuggingFace dataset)
     if hasattr(cfg.data_src, "path"):
         cfg.data_src.path = hydra.utils.to_absolute_path(cfg.data_src.path)  # type: ignore[attr-defined]
     reader = hydra.utils.instantiate(cfg.data_src)
 
-    # get predictions for all input examples
-    open(predictions_path, "w").close()
-    for line in tqdm(reader, "Generating messages"):
-        baseline_output = baseline.generate_msg(commit=line)
-        assert "prediction" in baseline_output, "Baseline output should contain a prediction."
+    async def _get_prediction(line: Dict[str, Any]) -> None:
+        baseline_output = await baseline.agenerate_msg(commit=line)  # type: ignore[arg-type]
         cur_example = {"reference": line["message"], "hash": line["hash"], "repo": line["repo"]}
         cur_example.update(baseline_output)
 
         with jsonlines.open(predictions_path, "a") as writer:
             writer.write(cur_example)
+
+        return None
+
+    # get predictions for all input examples
+    open(predictions_path, "w").close()
+    tasks = [_get_prediction(line) for line in reader]
+    await asyncio.gather(*tasks)
     return predictions_path
 
 
@@ -60,13 +77,16 @@ def compute_metrics(predictions_path: str) -> Dict[str, float]:
     return computed_metrics
 
 
-@hydra.main(version_base="1.1", config_path="configs", config_name="baseline_config")
-def main(cfg: BaselineConfig) -> None:
+async def main(config_name: str) -> None:
+    initialize(version_base="1.1", config_path="configs/async")
+    cfg_dict = compose(config_name=config_name)
+    cfg = BaselineConfig(**cfg_dict)  # type: ignore
+
+    os.makedirs(f"results/{config_name[: -len('.yaml')]}", exist_ok=True)
+
     if hasattr(cfg.backbone, "seed") and cfg.backbone.seed is None:
         cfg.backbone.seed = random.randint(1, 2**32)
         logging.warning(f"Using random seed {cfg.backbone.seed}.")
-    with open(f"{cfg.logger.name}.yaml", "w") as f:
-        OmegaConf.save(cfg, f)
 
     # init W&B (optional)
     if cfg.logger.use_wandb:
@@ -81,7 +101,9 @@ def main(cfg: BaselineConfig) -> None:
     baseline = init_baseline(cfg)
 
     # obtain predictions
-    predictions_path = get_predictions(cfg=cfg, baseline=baseline)
+    predictions_path = await get_predictions(
+        cfg=cfg, baseline=baseline, predictions_path=f"results/{config_name[: -len('.yaml')]}/predictions.jsonl"
+    )
 
     # log predictions to W&B (optional)
     if cfg.logger.use_wandb:
@@ -98,8 +120,7 @@ def main(cfg: BaselineConfig) -> None:
 
     # compute metrics
     computed_metrics = compute_metrics(predictions_path)
-
-    with open("metrics.json", "w") as f:
+    with open(f"results/{config_name[: -len('.yaml')]}/metrics.json", "w") as f:
         json.dump(computed_metrics, f)
 
     # log metrics to W&B (optional)
@@ -108,4 +129,12 @@ def main(cfg: BaselineConfig) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = ArgumentParser(
+        description="Launch a commit message generation model for Long Code Arena dataset asynchronously."
+    )
+    parser.add_argument(
+        "--config-name", type=str, help="Which config under `configs/async` directory to use.", required=True
+    )
+    args = parser.parse_args()
+
+    asyncio.run(main(args.config_name))

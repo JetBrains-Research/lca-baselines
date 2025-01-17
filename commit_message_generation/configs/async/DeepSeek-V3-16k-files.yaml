@@ -1,0 +1,26 @@
+backbone:
+  _target_: src.backbones.TogetherBackbone
+  prompt:
+    _target_: src.prompts.DetailedCMGPromptForFullFiles
+  model_name: deepseek-ai/DeepSeek-V3
+  api_key: null
+  parameters:
+    temperature: 0.8
+preprocessor:
+  _target_: src.preprocessors.LoadFromDatasetPreprocessor
+  include_path: true
+  hf_repo_id: "JetBrains-Research/lca-commit-message-generation"
+  hf_repo_config: "full_files"
+  hf_repo_split: "16k"
+logger:
+  use_wandb: false
+  name: null
+  project: null
+  local_artifact: null
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: JetBrains-Research/lca-commit-message-generation
+  configs:
+  - default
+  split: test
