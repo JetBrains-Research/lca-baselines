@@ -1,0 +1,14 @@
+# @package _global_
+hydra:
+  job:
+    name: hydra
+  run:
+    dir: ${data_path}/${hydra:job.name}/${now:%Y%m%d_%H%M%S}_${backbone.name}_${backbone.model_name}_${context_composer.name}
+
+data_path: "/Users/Maria.Tigina/PycharmProjects/lca-baselines/bug_localization/data"
+
+defaults:
+  - _self_
+  - data_source: hf
+  - context_composer: filepath_imports
+  - backbone: openai

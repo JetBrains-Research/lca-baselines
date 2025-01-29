@@ -1,6 +1,5 @@
 from typing import List
 
-import anthropic
 import tiktoken
 from transformers import AutoTokenizer
 
@@ -12,17 +11,18 @@ class TokenizationUtils:
     """
 
     PROFILE_NAME_TO_PROVIDER_AND_MODEL = {
-        "deepseek-ai/deepseek-coder-1.3b-instruct": {"model_provider": "huggingface",
-                                                     "model_name": "deepseek-ai/deepseek-coder-1.3b-instruct",
-                                                     "context_size": 16384},
-        "chat-llama-v2-7b": {"model_provider": "huggingface", "model_name": "codellama/CodeLlama-7b-Instruct-hf",
-                             "context_size": 16000},
-        "anthropic-claude": {"model_provider": "anthropic", "model_name": "claude", "context_size": 16000},
-
-        "gpt-3.5-turbo-0613": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 4096},
-        "gpt-3.5-turbo-1106": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 16385},
-        "gpt-4-0613": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 8192},
-        "gpt-4-1106-preview": {"model_provider": "openai", "model_name": "gpt-4", "context_size": 128000},
+        "gpt-3.5-turbo-1106": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 16000},
+        "gpt-4o": {"model_provider": "openai", "model_name": "gpt-4", "context_size": 32000},
+        "gpt-4o-mini": {"model_provider": "openai", "model_name": "gpt-4", "context_size": 8000},
+        "claude-3.5-sonnet": {"model_provider": "anthropic", "model_name": "claude-3.5-sonnet", "context_size": 10000},
+        "claude-3-opus": {"model_provider": "anthropic", "model_name": "claude-3-opus", "context_size": 10000},
+        "claude-3-haiku": {"model_provider": "anthropic", "model_name": "claude-3-haiku", "context_size": 10000},
+        "gemini-1.5-pro": {"model_provider": "google", "model_name": "gemini-1.5-pro", "context_size": 10000},
+        "llama-3.1-405B": {"model_provider": "huggingface", "model_name": "llama-3.1-405B", "context_size": 4000},
+        "llama-3.1-70B": {"model_provider": "huggingface", "model_name": "llama-3.1-70B", "context_size": 2000},
+        "llama-3.1-8B": {"model_provider": "huggingface", "model_name": "llama-3.1-8B", "context_size": 1000},
+        "llama-3.2-3B": {"model_provider": "huggingface", "model_name": "llama-3.2-3B", "context_size": 2000},
+        "llama-3.2-1B-mini": {"model_provider": "huggingface", "model_name": "llama-3.2-1B-mini", "context_size": 1000},
     }
 
     def __init__(self, profile_name: str):
@@ -35,20 +35,32 @@ class TokenizationUtils:
         self._context_size = model_info["context_size"]
 
         if self._model_provider == "openai":
+            # OpenAI models (e.g., GPT-4, GPT-3.5)
             self._tokenizer = tiktoken.encoding_for_model(self._model_name)
         elif self._model_provider == "anthropic":
-            self._tokenizer = anthropic.Anthropic().get_tokenizer()
+            # Anthropic models (e.g., Claude 3.5, Claude 3)
+            # TODO: implement, use gpt-4 for now instead
+            self._tokenizer = tiktoken.encoding_for_model('gpt-4')
         elif self._model_provider == "huggingface":
+            # Hugging Face models (e.g., Llama 3.1, Llama 3.2)
             self._tokenizer = AutoTokenizer.from_pretrained(self._model_name)
+        elif self._model_provider == "google":
+            # Gemini models by Google (e.g., Gemini 1.5 Pro)
+            # TODO: implement, use gpt-4 for now instead
+            self._tokenizer = tiktoken.encoding_for_model('gpt-4')
+        else:
+            raise ValueError(f"Unsupported model provider {self._model_provider}.")
 
     def _encode(self, text: str) -> List[str]:
         """Estimates the number of tokens for a given string."""
         if self._model_provider == "openai":
             return self._tokenizer.encode(text)
-        if self._model_provider == "anthropic":
+        elif self._model_provider == "anthropic":
             return self._tokenizer.encode(text)
-        if self._model_provider == "huggingface":
+        elif self._model_provider == "huggingface":
             return self._tokenizer(text).input_ids
+        elif self._model_provider == "google":
+            return self._tokenizer.encode(text)
 
         raise ValueError(f"{self._model_provider} is currently not supported for token estimation.")
 
@@ -102,4 +114,7 @@ class TokenizationUtils:
 
 
 if __name__ == '__main__':
-    print(TokenizationUtils("gpt-4-0613").count_text_tokens("sfef efwe ef"))
+    print(TokenizationUtils("gemini-1.5-pro").count_text_tokens("sfef efwe ef"))
+    print(TokenizationUtils("gpt-4o-mini").count_text_tokens("sfef efwe ef"))
+    print(TokenizationUtils("gemini-1.5-pro").count_text_tokens("sfef efwe ef"))
+    print(TokenizationUtils("claude-3-haiku").count_text_tokens("sfef efwe ef"))
