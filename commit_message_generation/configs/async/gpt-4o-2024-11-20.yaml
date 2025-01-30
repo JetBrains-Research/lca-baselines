@@ -1,0 +1,23 @@
+backbone:
+  _target_: src.backbones.OpenAIBackbone
+  prompt:
+    _target_: src.prompts.DetailedCMGPrompt
+  model_name: gpt-4o-2024-11-20
+  api_key: null
+  parameters:
+    temperature: 0.8
+preprocessor:
+  _target_: src.preprocessors.SimpleCMGPreprocessor
+  include_path: true
+logger:
+  use_wandb: false
+  name: null
+  project: null
+  local_artifact: null
+data_src:
+  _target_: src.data_sources.HFDataSource
+  cache_dir: null
+  hub_name: icmlbenchname/commit-message-generation
+  configs:
+  - default
+  split: test

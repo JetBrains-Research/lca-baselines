@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import random
@@ -7,11 +8,14 @@ import hydra
 import jsonlines
 import pandas as pd  # type: ignore[import-untyped]
 import wandb
+from dotenv import load_dotenv
 from omegaconf import OmegaConf
 from tqdm import tqdm  # type: ignore[import-untyped]
 
 from configs import BaselineConfig
-from src import CMGBackbone, CMGBaseline, CMGMetrics, CMGPreprocessor
+from src import CMGBackbone, CMGBaseline, CMGMetrics
+
+load_dotenv()
 
 
 def init_baseline(cfg: BaselineConfig) -> CMGBaseline:
@@ -35,7 +39,7 @@ def get_predictions(baseline: CMGBaseline, cfg: BaselineConfig, predictions_path
     # get predictions for all input examples
     open(predictions_path, "w").close()
     for line in tqdm(reader, "Generating messages"):
-        baseline_output = baseline.generate_msg(commit_mods=line["mods"])
+        baseline_output = baseline.generate_msg(commit=line)
         assert "prediction" in baseline_output, "Baseline output should contain a prediction."
         cur_example = {"reference": line["message"], "hash": line["hash"], "repo": line["repo"]}
         cur_example.update(baseline_output)
@@ -94,6 +98,9 @@ def main(cfg: BaselineConfig) -> None:
 
     # compute metrics
     computed_metrics = compute_metrics(predictions_path)
+
+    with open("metrics.json", "w") as f:
+        json.dump(computed_metrics, f)
 
     # log metrics to W&B (optional)
     if cfg.logger.use_wandb:

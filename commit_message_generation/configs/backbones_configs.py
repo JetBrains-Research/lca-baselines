@@ -33,6 +33,38 @@ class OpenAIBackboneConfig(BackboneConfig):
 
 
 @dataclass
+class TogetherBackboneConfig(BackboneConfig):
+    """Config for instantiating a Together backbone.
+
+    Attributes:
+        model_name: Name for LLM profile to use in Together API.
+        prompt: Name for one of the supported prompt configurations.
+        api_key: Together API key (optional, by default, TOGETHER_API_KEY env variable is used).
+        parameters: Arbitrary keyword parameters that can be passed to the corresponding endpoint.
+    """
+
+    _target_: str = f"{BASELINES_CLASSES_ROOT_PKG}.backbones.TogetherBackbone"
+    api_key: Optional[str] = None
+    parameters: Dict[str, Any] = field(default_factory=lambda: {})
+
+
+@dataclass
+class DeepSeekBackboneConfig(BackboneConfig):
+    """Config for instantiating a DeepSeek backbone.
+
+    Attributes:
+        model_name: Name for LLM profile to use in DeepSeek API.
+        prompt: Name for one of the supported prompt configurations.
+        api_key: DeepSeek API key (optional, by default, DEEPSEEK_API_KEY env variable is used).
+        parameters: Arbitrary keyword parameters that can be passed to the corresponding endpoint.
+    """
+
+    _target_: str = f"{BASELINES_CLASSES_ROOT_PKG}.backbones.DeepSeekBackbone"
+    api_key: Optional[str] = None
+    parameters: Dict[str, Any] = field(default_factory=lambda: {})
+
+
+@dataclass
 class HFModelConfig:
     """Config for initializing a HuggingFace model. Includes some options; the rest can be added via Hydra's override
     (e.g., ++backbone.model_kwargs.cache_dir=some_dir).

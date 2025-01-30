@@ -22,12 +22,12 @@ preprocessor:
 logger:
   use_wandb: true
   name: cmg_codet5
-  project: lca_cmg
+  project: cmg
   local_artifact: false
 data_src:
   _target_: src.data_sources.HFDataSource
   cache_dir: null
-  hub_name: JetBrains-Research/lca-commit-message-generation
+  hub_name: icmlbenchname/commit-message-generation
   configs:
   - default
   split: test

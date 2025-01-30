@@ -30,3 +30,25 @@ class TruncationCMGDiffPreprocessor(BasePreprocessorConfig):
     _target_: str = f"{BASELINES_CLASSES_ROOT_PKG}.preprocessors.TruncationCMGPreprocessor"
     max_num_tokens: int = MISSING
     include_path: bool = True
+
+
+@dataclass
+class RetrivalCMGPreprocessorConfig(BasePreprocessorConfig):
+    """Config for instantiating a CMG preprocessor with retrieval."""
+
+    _target_: str = f"{BASELINES_CLASSES_ROOT_PKG}.preprocessors.RetrievalCMGPreprocessor"
+    hf_repo_id: str = MISSING
+    hf_path_in_repo: str = MISSING
+    max_num_tokens: int = MISSING
+    local_data_dir: str = "tmp"
+    include_path: bool = True
+
+
+@dataclass
+class LoadFromDatasetPreprocessorConfig(BasePreprocessorConfig):
+    """Config to load preprocessed data from HF dataset."""
+
+    _target_: str = f"{BASELINES_CLASSES_ROOT_PKG}.preprocessors.LoadFromDatasetPreprocessor"
+    hf_repo_id: str = MISSING
+    hf_repo_config: str = MISSING
+    hf_repo_split: int = MISSING

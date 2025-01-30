@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Any, Dict
 
-from src.utils import CommitDiff
+from src.utils.typing_utils import UnifiedCommitExample
 
 
 class CMGPreprocessor(ABC):
@@ -10,5 +10,5 @@ class CMGPreprocessor(ABC):
         pass
 
     @abstractmethod
-    def __call__(self, commit_mods: List[CommitDiff], **kwargs) -> str:
+    def __call__(self, commit: UnifiedCommitExample, **kwargs) -> Dict[str, Any]:
         pass

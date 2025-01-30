@@ -1,22 +1,19 @@
 [tool.poetry]
-name = "lca-baselines-cmg"
-version = "0.1.0"
-description = "Benchmark for Commit Message Generation task as part of Long Code Arena."
+name = "baselines-cmg"
+version = "0.1.1"
+description = "Benchmark for Commit Message Generation task as part of BenchName."
 authors = [
-    "Alexandra Eliseeva <alexandra.eliseeva@jetbrains.com>",
+    "anon <anon@anon.com>",
 ]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/JetBrains-Research/lca-baselines"
+homepage = "https://anonymous.4open.science/r/icml-benchname-2025/README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-torch = "2.0.0"
-transformers = "^4.31.0"
 openai = "^1.3.6"
 hydra-core = "^1.3.2"
-wandb = "^0.15.8"
-datasets = "^2.14.2"
+wandb = "^0.19.2"
 jsonlines = "^3.1.0"
 tiktoken = "^0.4.0"
 torchmetrics = "^1.2.1"
@@ -29,12 +26,21 @@ accelerate = "^0.23.0"
 optimum = "^1.14.1"
 scipy = "^1.11.4"
 backoff = "^2.2.1"
+torch = "^2.5.1"
+together = "^1.3.11"
+python-dotenv = "^1.0.1"
+langchain = "^0.3.16"
+rank-bm25 = "^0.2.2"
+gitpython = "^3.1.44"
+langchain-community = "^0.3.16"
+chardet = "^5.2.0"
+datasets = "^3.2.0"
 
 [tool.poetry.group.dev.dependencies]
-black = {extras = ["jupyter"], version = "^23.7.0"}
 isort = "^5.12.0"
 mypy = "^1.5.0"
 pytest = "^7.4.0"
+ruff = "^0.9.1"
 
 [tool.poetry.group.eda.dependencies]
 jupyter = "^1.0.0"
@@ -47,14 +53,20 @@ plotly = "^5.16.1"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
+[tool.ruff]
 line-length = 120
-target-version = ["py310"]
+target-version = "py310"
+exclude = [
+    "src/metrics/reused_implementations/b_norm.py"
+]
+
+[tool.ruff.lint]
+extend-select = ["I"]
 
 [tool.isort]
-line_length = 120
-py_version = 310
 profile = "black"
+force_sort_within_sections = true
+order_by_type = true
 
 [tool.mypy]
 python_version = "3.10"

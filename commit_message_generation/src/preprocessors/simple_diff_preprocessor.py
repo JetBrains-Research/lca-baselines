@@ -1,7 +1,6 @@
-from typing import List
+from typing import Any, Dict
 
-from src.utils import CommitDiff
-
+from ..utils.typing_utils import UnifiedCommitExample
 from .base_preprocessor import CMGPreprocessor
 
 
@@ -11,7 +10,8 @@ class SimpleCMGPreprocessor(CMGPreprocessor):
     def __init__(self, model_name: str, model_provider: str, include_path: bool = True, *args, **kwargs):
         self._include_path = include_path
 
-    def __call__(self, commit_mods: List[CommitDiff], **kwargs) -> str:
+    def __call__(self, commit: UnifiedCommitExample, **kwargs) -> Dict[str, Any]:
+        commit_mods = commit["mods"]
         diff = []
         for mod in commit_mods:
             if mod["change_type"] == "UNKNOWN":
@@ -30,4 +30,4 @@ class SimpleCMGPreprocessor(CMGPreprocessor):
                 diff.append(file_diff)
             diff.append(mod["diff"])
 
-        return "\n".join(diff)
+        return {"mods": "\n".join(diff)}

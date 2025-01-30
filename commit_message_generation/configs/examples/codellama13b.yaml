@@ -24,12 +24,12 @@ preprocessor:
 logger:
   use_wandb: true
   name: codellama13b_detailed
-  project: lca_cmg
+  project: cmg
   local_artifact: false
 data_src:
   _target_: src.data_sources.HFDataSource
   cache_dir: null
-  hub_name: JetBrains-Research/lca-commit-message-generation
+  hub_name: icmlbenchname/commit-message-generation
   configs:
   - default
   split: test

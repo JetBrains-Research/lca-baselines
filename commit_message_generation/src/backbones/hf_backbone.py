@@ -48,7 +48,7 @@ class HuggingFaceBackbone(CMGBackbone):
         if use_bettertransformer:
             try:
                 self._model = self._model.to_bettertransformer()
-            except:
+            except Exception:
                 logging.warning(
                     "Couldn't convert the model to BetterTransformer, proceeding with default implementation."
                 )
@@ -68,13 +68,18 @@ class HuggingFaceBackbone(CMGBackbone):
         self._prompt = prompt
 
     @torch.inference_mode()
-    def generate_msg(self, preprocessed_commit_mods: str, **kwargs) -> Dict[str, Optional[str]]:
+    def generate_msg(self, preprocessed_commit: Dict[str, str], **kwargs) -> Dict[str, Optional[str]]:
         if self._prompt:
             preprocessed_commit_mods = self._prompt.hf(
-                preprocessed_commit_mods,
+                preprocessed_commit,
                 prompt_format=self.MODEL_NAME_TO_PROMPT_FORMAT.get(self._name_or_path, None),
                 tokenizer=self._tokenizer,
             )
+        else:
+            assert "mods" in preprocessed_commit, (
+                "HFBackbone expects 'mods' key to be present after preprocessing if no prompt is given."
+            )
+            preprocessed_commit_mods = preprocessed_commit["mods"]
         encoding = self._tokenizer(preprocessed_commit_mods, truncation=True, padding=False, return_tensors="pt")
         predictions = self._model.generate(
             encoding.input_ids.to(self._device),
