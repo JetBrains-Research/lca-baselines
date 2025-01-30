@@ -1,7 +1,7 @@
-# 🏟️ Long Code Arena Baselines
+# BenchName Baselines
 ## Library-based code generation
 
-This directory contains the code for running baselines for Library-based code generation task in Long Code Arena benchmark.
+This directory contains the code for running baselines for Library-based code generation task in BenchName benchmark.
 
 We provide the implementation of baselines running inference via [OpenAI](https://platform.openai.com/docs/overview) and [Together.AI](https://www.together.ai/).
 We evaluate multiple models in two settings: 

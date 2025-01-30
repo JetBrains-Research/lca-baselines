@@ -1,4 +1,4 @@
-# 🏟️ Long Code Arena Baselines
+# BenchName Baselines
 ## Bug localization
 
 This directory contains the code for the Bug localization benchmark. The challenge is: 
@@ -14,19 +14,19 @@ pip install -r requirements.txt
 
 ## 🤗 Dataset
 
-All the data is stored in [HuggingFace 🤗](JetBrains-Research/lca-bug-localization). It contains:
+All the data is stored in [HuggingFace 🤗](icmlbenchname/bug-localization). It contains:
 
 * A **dataset** with the bug localization data (issue description, SHA of the repo in initial state, and SHA of the repo after fixing the issue).
 You can access the data using the [datasets](https://huggingface.co/docs/datasets/en/index) library:
     ```python3
     from datasets import load_dataset
     
-    # Select a configuration from ["py", "java", "kt", "mixed"]
+    # Select a configuration from ["py", "java", "kt"]
     configuration = "py"
     # Select a split from ["dev", "train", "test"]
     split = "dev"
     # Load data
-    dataset = load_dataset("JetBrains-Research/lca-bug-localization", configuration, split=split)
+    dataset = load_dataset("icmlbenchname/bug-localization", configuration, split=split)
     ```
     ...where the labels are:\
     `dev` — all the collected data;\
@@ -36,8 +36,7 @@ You can access the data using the [datasets](https://huggingface.co/docs/dataset
     ...and configurations are:\
     `py` — only `.py` files in diff;\
     `java` — only `.java` files in diff;\
-    `kt` — only `.kt` files in diff;\
-    `mixed` — at least one `.py`, `.java`, or `.kt` file and maybe files with another extensions in diff.
+    `kt` — only `.kt` files in diff;
 
 
 * **Archived repos** (from which we can extract repository content at different stages and get diffs that contains bugs fixes).\

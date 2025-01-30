@@ -1,7 +1,7 @@
-# 🏟️ Long Code Arena Baselines
+# 🏟️ BenchName Baselines
 ## Project-level code completion
 
-This directory contains the code for running baselines for the Project-level code completion task in the [Long Code Arena benchmark](https://huggingface.co/spaces/JetBrains-Research/long-code-arena).
+This directory contains the code for running baselines for the Project-level code completion task in the [BenchName](https://huggingface.co/collections/icmlbenchname/icml-25-benchname-679b57e38a389f054cdf33e9).
 
 We provide the implementation for the following baseline: a language model that is fed with differently composed context from a repository snapshot.
 
@@ -39,7 +39,7 @@ We use [Hydra](https://hydra.cc/docs/intro/) for configuration. The main config 
 * To evaluate your composer, you need to add it to `COMPOSERS` dictionary that is located in [composers/composer_registry.py](composers/composer_registry.py).
 
 ### Suported datasets:
-* All configurations of [`JetBrains-Research/lca-project-level-code-completion`](https://huggingface.co/datasets/JetBrains-Research/lca-project-level-code-completion):
+* All configurations of [`icmlbenchname/project-level-code-completion`](https://huggingface.co/datasets/icmlbenchname/project-level-code-completion):
    * `small_context`
    * `medium_context`
    * `large_context`

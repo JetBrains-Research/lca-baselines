@@ -1,7 +1,7 @@
-# 🏟️ Long Code Arena Baselines
+# BenchName Baselines
 ## Module summarization
 
-This directory contains the code for running baselines for the Module summarization task in the Long Code Arena benchmark.
+This directory contains the code for running baselines for the Module summarization task in the BenchName benchmark.
 
 We provide the implementation of baselines running inference via [OpenAI](https://platform.openai.com/docs/overview) and [Together.AI](https://www.together.ai/).
 We generate documentation based on an intent (one sentence description of documentation content), target documentation name, and relevant code context. 
