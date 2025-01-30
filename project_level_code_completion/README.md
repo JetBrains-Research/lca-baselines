@@ -1,4 +1,4 @@
-# 🏟️ BenchName Baselines
+# BenchName Baselines
 ## Project-level code completion
 
 This directory contains the code for running baselines for the Project-level code completion task in the [BenchName](https://huggingface.co/collections/icmlbenchname/icml-25-benchname-679b57e38a389f054cdf33e9).
