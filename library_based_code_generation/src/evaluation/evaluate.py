@@ -29,7 +29,7 @@ def extract_code(message):
 def evaluate(model: ExampleGenerationModel, metrics: list[Metric], data_path: str):
     print(f"Evaluating model {model.name()}")
 
-    dataset = load_dataset("JetBrains-Research/lca-library-based-code-generation", split="test")
+    dataset = load_dataset("icmlbenchname/library-based-code-generation", split="test")
     n_samples = len(dataset)
 
     evaluation_result_path = os.path.join(data_path, model.name())

@@ -43,7 +43,7 @@ def generate_all(config, client):
 
     # Preparing dataset
     logging.info("Downloading dataset")
-    dataset = load_dataset("JetBrains-Research/lca-module-summarization",
+    dataset = load_dataset("icmlbenchname/module-summarization",
                            token=hf_api_key)['test']
     logging.info("Downloading tokenizer to trim context")
     tokenizer = AutoTokenizer.from_pretrained(hf_tokenizer_checkpoint, 

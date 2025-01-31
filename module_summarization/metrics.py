@@ -105,7 +105,7 @@ if __name__ == '__main__':
     
 
     scorer = OptionsScoringModel(model_name, device)
-    dataset = load_dataset("JetBrains-Research/lca-module-summarization",
+    dataset = load_dataset("icmlbenchname/module-summarization",
                                token=hf_api_key)['test']
     
     path_to_configs = 'configs'

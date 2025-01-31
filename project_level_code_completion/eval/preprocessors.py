@@ -121,7 +121,7 @@ class PreprocessorBase:
             completion=self.tokenize(datapoint.completion)
         )
 
-    def save_model_inputs(self, filepath='lca/code_generation/data/model_inputs.json'):
+    def save_model_inputs(self, filepath='code_generation/data/model_inputs.json'):
         with open(filepath, 'w') as f:
             json.dump(self.prepared_data, f)
 

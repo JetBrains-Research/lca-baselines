@@ -5,7 +5,7 @@ import datasets
 import huggingface_hub
 from datasets import Dataset
 
-HUGGINGFACE_REPO = 'JetBrains-Research/lca-bug-localization'
+HUGGINGFACE_REPO = 'icmlbenchname/bug-localization'
 CATEGORIES = ['py', 'java', 'kt']
 SPLITS = ['dev', 'test', 'train']
 

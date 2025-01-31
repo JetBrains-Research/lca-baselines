@@ -333,7 +333,7 @@ def evaluate_generation(args: GeneratorConfig):
 
 if __name__ == '__main__':
     args = GeneratorConfig(
-        input_data_path="/home/glukhov/long_code_arena/lca/data/python/smol/model_inputs_composer_path_distance.json",
+        input_data_path="data/model_inputs_composer_path_distance.json",
         seq_max_len=3500 - 30,
         context_max=3500,
         model="starcoder1b",

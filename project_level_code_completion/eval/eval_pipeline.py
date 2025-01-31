@@ -21,11 +21,11 @@ from model_hub.model_registry import MODEL_REGISTRY
 
 @dataclass
 class PreprocessConfig:
-    model: str  # One of PREPROCESSORS from lca.code_generation.eval.preprocess
+    model: str  # One of PREPROCESSORS from code_generation.eval.preprocess
     dataset: str | omegaconf.dictconfig.DictConfig  # Path to dataset or dictionary with `path`, `name` keys
     tokenizer: str  # Path to tokenizer
     # config_path: str  # Path to composer configs
-    composers: str  # One of COMPOSERS from lca.code_generation.eval.preprocess
+    composers: str  # One of COMPOSERS from code_generation.eval.preprocess
     out_dir: str  # Where to save preprocessed dataset
     context_len_char: int  # How much do we need to crop context string 5*seq_max_len by default
 
@@ -174,7 +174,6 @@ class EvalPipeline:
 
         print('>>Preprocessing...')
         prepared_dataset_path = preprocess(self.preprocess_args, self.config.composers_config)
-        # prepared_dataset_path = '/home/glukhov/long_code_arena/lca/data/h3_pretrained_in/model_inputs_composer_none.json'
 
         print(">>Model inference...")
         self.inference_args.input_data_path = prepared_dataset_path
@@ -249,57 +248,3 @@ def main(cfg: DictConfig) -> None:
 
 if __name__ == '__main__':
     main()
-
-    # preprocess_params = {
-    #     "model": "huggingface",
-    #     "dataset": "/home/glukhov/long_code_arena/lca/data/python/benchmark_data_538_1239_sample_100.json", #"/home/glukhov/long_code_arena/lca/data/kotlin/benchmark_data_815_1846_sample_100.json", #"/home/glukhov/long_code_arena/lca/data/python/benchmark_data_538_1239_sample_100.json",
-    #     "tokenizer": "bigcode/starcoderbase-1b",  #"bigcode/starcoder", #"Salesforce/codegen25-7b-mono",
-    #     "config_path": "/home/glukhov/long_code_arena/lca/lca/code_generation/eval/composer_config/config.json",
-    #     "out_dir": "/home/glukhov/long_code_arena/lca/data/python/starcoder1b_4bit_in",
-    # }
-    #
-    # inference_params = {
-    #     "model": "starcoder1b",
-    #     "seq_max_len": 8190,
-    #     "out_dir": "/mnt/data/shared-data/lca/code_generation/data/python/starcoder1b_4bit_out",
-    #     "input_data_path": "",
-    #     "context_max": -1,
-    # }
-    #
-    # project_name = "Starcoder 1B filtered data 100 Python + New composers"
-    #
-    # eval_params = {
-    #     "device": "cuda",
-    #     "out_dir": "/home/glukhov/long_code_arena/lca/data/python/starcoder1b_4bit_out",
-    #     "dataset_dir": ""
-    # }
-    #
-    #
-    #
-    # # preprocess_params = {
-    # #     "model": "fl_python",
-    # #     "dataset": "/home/glukhov/long_code_arena/lca/data/benchmark_data_filtered_250.json",
-    # #     "tokenizer": "gpt2",  #"/home/glukhov/fl-safari/fl-pipeline/out_dirs_virtual/out_dir_starcoder_python/data_processors/gpt2_pretrained", #"Salesforce/codegen25-7b-mono",
-    # #     "config_path": "/home/glukhov/long_code_arena/lca/lca/code_generation/eval/config/config_fl.json",
-    # #     "out_dir": "/home/glukhov/long_code_arena/lca/data/h3_pretrained_in",
-    # # }
-    # #
-    # # inference_params = {
-    # #     "model": "h3_pretrained_fl",
-    # #     "seq_max_len": 8192,
-    # #     "out_dir": "/mnt/data/shared-data/lca/code_generation/data/h3_pretrained_out",
-    # #     "input_data_path": "",
-    # #     "context_max": -1,
-    # # }
-    # #
-    # # eval_params = {
-    # #     "device": "cuda",
-    # #     "out_dir": "/home/glukhov/long_code_arena/lca/data/h3_pretrained_out",
-    # #     "dataset_dir": ""
-    # # }
-    #
-    # pipeline = EvalPipeline(preprocess_params, inference_params, eval_params,
-    #                         wandb_project_name=project_name)
-    # results = pipeline.run()
-    #
-    # print(results)

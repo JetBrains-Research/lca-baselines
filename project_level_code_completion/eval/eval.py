@@ -40,8 +40,8 @@ def evaluate(args):
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
     argparser.add_argument('--device', type=str, default='cpu', help='What device to use for evaluation.')
-    argparser.add_argument('--out_dir', type=str, default='lca/code_generation/out_dir', help='Directory to save results of the evaluation.')
-    argparser.add_argument('--dataset_dir', type=str, default='lca/code_generation/data', help='Directory with saved logits.')
+    argparser.add_argument('--out_dir', type=str, default='code_generation/out_dir', help='Directory to save results of the evaluation.')
+    argparser.add_argument('--dataset_dir', type=str, default='code_generation/data', help='Directory with saved logits.')
 
     args = argparser.parse_args()
 
