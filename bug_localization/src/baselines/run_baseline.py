@@ -8,9 +8,9 @@ from datasets import config
 from dotenv import load_dotenv
 from hydra.core.hydra_config import HydraConfig
 
-from src.baselines.backbones.base_backbone import BaseBackbone
-from src.baselines.configs.baseline_configs import BaselineConfig
-from src.baselines.data_sources.base_data_source import BaseDataSource
+from backbones.base_backbone import BaseBackbone
+from configs.baseline_configs import BaselineConfig
+from data_sources.base_data_source import BaseDataSource
 
 
 @hydra.main(version_base="1.1", config_path="../../configs/baselines")
@@ -40,6 +40,6 @@ def main(cfg: BaselineConfig) -> None:
 
 if __name__ == '__main__':
     cache_dir = config.HF_DATASETS_CACHE
-    shutil.rmtree(cache_dir, ignore_errors=True)
+    # shutil.rmtree(cache_dir, ignore_errors=True)
     load_dotenv()
     main()

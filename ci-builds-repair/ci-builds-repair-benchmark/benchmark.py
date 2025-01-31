@@ -22,8 +22,8 @@ def filter_by_id(example, ids):
 class CIFixBenchmark:
     def __init__(self, model_name, config_path):
 
-        benchmark_owner = "LCA-CI-builds-repair"
-        self.dataset_id = "JetBrains-Research/lca-ci-builds-repair"
+        benchmark_owner = "ICML-25-BenchName-builds-repair"
+        self.dataset_id = "icmlbenchname/ci-builds-repair"
 
         self.config = OmegaConf.load(config_path)
         if not "test_username" in self.config:
