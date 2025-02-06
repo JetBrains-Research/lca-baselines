@@ -1,6 +1,6 @@
 _target_: src.baselines.data_sources.hf_data_source.HFDataSource
-repos_dir: ${data_path}/repos
-cache_dir: ${data_path}/hf
+repos_dir: ${data_path}/repos_eval
+cache_dir: ${data_path}/hf_eval
 hub_name: tiginamaria/bug-localization
 configs:
   - py

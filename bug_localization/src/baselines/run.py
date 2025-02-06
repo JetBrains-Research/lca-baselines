@@ -29,6 +29,7 @@ def main(cfg: DictConfig) -> None:
         results_dict = backbone.localize_bugs(dp)
         end_time = time.time()
         results_dict['time_s'] = (end_time - start_time) * 1000000
+        results_dict['text_id'] = dp['text_id']
 
         with open(results_path, 'a', newline='') as f:
             f.write(json.dumps(results_dict) + "\n")

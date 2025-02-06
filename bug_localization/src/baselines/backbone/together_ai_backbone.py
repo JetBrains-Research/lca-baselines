@@ -3,7 +3,7 @@ import os
 from typing import Dict, Any, List
 
 import backoff
-import openai
+import together
 from openai.types.chat import ChatCompletion
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
@@ -14,22 +14,23 @@ from src.baselines.context_composers.base_context_composer import BaseContextCom
 from src.baselines.utils.type_utils import ChatMessage
 
 
-class OpenAIBackbone(BaseBackbone):
+class TogetherAIBackbone(BaseBackbone):
 
     def __init__(
             self,
             name: str,
+            provider_name: str,
             model_name: str,
             parameters: Dict[str, Any],
             context_composer: BaseContextComposer,
     ):
         super().__init__(name)
-        self._client = openai.OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
-        self._model_name = model_name
+        self._client = together.Together(api_key=os.environ.get("TOGETHER_API_KEY"))
+        self._model_name = f"{provider_name}/{model_name}"
         self._parameters = parameters
         self._context_composer = context_composer
 
-    @backoff.on_exception(backoff.expo, openai.APIError)
+    @backoff.on_exception(backoff.expo, together.error.APIError)
     def _get_chat_completion(self, messages: List[ChatMessage]) -> ChatCompletion:
         return self._client.chat.completions.create(
             messages=messages,

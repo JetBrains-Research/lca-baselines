@@ -1,8 +1,5 @@
 _target_: src.baselines.backbone.openai_backbone.OpenAIBackbone
-name: openai
-# gpt-3.5-turbo-1106
-# gpt-4o
-# gpt-4o-mini
+name: openai-gpt-4o
 model_name: gpt-4o
 parameters:
   seed: 76097149

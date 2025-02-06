@@ -1,0 +1,3 @@
+python3 src/baselines/run.py --multirun backbone=qwen-2.5-7b,qwen-2-72b,llama-3.1-8b,llama-3.2-3b,llama-3.1-70b context_composer=issue_only,filepath,filepath_imports
+python3 src/baselines/run.py --multirun backbone=gpt-4o,gpt-4o-mini context_composer=issue_only,filepath,filepath_imports
+python3 src/baselines/run.py --multirun data_source=hf_eval backbone=o1 context_composer=filepath,filepath_imports

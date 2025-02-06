@@ -1,14 +1,26 @@
 # @package _global_
 hydra:
-  job:
-    name: hydra
+  sweep:
+    dir: ${data_path}/multirun
+    subdir: ${backbone.name}_${context_composer.name}
   run:
-    dir: ${data_path}/${hydra:job.name}/${now:%Y%m%d_%H%M%S}_${backbone.name}_${backbone.model_name}_${context_composer.name}
+    dir: ${data_path}/run/${backbone.name}_${context_composer.name}
 
 data_path: "/Users/Maria.Tigina/PycharmProjects/lca-baselines/bug_localization/data"
 
 defaults:
   - _self_
   - data_source: hf
-  - context_composer: filepath_imports
-  - backbone: openai
+  # filepath_imports
+  # filepath
+  # issue_only
+  - context_composer: filepath
+  # gpt-3.5
+  # gpt-4o
+  # gpt-4o-mini
+  # llama-3.1-8b
+  # llama-3.1-70b
+  # llama-3.2-3b
+  # qwen-2.5-7b
+  # qwen-2-72b
+  - backbone: gemini-pro-1.5

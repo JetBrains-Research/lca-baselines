@@ -34,6 +34,8 @@ class HFDataSource(BaseDataSource):
 
     def _load_repos(self):
         huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
+        if os.path.exists(self._repos_dir):
+            return
 
         # Load json file with repos paths
         paths_json = load_dataset(

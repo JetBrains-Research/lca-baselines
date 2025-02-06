@@ -1,0 +1,9 @@
+_target_: src.baselines.backbone.together_ai_backbone.TogetherAIBackbone
+name: llama-3.2-3b
+# https://docs.together.ai/docs/serverless-models
+provider_name: meta-llama
+model_name: Llama-3.2-3B-Instruct-Turbo
+parameters:
+  seed: 76097149
+  temperature: 0
+context_composer: ${context_composer}

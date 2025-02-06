@@ -1,0 +1,16 @@
+_target_: src.baselines.backbone.together_ai_backbone.TogetherAIBackbone
+name: togetherai
+# https://docs.together.ai/docs/serverless-models
+# meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo
+# meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo
+# meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
+# meta-llama/Llama-3.2-3B-Instruct-Turbo
+# Qwen/Qwen2.5-7B-Instruct-Turbo
+# Qwen/Qwen2-72B-Instruct
+# deepseek-ai/DeepSeek-R1
+provider_name: meta-llama
+model_name: Meta-Llama-3.1-8B-Instruct-Turbo
+parameters:
+  seed: 76097149
+  temperature: 0
+context_composer: ${context_composer}
