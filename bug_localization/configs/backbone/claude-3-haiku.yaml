@@ -1,0 +1,7 @@
+_target_: src.baselines.backbone.grazie_backbone.GrazieBackbone
+name: anthropic-claude-3-haiku
+model_name: anthropic-claude-3-haiku
+parameters:
+  seed: 76097149
+  temperature: 0
+context_composer: ${context_composer}

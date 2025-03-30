@@ -20,7 +20,7 @@ class IssueOnlyComposer(BaseContextComposer):
             {
                 "role": "user",
                 "content": self._user_prompt.format(
-                    repo_name=f"{dp['repo_owner']}/{dp['repo_name']}",
-                    issue_description=f"{dp['issue_title']}\n{dp['issue_body']}")
+                repo_name=f"{dp['repo_owner']}/{dp['repo_name']}",
+                issue_description=f"{dp['issue_title']}\n{dp['issue_body']}"),
             },
         ])

@@ -1,5 +1,5 @@
 _target_: src.baselines.backbone.together_ai_backbone.TogetherAIBackbone
-name: deepseek-r1
+name: deepseek-v3
 # https://docs.together.ai/docs/serverless-models
 # meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo
 # meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo
@@ -9,7 +9,7 @@ name: deepseek-r1
 # Qwen/Qwen2-72B-Instruct
 # deepseek-ai/DeepSeek-R1
 provider_name: deepseek-ai
-model_name: DeepSeek-R1
+model_name: DeepSeek-V3
 parameters:
   seed: 76097149
   temperature: 0

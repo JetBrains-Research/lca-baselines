@@ -7,7 +7,7 @@ hydra:
     dir: ${data_path}/eval/${run_id}
 
 data_path: "/Users/Maria.Tigina/PycharmProjects/lca-baselines/bug_localization/data"
-run_id: "anthropic-claude-3.5-sonnet_filepath"
+run_id: "deepseek-v3_filepath"
 
 defaults:
   - _self_

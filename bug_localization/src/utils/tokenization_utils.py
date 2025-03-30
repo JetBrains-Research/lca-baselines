@@ -11,28 +11,87 @@ class TokenizationUtils:
     """
 
     PROFILE_NAME_TO_PROVIDER_AND_MODEL = {
-        "gpt-3.5-turbo-1106": {"model_provider": "openai", "model_name": "gpt-3.5-turbo", "context_size": 16000},
-        "gpt-4o": {"model_provider": "openai", "model_name": "gpt-4", "context_size": 100000},
-        "gpt-4o-mini": {"model_provider": "openai", "model_name": "gpt-4", "context_size": 100000},
+        "gpt-3.5-turbo-1106": {
+            "model_provider": "openai",
+            "model_name": "gpt-3.5-turbo",
+            "context_size": 16000,
+        },
+        "gpt-4o": {
+            "model_provider": "openai",
+            "model_name": "gpt-4",
+            "context_size": 100000,
+        },
+        "gpt-4o-mini": {
+            "model_provider": "openai",
+            "model_name": "gpt-4",
+            "context_size": 100000,
+        },
         "o1": {"model_provider": "openai", "model_name": "o1", "context_size": 100000},
-        "google-chat-gemini-pro-1.5": {"model_provider": "google", "model_name": "google-chat-gemini-pro-1.5", "context_size": 80000},
-        "anthropic-claude-3.5-sonnet": {"model_provider": "anthropic", "model_name": "claude-3.5-sonnet ", "context_size": 100000},
-        "anthropic-claude-3.5-haiku": {"model_provider": "anthropic", "model_name": "claude-3.5-haiku", "context_size": 100000},
-        "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo": {"model_provider": "huggingface", "model_name": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-                         "context_size": 100000},
-        "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo": {"model_provider": "huggingface", "model_name": "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
-                          "context_size": 100000},
-        "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": {"model_provider": "huggingface",
-                                                         "model_name": "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
-                                                         "context_size": 100000},
-        "meta-llama/Llama-3.2-3B-Instruct-Turbo": {"model_provider": "huggingface",
-                                                         "model_name": "meta-llama/Llama-3.2-3B-Instruct-Turbo",
-                                                         "context_size": 100000},
-        "Qwen/Qwen2.5-7B-Instruct-Turbo": {"model_provider": "huggingface", "model_name": "Qwen/Qwen2.5-7B-Instruct-Turbo",
-                    "context_size": 32000},
-        "Qwen/Qwen2-72B-Instruct": {"model_provider": "huggingface", "model_name": "Qwen/Qwen2-72B-Instruct", "context_size": 32000},
-        "deepseek-ai/DeepSeek-R1": {"model_provider": "huggingface", "model_name": "deepseek-ai/DeepSeek-R1",
-                        "context_size": 100000},
+        "google-chat-gemini-pro-1.5": {
+            "model_provider": "google",
+            "model_name": "google-chat-gemini-pro-1.5",
+            "context_size": 80000,
+        },
+        "anthropic-claude-3.5-sonnet": {
+            "model_provider": "anthropic",
+            "model_name": "claude-3.5-sonnet",
+            "context_size": 100000,
+        },
+        "anthropic-claude-3-opus": {
+            "model_provider": "anthropic",
+            "model_name": "claude-3-opus",
+            "context_size": 100000,
+        },
+        "anthropic-claude-3.5-haiku": {
+            "model_provider": "anthropic",
+            "model_name": "claude-3.5-haiku",
+            "context_size": 100000,
+        },
+        "anthropic-claude-3-haiku": {
+            "model_provider": "anthropic",
+            "model_name": "claude-3-haiku",
+            "context_size": 100000,
+        },
+        "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo": {
+            "model_provider": "huggingface",
+            "model_name": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+            "context_size": 100000,
+        },
+        "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo": {
+            "model_provider": "huggingface",
+            "model_name": "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+            "context_size": 100000,
+        },
+        "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": {
+            "model_provider": "huggingface",
+            "model_name": "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
+            "context_size": 100000,
+        },
+        "meta-llama/Llama-3.2-3B-Instruct-Turbo": {
+            "model_provider": "huggingface",
+            "model_name": "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+            "context_size": 100000,
+        },
+        "Qwen/Qwen2.5-7B-Instruct-Turbo": {
+            "model_provider": "huggingface",
+            "model_name": "Qwen/Qwen2.5-7B-Instruct-Turbo",
+            "context_size": 32000,
+        },
+        "Qwen/Qwen2-72B-Instruct": {
+            "model_provider": "huggingface",
+            "model_name": "Qwen/Qwen2-72B-Instruct",
+            "context_size": 32000,
+        },
+        "deepseek-ai/DeepSeek-R1": {
+            "model_provider": "huggingface",
+            "model_name": "deepseek-ai/DeepSeek-R1",
+            "context_size": 100000,
+        },
+        "deepseek-ai/DeepSeek-V3": {
+            "model_provider": "huggingface",
+            "model_name": "deepseek-ai/DeepSeek-V3",
+            "context_size": 16000,
+        },
     }
 
     def __init__(self, profile_name: str):
