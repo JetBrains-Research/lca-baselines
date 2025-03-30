@@ -6,6 +6,7 @@ import huggingface_hub
 from datasets import get_dataset_config_names, load_dataset
 from huggingface_hub import hf_hub_download
 
+from src import logger
 from src.baselines.data_sources.base_data_source import BaseDataSource
 from src.utils.git_utils import get_repo_content_on_commit, get_changed_files_between_commits
 from src.utils.hf_utils import HUGGINGFACE_REPO, FEATURES
@@ -33,6 +34,8 @@ class HFDataSource(BaseDataSource):
 
     def _load_repos(self):
         huggingface_hub.login(token=os.environ['HUGGINGFACE_TOKEN'])
+        if os.path.exists(self._repos_dir):
+            return
 
         # Load json file with repos paths
         paths_json = load_dataset(
@@ -49,12 +52,12 @@ class HFDataSource(BaseDataSource):
         for category in self._configs:
             repos = paths_json[category][0]
             for i, repo_zip_path in enumerate(repos):
-                print(f"Loading {i}/{len(repos)} {repo_zip_path}")
+                logger.info(f"Loading {i}/{len(repos)} {repo_zip_path}")
 
                 repo_name = os.path.basename(repo_zip_path).split('.zip')[0]
                 repo_path = os.path.join(self._repos_dir, repo_name)
                 if os.path.exists(os.path.join(self._repos_dir, repo_name)):
-                    print(f"Repo {repo_zip_path} is already loaded...")
+                    logger.info(f"Repo {repo_zip_path} is already loaded...")
                     continue
 
                 local_repo_zip_path = hf_hub_download(
@@ -75,14 +78,25 @@ class HFDataSource(BaseDataSource):
             for dp in dataset:
                 repo_path = os.path.join(self._repos_dir, f"{dp['repo_owner']}__{dp['repo_name']}")
                 try:
-                    repo_content = get_repo_content_on_commit(repo_path, dp['base_sha'],
-                                                              extensions=[config],
-                                                              ignore_tests=True)
+                    repo_content = get_repo_content_on_commit(
+                        repo_path, dp['base_sha'],
+                        # Only for specific language (py/java/kt)
+                        extensions=[config],
+                        # Ignore test files
+                        ignore_tests=True
+                    )
+                    dp['repo_content'] = repo_content
 
-                    changed_files = get_changed_files_between_commits(repo_path, dp['base_sha'], dp['head_sha'],
-                                                                      extensions=[config],
-                                                                      ignore_tests=True)
-                    yield dp, repo_content, changed_files
+                    changed_files = get_changed_files_between_commits(
+                        repo_path, dp['base_sha'], dp['head_sha'],
+                        # Only for specific language (py/java/kt)
+                        extensions=[config],
+                        # Ignore test files
+                        ignore_tests=True
+                    )
+                    dp['changed_files'] = changed_files
+
+                    yield dp
                 except Exception as e:
-                    print(f"Failed to get repo content for {dp['repo_owner']}__{dp['repo_name']}", e)
+                    logger.info(f"Failed to get repo content for {dp['repo_owner']}__{dp['repo_name']}", e)
                     continue

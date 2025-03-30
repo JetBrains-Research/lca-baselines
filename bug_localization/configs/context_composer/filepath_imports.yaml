@@ -1,0 +1,4 @@
+_target_: src.baselines.context_composers.filepath_imports_composer.FilepathImportsComposer
+name: filepath_imports
+system_prompt_path: configs/prompts/filepath_imports_system_prompt.md
+user_prompt_path: configs/prompts/filepath_imports_user_prompt.md

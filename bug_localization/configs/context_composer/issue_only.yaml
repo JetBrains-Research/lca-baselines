@@ -1,0 +1,4 @@
+_target_: src.baselines.context_composers.issue_only_composer.IssueOnlyComposer
+name: issue_only
+system_prompt_path: configs/prompts/issue_only_system_prompt.md
+user_prompt_path: configs/prompts/issue_only_user_prompt.md

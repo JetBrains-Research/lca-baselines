@@ -1,0 +1,8 @@
+_target_: src.baselines.backbone.openai_backbone.OpenAIBackbone
+name: openai-gpt-4o
+model_name: gpt-4o
+parameters:
+  seed: 76097149
+  temperature: 0
+  response_format: {"type": "json_object"}
+context_composer: ${context_composer}

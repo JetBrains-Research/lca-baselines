@@ -1,0 +1,9 @@
+_target_: src.baselines.backbone.together_ai_backbone.TogetherAIBackbone
+name: qwen-2-72b
+# https://docs.together.ai/docs/serverless-models
+provider_name: Qwen
+model_name: Qwen2-72B-Instruct
+parameters:
+  seed: 76097149
+  temperature: 0
+context_composer: ${context_composer}

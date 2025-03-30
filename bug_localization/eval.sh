@@ -1,0 +1,2 @@
+python3 src/baselines/eval.py --multirun run_id=llama-3.1-8b_filepath,llama-3.1-8b_filepath_imports,llama-3.1-70b_filepath,llama-3.1-70b_filepath_imports,llama-3.1-70b_issue_only,llama-3.2-3b_filepath,llama-3.2-3b_filepath_imports,llama-3.2-3b_issue_only,openai-gpt-3.5-turbo-1106_filepath,openai-gpt-3.5-turbo-1106_filepath_imports,openai-gpt-3.5-turbo-1106_issue_only,openai-gpt-4o_issue_only,qwen-2.5-7b_filepath,qwen-2.5-7b_issue_only
+python3 src/baselines/eval.py --multirun run_id=openai-o1_issue_only

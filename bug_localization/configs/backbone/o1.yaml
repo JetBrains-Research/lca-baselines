@@ -1,0 +1,6 @@
+_target_: src.baselines.backbone.openai_backbone.OpenAIBackbone
+name: openai-o1
+model_name: o1
+parameters:
+  seed: 76097149
+context_composer: ${context_composer}

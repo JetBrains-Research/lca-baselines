@@ -1,1 +1,7 @@
 .env
+**/tree-sitter-java.so
+**/tree-sitter-kotlin.so
+**/tree-sitter-python.so
+**/tree-sitter-java
+**/tree-sitter-kotlin
+**/tree-sitter-python

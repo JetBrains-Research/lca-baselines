@@ -1,0 +1,31 @@
+# @package _global_
+hydra:
+  sweep:
+    dir: ${data_path}/multirun
+    subdir: ${backbone.name}_${context_composer.name}
+  run:
+    dir: ${data_path}/run/${backbone.name}_${context_composer.name}
+
+data_path: "/Users/Maria.Tigina/PycharmProjects/lca-baselines/bug_localization/data"
+
+defaults:
+  - _self_
+  - data_source: hf
+  # filepath_imports
+  # filepath
+  # issue_only
+  - context_composer: issue_only
+  # gpt-3.5
+  # gpt-4o
+  # gpt-4o-mini
+  # llama-3.1-8b
+  # llama-3.1-70b
+  # llama-3.2-3b
+  # llama-3.1-405b
+  # qwen-2.5-7b
+  # qwen-2-72b
+  # claude-3-opus
+  # claude-3-haiku
+  # deepseek-r1
+  # deepseek-v3
+  - backbone: claude-3-haiku
